@@ -1,0 +1,24 @@
+syntax = "proto3";
+// service_file = "xxx/xxxService";
+package Example;
+
+enum ExampleEnum {
+  FIRST_OPTION = 0;
+  SECOND_OPTION = 1;
+}
+
+message NestedMessage {
+  int32 nested_int = 1;
+  string nested_string = 2;
+}
+
+message ExampleMessage {
+
+  int32 int_field = 1;
+  string string_field = 2;
+  bytes bytes_field = 3;
+  ExampleEnum enum_field = 4;
+  NestedMessage nested_message_field = 5;
+  repeated int32 repeated_int_field = 6;
+  repeated NestedMessage repeated_nested_message_field = 7;
+}
