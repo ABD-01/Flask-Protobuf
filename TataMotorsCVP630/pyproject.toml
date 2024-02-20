@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=46.4.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.poetry]
+name = "Commander"
+version = "1.0.0"
+authors = ["Muhammed Abdullah Shaikh <muhammed.shaikh@accoladeelectronics.com>"]
+description = "CVP Command Message Testing Tool"
+license = "GNU General Public License v2.0"
+keywords = ["mqtt", "protobuf","python"]
+packages = [
+    { include = "./*.py"},
+]
+
+[tool.poetry.dependencies]
+protobuf = "^3.20"
+paho-mqtt = "^1.6.1"
+python = "^3.6"
+tabulate = "^0.8"
+
+[tool.poetry.scripts]
+commander = "commander:main"

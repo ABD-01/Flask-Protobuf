@@ -1,0 +1,19 @@
+<!-- templates/response_table.html -->
+<table class="table table-bordered mt-2 mb-1">
+    <thead>
+        <tr><th>Field</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>message_id</td><td>{{ response_message.message_id }}</td></tr>
+        <tr><td>correlation_id</td><td>{{ response_message.correlation_id }}</td></tr>
+        <tr><td>vehicle_id</td><td>{{ response_message.vehicle_id }}</td></tr>
+        <tr><td>type</td><td>{{ tmcvp_common_pb2.eTcuMessageType.Name(response_message.type) }}</td></tr>
+        <tr><td>subtype</td><td>{{ tmcvp_command_message_pb2.commandMessageSubType.Name(response_message.subtype) }}</td></tr>
+        <tr><td>priority</td><td>{{ response_message.priority }}</td></tr>
+        <tr><td>provisioning_state</td><td>{{ tmcvp_common_pb2.eProvisioningState.Name(response_message.provisioning_state) }}</td></tr>
+        <tr><td>version</td><td>{{ response_message.version }}</td></tr>
+        <tr><td>time_stamp</td><td>{{ datetime.fromtimestamp(response_message.time_stamp.seconds).strftime('%Y-%m-%d %H:%M:%S') }}</td></tr>
+        <tr><td>packet_status</td><td>{{ tmcvp_common_pb2.PacketStatus.Name(response_message.packet_status) }}</td></tr>
+        <tr><td>return_code</td><td class="{{ 'bg-success-subtle' if response_message.return_code == 0 else 'bg-danger-subtle' }}">{{ tmcvp_commandresponse_message_pb2.eReturnCode.Name(response_message.return_code) }}</td></tr>
+    </tbody>
+</table>

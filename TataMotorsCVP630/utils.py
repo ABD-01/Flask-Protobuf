@@ -161,7 +161,7 @@ def MessageToDict(message):
     
     return message_dict
 
-def MessageToTable(message, show_empty=False, tablefmt="grid"):
+def MessageToTable(message, show_empty=False):
     headers = ['Field Index', "Name", "Type", "Content"]
     table = []
     gen = message.ListFields()
@@ -173,13 +173,13 @@ def MessageToTable(message, show_empty=False, tablefmt="grid"):
         if field_descriptor.label == field_descriptor.LABEL_REPEATED:
             for sub_message in value:
                 if field_descriptor.type == field_descriptor.TYPE_MESSAGE:
-                    table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(sub_message, show_empty=show_empty, tablefmt=tablefmt)])
+                    table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(sub_message, show_empty=show_empty)])
                 else:
                     table.append([field_descriptor.number, field_descriptor.name, field_type, sub_message])
             
         else:
             if field_descriptor.type == field_descriptor.TYPE_MESSAGE:
-                table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(value, show_empty=show_empty, tablefmt=tablefmt)])
+                table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(value, show_empty=show_empty)])
             else:
                 table.append([field_descriptor.number, field_descriptor.name, field_type, value])
-    return tabulate(table, headers=headers, tablefmt=tablefmt)
+    return tabulate(table, headers=headers, tablefmt="grid")

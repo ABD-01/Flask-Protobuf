@@ -1,0 +1,25 @@
+<!-- templates/additional_fields.html -->
+{% for field in form %}
+    {% if field.name != 'csrf_token' and field.type != 'HiddenField' %}
+        <div class="form-group row gap-0">
+            <label for="{{ field.id }}" class="col-auto col-form-label">{{ field.label }}</label>
+            <div class="col-auto">
+                <!-- {{ field(class="form-control form-control-sm") }} -->
+                {{ field }}
+                {% if field.errors %}
+                    <span style="color: red;">{{ ', '.join(field.errors) }}</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+
+<!-- templates/additional_fields.html -->
+<!-- {% for field in form %}
+    <div class="form-group row gap-0">
+        <label for="{{ field }}" class="col-auto col-form-label">{{ field }}</label>
+        <div class="col-auto">
+            <input type="text" name="{{ field }}" class="form-control form-control-sm">
+        </div>
+    </div>
+{% endfor %} -->
