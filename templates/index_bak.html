@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Form</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Command Message Form</h1>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <label for="message_id">Message ID:</label>
+        {{ form.message_id }}
+        <br>
+
+        <label for="correlation_id">Correlation ID:</label>
+        {{ form.correlation_id }}
+        <br>
+
+        <label for="vehicle_id">Vehicle ID:</label>
+        {{ form.vehicle_id }}
+        <br>
+
+        <label for="type">Type:</label>
+        {{ form.type }}
+        <br>
+
+        <label for="priority">Priority:</label>
+        {{ form.priority }}
+        <br>
+
+        <label for="provisioning_state">Provisioning State:</label>
+        {{ form.provisioning_state }}
+        <br>
+
+        <label for="version">Version:</label>
+        {{ form.version }}
+        <br>
+
+        <label for="time_stamp">Time Stamp:</label>
+        {{ form.time_stamp }}
+        <br>
+
+        <label for="packet_status">Packet Status:</label>
+        {{ form.packet_status }}
+        <br>
+
+        <label for="subtype">Subtype:</label>
+        {{ form.subtype(class="subtype-dropdown") }}
+        <br>
+
+        <div id="dynamicFields">
+            <!-- This div will be dynamically updated with subtype-specific fields -->
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        // Handle dropdown change event
+        $('.subtype-dropdown').change(function() {
+            console.log("Dropdown changed");  // Check if the event is triggered
+            var subtype = $(this).val();
+
+            // Make an AJAX request to get the dynamic form fields based on the subtype
+            $.ajax({
+                url: "{{ url_for('get_dynamic_fields') }}",
+                type: "POST",
+                data: { subtype: subtype },
+                success: function(response) {
+                    console.log("AJAX request successful");  // Check if the request is successful
+                    $('#dynamicFields').html(response);
+                },
+                error: function(error) {
+                    console.log("AJAX request failed");  // Check if there is an error
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
