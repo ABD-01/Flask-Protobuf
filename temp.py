@@ -10,16 +10,16 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("/device/+/MQTTPROTOBUF/command")
 
 
-def on_message(client, userdata, msg):
-    msg_len = len(msg.payload)
-    logging.info("Topic: %s Received Message: %s)", msg.topic, msg.payload)
+# def on_message(client, userdata, msg):
+#     msg_len = len(msg.payload)
+#     logging.info("Topic: %s Received Message: %s)", msg.topic, msg.payload)
 
 
 mqttBroker = "test.mosquitto.org"
 client = mqtt.Client("TestClient")
 
 client.on_connect = on_connect
-client.on_message = on_message
+# client.on_message = on_message
 
 client.connect(mqttBroker, 1883)
 
@@ -32,5 +32,5 @@ def handle_mytopic(client, userdata, message):
 
 
 while True:
-    ## do nothing
-    pass
+    user_input = input()
+    client.publish("/device/ABC/MQTTPROTOBUF/commandresponse", user_input)

@@ -1,10 +1,14 @@
-import sys, uuid
+import sys, uuid, time
 import logging
+import threading
+from datetime import datetime
 
 sys.path.append("V6.2proto")
-logging.root.setLevel(logging.DEBUG)
+logging.basicConfig(format='[%(asctime)s] [%(levelname)-8s] : "%(message)s"', level=logging.DEBUG, filename="commander.log", filemode="w")
+
 
 import paho.mqtt.client as mqtt
+import paho.mqtt.subscribe as subscribe
 
 import utils
 from utils import fill_message as fill_payload
@@ -14,6 +18,8 @@ import tmcvp_command_pb2
 import tmcvp_command_message_pb2
 import tmcvp_commandresponse_message_pb2
 
+MQTT_BROKER = "test.mosquitto.org"
+PORT_NO = 1883
 
 def generate_command_message(subtype):
     # Create a CommandMessage and set common fields
@@ -52,16 +58,33 @@ def decode_response(rcvdMsg):
     response_message = tmcvp_commandresponse_message_pb2.CommandResponseMessage()
     response_message.ParseFromString(rcvdMsg)
 
-    print("In Hex:\n", rcvdMsg.hex(" ").upper())
-    print("In Table Format:\n{}".format(utils.MessageToTable(response_message)))
+    response_payload_type = str(response_message.commandResponsePayload.WhichOneof("commandResponsePayload"))
+    response_payload = getattr(response_message.commandResponsePayload, response_payload_type)
 
+    print("In Hex:\n{}".format(rcvdMsg.hex(" ").upper()))
+    print("message_id:", response_message.message_id)
+    print("correlation_id:", response_message.correlation_id)
+    print("vehicle_id:", response_message.vehicle_id)
+    print("type:", tmcvp_common_pb2.eTcuMessageType.Name(response_message.type))
+    print("subtype:", tmcvp_command_message_pb2.commandMessageSubType.Name(response_message.subtype))
+    print("priority:", response_message.priority)
+    print("provisioning_state:", tmcvp_common_pb2.eProvisioningState.Name(response_message.provisioning_state))
+    print("version:", response_message.version)
+    print("time_stamp:", datetime.fromtimestamp(response_message.time_stamp.seconds).strftime('%Y-%m-%d %H:%M:%S'))
+    print("packet_status:", tmcvp_common_pb2.PacketStatus.Name(response_message.packet_status))
+    print("return_code:", tmcvp_commandresponse_message_pb2.eReturnCode.Name(response_message.return_code))
+    print("commandResponsePayload:\n{}".format(utils.MessageToTable(response_payload, show_empty=True)))
+
+    logging.info("In Table Format:\n{}".format(utils.MessageToTable(response_message)))
+
+    return
 
 def start_mqtt(client):
 
     def on_connect(client, userdata, flags, rc):
+        print("Client with id: " + str(client._client_id) + " Connected")
         logging.info("Connected with result code %s", str(rc))
-        client.subscribe("Accolade_Testing")
-        client.subscribe("/device/+/MQTTPROTOBUF/commandresponse")
+        # client.subscribe("/device/+/MQTTPROTOBUF/commandresponse")
 
     def on_message(client, userdata, msg):
         msg_len = len(msg.payload)
@@ -70,30 +93,48 @@ def start_mqtt(client):
     def on_publish(client, userdata, mid):
         logging.info("Message Published: %s", str(mid))
 
-    @client.topic_callback("/device/+/MQTTPROTOBUF/commandresponse")
-    def handle_mytopic(client, userdata, message):
-        logging.debug("Callback from handle_mytopic")
-        logging.info("Received Message on Topic: %s\n", message.topic)
-        decode_response(message.payload)
+    # @client.topic_callback("/device/+/MQTTPROTOBUF/commandresponse")
+    # def handle_mytopic(client, userdata, message):
+    #     # logging.info("Received Message on Topic: %s\n", message.topic)
+    #     print("Received Message on Topic: {}".format(message.topic))
+    #     decode_response(message.payload)
 
     client.on_connect = on_connect
     client.on_message = on_message
     client.on_publish = on_publish
 
-    mqttBroker = "test.mosquitto.org"
-    portNo = 1883
-    client.connect(mqttBroker, portNo)
+
+    client.connect(MQTT_BROKER, PORT_NO)
 
     client.loop_start()
 
+    # Wait for connection
+    print("Waiting for connection...")
+    while not client.is_connected():
+        time.sleep(0.1)
 
+    # client.subscribe("/device/ABC/MQTTPROTOBUF/commandresponse")
+
+def handle_mytopic(client, userdata, message):
+    # logging.info("Received Message on Topic: %s\n", message.topic)
+    print("Received Message on Topic: {}".format(message.topic))
+    decode_response(message.payload)
+def mqtt_subscribe():
+    subscribe.callback(handle_mytopic, "/device/+/MQTTPROTOBUF/commandresponse", hostname=MQTT_BROKER, port=PORT_NO)
+
+VinNo = ""
+CommandTopic =""
 def main():
 
-    VinNo = "ACCDEV14012078186"
+    global VinNo, CommandTopic
+    # VinNo = "ACCDEV14012078186"
+    VinNo = input("Enter the VIN number: ")
     CommandTopic = "/device/" + VinNo + "/MQTTPROTOBUF/command"
 
     client = mqtt.Client(client_id="Tester_6.2")
     start_mqtt(client)
+
+    threading.Thread(target=mqtt_subscribe, daemon=True).start()
 
     while True:
         try:
@@ -112,7 +153,7 @@ def main():
 
             client.publish(CommandTopic, serialized_message)
 
-            input()
+            input("Press Enter to continue...")
 
         except KeyboardInterrupt:
             break
