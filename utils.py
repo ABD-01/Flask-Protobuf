@@ -161,23 +161,25 @@ def MessageToDict(message):
     
     return message_dict
 
-def MessageToTable(message):
+def MessageToTable(message, show_empty=False):
     headers = ['Field Index', "Name", "Type", "Content"]
     table = []
-    # for field_descriptor in message.DESCRIPTOR.fields:
-    #     value = getattr(message, field_descriptor.name)
-    for field_descriptor, value in message.ListFields():
+    gen = message.ListFields()
+    if show_empty:
+        gen = ((f, getattr(message, f.name)) for f in message.DESCRIPTOR.fields)
+
+    for field_descriptor, value in gen:
         field_type = TYPE_TO_STRING[field_descriptor.type]
         if field_descriptor.label == field_descriptor.LABEL_REPEATED:
             for sub_message in value:
                 if field_descriptor.type == field_descriptor.TYPE_MESSAGE:
-                    table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(sub_message)])
+                    table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(sub_message, show_empty=show_empty)])
                 else:
                     table.append([field_descriptor.number, field_descriptor.name, field_type, sub_message])
             
         else:
             if field_descriptor.type == field_descriptor.TYPE_MESSAGE:
-                table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(value)])
+                table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(value, show_empty=show_empty)])
             else:
                 table.append([field_descriptor.number, field_descriptor.name, field_type, value])
     return tabulate(table, headers=headers, tablefmt="grid")
