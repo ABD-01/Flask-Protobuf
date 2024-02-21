@@ -1,9 +1,16 @@
-import sys, uuid, time
+import os, sys, uuid, time
 import logging
 import threading
 from datetime import datetime
 
 # sys.path.append("./TataMotorsCVP630")
+# Adding TataMotorsCV630 to sys path
+package_dir = os.path.abspath(os.path.dirname(__file__))
+tata_motors_path = os.path.join(package_dir, 'TataMotorsCVP630')
+if tata_motors_path not in sys.path:
+    print(tata_motors_path)
+    sys.path.append(tata_motors_path)
+
 logging.basicConfig(format='[%(asctime)s] [%(levelname)-8s] : "%(message)s"', level=logging.DEBUG, filename="commander.log", filemode="w")
 
 
@@ -13,14 +20,14 @@ import paho.mqtt.subscribe as subscribe
 import utils
 from utils import fill_message as fill_payload
 
-# import tmcvp_common_pb2
-# import tmcvp_command_pb2
-# import tmcvp_command_message_pb2
-# import tmcvp_commandresponse_message_pb2
-from TataMotorsCVP630 import tmcvp_common_pb2
-from TataMotorsCVP630 import tmcvp_command_pb2
-from TataMotorsCVP630 import tmcvp_command_message_pb2
-from TataMotorsCVP630 import tmcvp_commandresponse_message_pb2
+import tmcvp_common_pb2
+import tmcvp_command_pb2
+import tmcvp_command_message_pb2
+import tmcvp_commandresponse_message_pb2
+# from TataMotorsCVP630 import tmcvp_common_pb2
+# from TataMotorsCVP630 import tmcvp_command_pb2
+# from TataMotorsCVP630 import tmcvp_command_message_pb2
+# from TataMotorsCVP630 import tmcvp_commandresponse_message_pb2
 
 
 MQTT_BROKER = "test.mosquitto.org"

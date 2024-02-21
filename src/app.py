@@ -1,22 +1,22 @@
+import os
 import sys
-import time
 import logging
 import uuid
-import threading
 from datetime import datetime
-from enum import Enum
-import html
 
 from flask import Flask, render_template, request, jsonify, session
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO
 from flask_mqtt import Mqtt
 from flask_wtf import CSRFProtect, FlaskForm
 from wtforms import StringField, IntegerField, SelectField, BooleanField, FloatField
-from wtforms.form import BaseForm, Form
-from wtforms.fields import FormField
-from wtforms.validators import DataRequired, InputRequired
 
-sys.path.append("TataMotorsCVP630")
+# sys.path.append("./TataMotorsCVP630")
+# Adding TataMotorsCV630 to sys path
+package_dir = os.path.abspath(os.path.dirname(__file__))
+tata_motors_path = os.path.join(package_dir, 'TataMotorsCVP630')
+if tata_motors_path not in sys.path:
+    print(tata_motors_path)
+    sys.path.append(tata_motors_path)
 logging.root.setLevel(logging.DEBUG)
 
 # import paho.mqtt.client as mqtt
@@ -285,8 +285,10 @@ def decode_response(rcvdMsg):
         print("Error: ", e)
         return '<p class="text-danger">Parsing Failed</p>'
 
+def TmcvpMQTTProtobufServer():
+    return app
 
 
 if __name__ == '__main__':
     # app.run(debug=True,use_reloader=False)
-    socketio.run(app, debug=False, host='192.168.1.214', port=5000)
+    socketio.run(app, debug=False, host='0.0.0.0', port=5000)
