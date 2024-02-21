@@ -256,13 +256,21 @@ def handle_subscribe(data):
 @mqtt.on_message()
 def handle_mytopic(client, userdata, message):
     print("Received Message on Topic: {}".format(message.topic))
-    # Emit the MQTT message to connected clients
-    # socketio.emit('mqtt_message', {'message': "Received Message on Topic: {}".format(message.topic)})
 
-    messageHtml = ""
+    socketio.emit('mqtt_message', 
+        {   
+            'topic': message.topic,
+            'message': decode_response(message.payload), 
+            'messageHex': message.payload.hex(" ").upper()
+        })
+
+    return
+
+def decode_response(rcvdMsg):
     try:
+        # Decode and print the response based on subtype
         response_message = tmcvp_commandresponse_message_pb2.CommandResponseMessage()
-        response_message.ParseFromString(message.payload)
+        response_message.ParseFromString(rcvdMsg)
 
         response_payload_type = str(response_message.commandResponsePayload.WhichOneof("commandResponsePayload"))
         response_payload = getattr(response_message.commandResponsePayload, response_payload_type)
@@ -272,37 +280,10 @@ def handle_mytopic(client, userdata, message):
         payload_table = utils.MessageToTable(response_payload, show_empty=True, tablefmt='unsafehtml')
         payload_table = payload_table.replace('<table>', '<table class="table table-bordered">')
 
-        messageHtml = response_table + payload_table
+        return response_table + payload_table
     except Exception as e:
-        print(e)
-        messageHtml = '<p class="text-danger">Parsing Failed</p>'
-
-    socketio.emit('mqtt_message', 
-        {   
-            'topic': message.topic,
-            'message': messageHtml, 
-            'messageHex': message.payload.hex(" ").upper()
-        })
-
-    print(message.payload)
-
-
-def decode_response(rcvdMsg):
-    # try:
-    # Decode and print the response based on subtype
-    response_message = tmcvp_commandresponse_message_pb2.CommandResponseMessage()
-    response_message.ParseFromString(rcvdMsg)
-
-    response_payload_type = str(response_message.commandResponsePayload.WhichOneof("commandResponsePayload"))
-    response_payload = getattr(response_message.commandResponsePayload, response_payload_type)
-
-    response_table = render_template('response_table.html', response_payload=response_payload)
-    payload_table = utils.MessageToTable(response_payload, show_empty=True, tablefmt='unsafehtml')
-    payload_table.replace('<table>', '<table class="table table-bordered">')
-
-    return response_table + payload_table
-    # except:
-    #     return '<p class="text-danger">Parsing Failed</p>'
+        print("Error: ", e)
+        return '<p class="text-danger">Parsing Failed</p>'
 
 
 
