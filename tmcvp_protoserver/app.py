@@ -15,12 +15,8 @@ from wtforms import StringField, IntegerField, SelectField, BooleanField, FloatF
 package_dir = os.path.abspath(os.path.dirname(__file__))
 tata_motors_path = os.path.join(package_dir, 'TataMotorsCVP630')
 if tata_motors_path not in sys.path:
-    print(tata_motors_path)
     sys.path.append(tata_motors_path)
 logging.root.setLevel(logging.DEBUG)
-
-# import paho.mqtt.client as mqtt
-# import paho.mqtt.subscribe as subscribe
 
 from google.protobuf.json_format import MessageToJson
 import tmcvp_common_pb2
@@ -28,7 +24,7 @@ import tmcvp_command_pb2
 import tmcvp_command_message_pb2
 import tmcvp_commandresponse_message_pb2
 
-import utils
+from tmcvp_protoserver import utils
 
 MQTT_BROKER = "test.mosquitto.org"
 PORT_NO = 1883
@@ -40,7 +36,7 @@ app.config['MQTT_BROKER_URL'] = MQTT_BROKER
 app.config['MQTT_BROKER_PORT'] = PORT_NO
 app.config['MQTT_USERNAME'] = ''
 app.config['MQTT_PASSWORD'] = ' '
-app.config['MQTT_REFRESH_TIME'] = 1.0  # refresh time in seconds
+app.config['MQTT_REFRESH_TIME'] = 5.0  # refresh time in seconds
 mqtt = Mqtt(app)
 csrf = CSRFProtect(app)
 socketio = SocketIO(app, async_mode='threading') 
@@ -48,6 +44,26 @@ socketio = SocketIO(app, async_mode='threading')
 CONTROL_RENDER_KW = dict(render_kw={"class":"form-control form-control-sm"})
 SELECT_RENDER_KW = dict(render_kw={"class":"form-select form-select-sm"})
 class CommandMessageForm(FlaskForm):
+    """
+    FlaskForm for creating a Command Message.
+
+    Fields:
+    - message_id (StringField): Unique identifier for the message.
+    - correlation_id (StringField): Identifier for correlating messages.
+    - vehicle_id (StringField): Identifier for the associated vehicle.
+    - type (SelectField): Type of the message (e.g., command).
+    - priority (StringField): Priority level of the message.
+    - provisioning_state (SelectField): Provisioning state of the message.
+    - version (StringField): Version of the message.
+    - packet_status (SelectField): Status of the packet (e.g., Live).
+    - subtype (SelectField): Subtype of the command message.
+
+    Note for Future Upgrades:
+    This form assumes that the fields message_id, correlation_id, vehicle_id, type,
+    priority, provisioning_state, version, packet_status, and subtype are present
+    in future proto versions of `CommandMessage` as in version TMCVP 6.3.
+    If any of these headers change, the code needs to be modified.
+    """
     message_id = StringField('Message ID', default=str(uuid.uuid4()), **CONTROL_RENDER_KW)
     correlation_id = StringField('Correlation ID', default='correlation-id', **CONTROL_RENDER_KW)
     vehicle_id = StringField('Vehicle ID', default='MH12VF1121', **CONTROL_RENDER_KW)
@@ -126,6 +142,11 @@ def send_command():
 
 NUM_REPEATED = 1
 def generateDynamicForm(payload, formClass):
+    """
+    Generate a dynamic form based on the given payload and form class.
+
+    Works almost same as :func:`utils.fill_message`.
+    """
     for field_descriptor in payload.DESCRIPTOR.fields:
         field_name = field_descriptor.name
         field_type = field_descriptor.type
@@ -167,6 +188,24 @@ def generateDynamicForm(payload, formClass):
     return formClass
 
 def generate_command_message(subtype, form):
+    """
+    Generate a Command Message based on the provided subtype and form input.
+
+    Parameters:
+        subtype (int): The subtype of the command message corresponding to `enum commandMessageSubType`
+        form (dict): A dictionary containing the form data from the request
+
+    Returns:
+        tmcvp_command_message_pb2.CommandMessage: The generated CommandMessage.
+
+    Works almost same as :func:`commander.generate_command_message`.    
+
+    Note for Future Upgrades:
+    This function assumes that the fields message_id, correlation_id, vehicle_id, type,
+    priority, provisioning_state, version, packet_status, and subtype are present
+    in future proto versions of `CommandMessage` as in version TMCVP 6.3.
+    If any of these headers change, the code needs to be modified.
+    """
     # Create a CommandMessage and set common fields
     command_message = tmcvp_command_message_pb2.CommandMessage()
 
@@ -199,6 +238,11 @@ def generate_command_message(subtype, form):
     return command_message
 
 def fill_payload(message, form):
+    """
+    Fills the payload message with data from the form. 
+
+    Literally the same as :func:`utils.fill_message`
+    """
     for field_descriptor in message.DESCRIPTOR.fields:
         field_name = field_descriptor.name
         field_type = field_descriptor.type
@@ -267,6 +311,22 @@ def handle_mytopic(client, userdata, message):
     return
 
 def decode_response(rcvdMsg):
+    """
+    Decode and print the received MQTT message.
+
+    Parameters:
+    - rcvdMsg (bytes): The received MQTT message in bytes.
+
+    This is equivalent to :func:`commander.decode_response`
+
+    Important:
+    This function assumes that the fields message_id, correlation_id, vehicle_id, 
+    type, subtype, priority, provisioning_state, version, time_stamp, packet_status
+    and return_code are present in future proto versions of `CommandResponseMessage`
+    as in version TMCVP 6.3. If any of these fields change, the code needs to be
+    modified. However, it is agnostic to changes `commandResponsePayload`.
+
+    """
     try:
         # Decode and print the response based on subtype
         response_message = tmcvp_commandresponse_message_pb2.CommandResponseMessage()
