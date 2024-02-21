@@ -28,8 +28,33 @@ TYPE_TO_STRING = {
     18: "SINT64",
 }
 
+def get_int(prompt):
+    """A function that takes a prompt as input and repeatedly prompts the user for input until a valid integer is entered. 
+
+    Parameters:
+        prompt (str): The prompt to display to the user.
+    
+    Returns:
+        int: The user's input as an integer.
+
+    """
+    while True:
+        try:
+            return int(input(prompt), 10)
+        except ValueError:
+            pass
 
 def get_user_input_by_type(field_descriptor):
+    """
+    Gets user input based on provided field descriptor type.
+
+    Parameters:
+        field_descriptor (google.protobuf.descriptor.FieldDescriptor): The field descriptor of the field to get user input for.
+
+    Returns:
+        Any: The user input based on the field descriptor type.
+
+    """
     TYPE_DOUBLE         = 1
     TYPE_FLOAT          = 2
     TYPE_INT64          = 3
@@ -82,6 +107,28 @@ def get_user_input_by_type(field_descriptor):
 
 # Function to get user input for an enum field
 def get_enum_input(enum_type):
+    """
+    Get user input for selecting an enum value.
+
+    Parameters:
+    - enum_type (google.protobuf.descriptor.EnumDescriptor): The enum type descriptor.
+
+    Returns:
+    - Enum value corresponding to the user's choice.
+
+    This function prints the available options for the given enum type,
+    prompts the user to enter the number corresponding to their choice,
+    and returns the selected enum value. The user can press Enter to skip
+    making a selection. If the entered input is invalid, the function will
+    print an error message and prompt the user again.
+
+    Example:
+    ```
+    from example_pb2 import ExampleEnum
+    selected_value = get_enum_input(ExampleEnum.DESCRIPTOR)
+    ```
+
+    """
     values = enum_type.values
     print(f"Select from {len(values)} options for {enum_type.name}:")
     max_len = max(len(value.name) for value in values) # find the longest key
@@ -99,6 +146,9 @@ def get_enum_input(enum_type):
 
 # Function to fill a message based on user input
 def fill_message(message):
+    """
+    Fill the given protocol buffer message with user input for each field.
+    """
     for field_descriptor in message.DESCRIPTOR.fields:
         # IS ENUM
         if  field_descriptor.type == field_descriptor.TYPE_ENUM:
@@ -109,7 +159,7 @@ def fill_message(message):
         elif field_descriptor.type == field_descriptor.TYPE_MESSAGE:
             # IS REPEATED MESSAGE
             if field_descriptor.label == field_descriptor.LABEL_REPEATED:
-                num_repeated = int(input(f"Enter the number of {field_descriptor.name} elements (or enter 0 to skip): "))
+                num_repeated = get_int(f"Enter the number of {field_descriptor.name} elements (or enter 0 to skip): ")
                 for _ in range(num_repeated):
                     nested_message = getattr(message, field_descriptor.name).add()
                     fill_message(nested_message)
@@ -122,7 +172,7 @@ def fill_message(message):
 
         # IS REPEATED BASIC TYPE
         elif field_descriptor.label == field_descriptor.LABEL_REPEATED:
-            num_repeated = int(input(f"Enter the number of {field_descriptor.name} elements (or enter 0 to skip): "))
+            num_repeated = get_int(f"Enter the number of {field_descriptor.name} elements (or enter 0 to skip): ")
             for _ in range(num_repeated):
                 user_input = get_user_input_by_type(field_descriptor)
                 if user_input is not None:
@@ -136,7 +186,17 @@ def fill_message(message):
     return message
 
 def MessageToDict(message):
-    # ref: https://stackoverflow.com/a/57359749
+    """
+    Convert a protocol buffer message into a dictionary representation.
+
+    Directly stolen from `Stackoverflow <ref: https://stackoverflow.com/a/57359749>`_
+
+    Args:
+        message(google.protobuf.message.Message): The protocol buffer message to be converted.
+
+    Returns:
+        dict: A dictionary representation of the protocol buffer message.
+    """
     message_dict = {}
     
     for descriptor, value in message.ListFields():
@@ -162,6 +222,23 @@ def MessageToDict(message):
     return message_dict
 
 def MessageToTable(message, show_empty=False, tablefmt="grid"):
+    """
+    Generates a table representation of the given message.
+
+    Parameters:
+        message (google.protobuf.message.Message): The message to convert to a table.
+        show_empty (bool): Whether to show empty fields. Defaults to False.
+        tablefmt (str): The format of the table. Defaults to "grid".
+
+    .. tip::
+        The method `ListFields <https://googleapis.dev/python/protobuf/latest/google/protobuf/message.html#google.protobuf.message.Message.ListFields>`_ 
+        only returns non-empty values which may cause fields set to `0` to be skipped.
+        For instance the field `return_code` was being skipped in case of successful return.
+        Using `show_empty=True` will show empty fields in the table but I recommend to avoid it as it will make the table too large with unnecessary empty fields.
+
+    Returns:
+        A table representation of the message.
+    """
     headers = ['Field Index', "Name", "Type", "Content"]
     table = []
     gen = message.ListFields()

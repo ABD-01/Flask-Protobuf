@@ -3,23 +3,30 @@ requires = ["setuptools>=46.4.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.poetry]
-name = "Commander"
+name = "ProtoServer"
 version = "1.0.0"
 authors = ["Muhammed Abdullah Shaikh <muhammed.shaikh@accoladeelectronics.com>"]
-description = "CVP Command Message Testing Tool"
+description = "TMCVP Protobuf Encoded Communication Testing Server"
+readme = "README.md"
 license = "GNU General Public License v2.0"
-keywords = ["mqtt", "protobuf","python"]
+keywords = ["server", "flask", "mqtt", "protobuf","python"]
 packages = [
-    { include = "commander.py"  },
-    { include = "utils.py"  },
-    { include = "TataMotorsCVP630/*.py"},
+    { include = "tmcvp_protoserver" },
 ]
+include = [ "tmcvp_protoserver/static", "tmcvp_protoserver/templates", "tmcvp_protoserver/TataMotorsCVP630/*.py"]
 
 [tool.poetry.dependencies]
-protobuf = "^3.20"
-paho-mqtt = "^1.6.1"
-python = "^3.6"
-tabulate = "^0.8"
+python = "^3.9" 
+Flask = "3.0.2"
+Flask-MQTT = "1.1.1"
+Flask-SocketIO = "5.3.6"
+Flask-WTF = "1.2.1"
+Jinja2 = "3.1.3"
+paho-mqtt = "1.6.1"
+protobuf = "3.20.0"
+tabulate = "0.9.0"
+WTForms = "3.1.2"
 
 [tool.poetry.scripts]
-commander = "commander:main"
+commander = "tmcvp_protoserver.commander:main"
+tmcvp-server = "tmcvp_protoserver.app:TmcvpMQTTProtobufServer"
