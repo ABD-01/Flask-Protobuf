@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, jsonify, session
 from flask_socketio import SocketIO
 from flask_mqtt import Mqtt
 from flask_wtf import CSRFProtect, FlaskForm
-from wtforms import StringField, IntegerField, SelectField, BooleanField, FloatField
+from wtforms import StringField, IntegerField, SelectField, BooleanField, FloatField, FieldList, FormField
 
 # sys.path.append("./TataMotorsCVP630")
 # Adding TataMotorsCV630 to sys path
@@ -18,11 +18,12 @@ if tata_motors_path not in sys.path:
     sys.path.append(tata_motors_path)
 logging.root.setLevel(logging.DEBUG)
 
-from google.protobuf.json_format import MessageToJson
+from google.protobuf.json_format import MessageToJson, MessageToDict, Parse, ParseDict
 import tmcvp_common_pb2
 import tmcvp_command_pb2
 import tmcvp_command_message_pb2
 import tmcvp_commandresponse_message_pb2
+import tmcvp_vehicletelemetry_message_pb2
 
 from tmcvp_protoserver import utils
 
@@ -40,6 +41,10 @@ app.config['MQTT_REFRESH_TIME'] = 5.0  # refresh time in seconds
 mqtt = Mqtt(app)
 csrf = CSRFProtect(app)
 socketio = SocketIO(app, async_mode='threading') 
+
+###########################################################
+##################  COMMAND RESPONSE   ####################
+###########################################################
 
 CONTROL_RENDER_KW = dict(render_kw={"class":"form-control form-control-sm"})
 SELECT_RENDER_KW = dict(render_kw={"class":"form-select form-select-sm"})
@@ -75,6 +80,8 @@ class CommandMessageForm(FlaskForm):
     packet_status = SelectField('Packet Status', choices=[(e.number, e.name) for e in tmcvp_common_pb2.PacketStatus.DESCRIPTOR.values], default=tmcvp_common_pb2.PacketStatus.Live, coerce=int, **SELECT_RENDER_KW)
     subtype = SelectField('Subtype', choices=[(-1, "--- Select Subtype ---")]+[(e.number, e.name) for e in tmcvp_command_message_pb2.commandMessageSubType.DESCRIPTOR.values], coerce=int, **SELECT_RENDER_KW)
 
+    numEntries = IntegerField('Number of Entries for repeated type', default=1, **CONTROL_RENDER_KW)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -84,8 +91,8 @@ def index():
 
     vinNo = session.get('vin_no', '')
     if vinNo:
-        mqtt.subscribe("/device/" + vinNo + "/MQTTPROTOBUF/commandresponse")
-    return render_template('index.html', form=form, vin_no=vinNo)
+        _handle_subscribe({'vinNo': vinNo, 'topic': 'commandresponse'}) 
+    return render_template('index.html', form=form, vin_no=vinNo, topic="commandresponse")
 
 @app.route('/set_vin', methods=['POST'])
 def set_vin():
@@ -98,6 +105,8 @@ def set_vin():
 @app.route('/get_additional_fields', methods=['POST'])
 def get_additional_fields():
     subtype = request.form.get('subtype', -1)
+    numEntries = int(request.form.get('numEntries', 1))
+    session['numEntries'] = max(numEntries, 1)
     try:
         subtype = int(subtype)
         if subtype == -1:
@@ -105,18 +114,14 @@ def get_additional_fields():
     except:
         return jsonify({'additional_fields_html': ''})
 
-    class DynamicForm(FlaskForm):
-        pass
-
     payloadType = tmcvp_command_message_pb2.commandMessageSubType.Name(subtype) + "Payload"
     command_payload = getattr(tmcvp_command_pb2, payloadType)()
 
-    form  = generateDynamicForm(command_payload, DynamicForm)(request.form)
+    form  = generateDynamicForm(command_payload)(request.form)
 
     additional_fields_html = render_template('additional_fields.html', form=form)
     return jsonify({'additional_fields_html': additional_fields_html})
     
-## now handling /send_command
 @app.route('/send_command', methods=['POST'])
 def send_command():
     subtype = request.form.get('subtype')
@@ -140,13 +145,25 @@ def send_command():
         'messageHex': serialized_message.hex(' ').upper()
     })
 
-NUM_REPEATED = 1
-def generateDynamicForm(payload, formClass):
+NUM_REPEATED_MAX = 30
+NUM_MIN = 1
+def generateDynamicForm(payload):
     """
-    Generate a dynamic form based on the given payload and form class.
+    Generate a dynamic form class based on the given payload.
 
     Works almost same as :func:`utils.fill_message`.
+
+    Parameters:
+        payload (google.protobuf.message.Message): The message fields lled into the form.
+    
+    Returns:
+        The generated form class.
+
     """
+    class DynamicForm(FlaskForm):
+        pass
+
+    num_repeated = min(session.get('numEntries', NUM_MIN), NUM_REPEATED_MAX)
     for field_descriptor in payload.DESCRIPTOR.fields:
         field_name = field_descriptor.name
         field_type = field_descriptor.type
@@ -155,37 +172,39 @@ def generateDynamicForm(payload, formClass):
         if  field_descriptor.type == field_descriptor.TYPE_ENUM:
             values = field_descriptor.enum_type.values
             enum_choices = [(e.number, e.name) for e in values]
-            setattr(formClass, field_name, SelectField(field_name, choices=enum_choices, coerce=int, **SELECT_RENDER_KW))
+            setattr(DynamicForm, field_name, SelectField(field_name, choices=enum_choices, coerce=int, **SELECT_RENDER_KW))
         # IS MESSAGE
         elif field_descriptor.type == field_descriptor.TYPE_MESSAGE:
             # IS REPEATED MESSAGE
             if field_descriptor.label == field_descriptor.LABEL_REPEATED:
-                num_repeated = NUM_REPEATED
-                for _ in range(num_repeated):
-                    nested_payload = getattr(payload, field_descriptor.name).add()
-                    generateDynamicForm(nested_payload, formClass)
+                # for _ in range(num_repeated):
+                nested_payload = getattr(payload, field_descriptor.name).add()
+                nested_form  = FieldList(FormField(generateDynamicForm(nested_payload), render_kw={"class":"table table-bordered"}), min_entries=num_repeated, max_entries=NUM_REPEATED_MAX, render_kw={"class":"list-group list-unstyled"})
+                print(nested_form)
+                setattr(DynamicForm, field_name, nested_form)
             # IS NON REPEATED MESSAGE
             else:
                 nested_payload = getattr(payload, field_descriptor.name)
-                generateDynamicForm(nested_payload, formClass)
+                nested_form = generateDynamicForm(nested_payload)
+                setattr(DynamicForm, field_name, nested_form)
         # IS REPEATED BASIC TYPE
         elif field_descriptor.label == field_descriptor.LABEL_REPEATED:
-            num_repeated = NUM_REPEATED
-            for _ in range(num_repeated):
-                setattr(formClass, field_name, StringField(field_name, **CONTROL_RENDER_KW))
+            # for _ in range(num_repeated):
+            #     setattr(DynamicForm, field_name, StringField(field_name, **CONTROL_RENDER_KW))
+            setattr(DynamicForm, field_name, FieldList(StringField(field_name, **CONTROL_RENDER_KW), min_entries=num_repeated, max_entries=NUM_REPEATED_MAX, render_kw={"class":"list-group list-unstyled"}))
         else:
             if field_descriptor.type == field_descriptor.TYPE_DOUBLE or field_descriptor.type == field_descriptor.TYPE_FLOAT:
-                setattr(formClass, field_name, FloatField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, field_name, FloatField(field_name, **CONTROL_RENDER_KW))
             elif field_descriptor.type in [field_descriptor.TYPE_INT32, field_descriptor.TYPE_INT64, field_descriptor.TYPE_UINT32, field_descriptor.TYPE_UINT64]:
-                setattr(formClass, field_name, IntegerField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, field_name, IntegerField(field_name, **CONTROL_RENDER_KW))
             elif field_descriptor.type == field_descriptor.TYPE_BOOL:
-                setattr(formClass, field_name, BooleanField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, field_name, BooleanField(field_name, **CONTROL_RENDER_KW))
             elif field_descriptor.type == field_descriptor.TYPE_STRING:
-                setattr(formClass, field_name, StringField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, field_name, StringField(field_name, **CONTROL_RENDER_KW))
             elif field_descriptor.type == field_descriptor.TYPE_BYTES:
-                setattr(formClass, field_name, StringField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, field_name, StringField(field_name, **CONTROL_RENDER_KW))
 
-    return formClass
+    return DynamicForm
 
 def generate_command_message(subtype, form):
     """
@@ -198,36 +217,38 @@ def generate_command_message(subtype, form):
     Returns:
         tmcvp_command_message_pb2.CommandMessage: The generated CommandMessage.
 
+    This function uses `google.protobuf.json_format.ParseDict <https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.ParseDict>`_ for parsing the form data,
+    as `request.form` return an `ImmutableMultiDict` object.
     Works almost same as :func:`commander.generate_command_message`.    
 
-    Note for Future Upgrades:
-    This function assumes that the fields message_id, correlation_id, vehicle_id, type,
-    priority, provisioning_state, version, packet_status, and subtype are present
-    in future proto versions of `CommandMessage` as in version TMCVP 6.3.
-    If any of these headers change, the code needs to be modified.
     """
     # Create a CommandMessage and set common fields
     command_message = tmcvp_command_message_pb2.CommandMessage()
 
-    command_message.message_id = str(uuid.uuid4())
-    command_message.correlation_id = form["correlation_id"]
-    command_message.vehicle_id = form["vehicle_id"]
+    command_message = ParseDict(form, command_message, ignore_unknown_fields=True)
+    print("Command Message with headers", command_message)
 
-    command_message.type = int(form["type"])
+    # command_message.message_id = str(uuid.uuid4())
+    # command_message.correlation_id = form["correlation_id"]
+    # command_message.vehicle_id = form["vehicle_id"]
 
-    command_message.subtype = subtype
-    command_message.priority = form["priority"]
-    command_message.provisioning_state = int(form["provisioning_state"])
-    command_message.version = form["version"]
+    # command_message.type = int(form["type"])
+
+    # command_message.subtype = subtype
+    # command_message.priority = form["priority"]
+    # command_message.provisioning_state = int(form["provisioning_state"])
+    # command_message.version = form["version"]
     command_message.time_stamp.GetCurrentTime()
-    command_message.packet_status = int(form["packet_status"])
+    # command_message.packet_status = int(form["packet_status"])
 
     # Select the appropriate command payload based on subtype
     command_payload = getattr(
         tmcvp_command_pb2,
         tmcvp_command_message_pb2.commandMessageSubType.Name(subtype) + "Payload",
     )()
-    fill_payload(command_payload, form)
+    payload_form = generateDynamicForm(command_payload)(form)
+    # fill_payload(command_payload, form)
+    command_payload = ParseDict(payload_form.data, command_payload, ignore_unknown_fields=True)
 
     # Set the payload in the command message
     getattr(
@@ -242,6 +263,11 @@ def fill_payload(message, form):
     Fills the payload message with data from the form. 
 
     Literally the same as :func:`utils.fill_message`
+
+    Warning: 
+    Use `google.protobuf.json_format.ParseDict <https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.ParseDict>`_ 
+    instead.
+
     """
     for field_descriptor in message.DESCRIPTOR.fields:
         field_name = field_descriptor.name
@@ -254,7 +280,7 @@ def fill_payload(message, form):
             elif field_type == field_descriptor.TYPE_MESSAGE:
                 # IS REPEATED MESSAGE
                 if field_descriptor.label == field_descriptor.LABEL_REPEATED:
-                    num_repeated = NUM_REPEATED
+                    num_repeated = NUM_MIN
                     for _ in range(num_repeated):
                         nested_payload = getattr(message, field_descriptor.name).add()
                         fill_payload(nested_payload, form)
@@ -265,7 +291,7 @@ def fill_payload(message, form):
 
             # IS REPEATED BASIC TYPE
             elif field_descriptor.label == field_descriptor.LABEL_REPEATED:
-                num_repeated = NUM_REPEATED
+                num_repeated = NUM_MIN
                 for _ in range(num_repeated):
                     setattr(message, field_name, form[field_name])
             # IS BASIC TYPE
@@ -284,27 +310,60 @@ def fill_payload(message, form):
     
     return message
 
+###########################################################
+#####################  TELEMETRY   ########################
+###########################################################
+
+@app.route('/telemetry', methods=['GET', 'POST'])
+def telemetry():
+
+    vinNo = session.get('vin_no', '')
+    print('Got vinNo:', vinNo)
+    if vinNo:
+        _handle_subscribe({'vinNo': vinNo, 'topic': 'telemetry'}) 
+    return render_template('telemetry.html', vin_no=vinNo, topic="telemetry")
+
+###########################################################
+#######################  UTILS   ##########################
+###########################################################
+
 @socketio.on('connect')                                                         
 def connect():                                                                  
     socketio.emit('message', {'hello': "Hello"})
 
-@socketio.on('subscribe')
-def handle_subscribe(data):
+def _handle_subscribe(data):
     print(data)
     mqtt.unsubscribe_all()
-    CommandResponseTopic = "/device/" + data['vinNo'] + "/MQTTPROTOBUF/commandresponse"
-    print("Subcribed to Topic: {}".format(CommandResponseTopic))
-    mqtt.subscribe(CommandResponseTopic)
-    # mqtt.subscribe(data['topic'])
+    MQTTTopic = "/device/" + data['vinNo'] + "/MQTTPROTOBUF/" + data['topic']
+    print("Subcribed to Topic: {}".format(MQTTTopic))
+    mqtt.subscribe(MQTTTopic)
+@socketio.on('subscribe')
+def handle_subscribe(data):
+    _handle_subscribe(data)
 
 @mqtt.on_message()
 def handle_mytopic(client, userdata, message):
     print("Received Message on Topic: {}".format(message.topic))
 
+    mqtt_response = None
+    if message.topic.endswith("commandresponse"):
+        mqtt_response = decode_response(message.payload)
+    elif message.topic.endswith("telemetry"):
+        mqtt_response = decode_telemetry(message.payload)
+
+    if mqtt_response is None:
+        mqtt_response = '<p class="text-danger">Parsing Failed</p>'
+        socketio.emit('message', {
+            'showToast': True,
+            'message': "Message Parsing Failed",
+            'header': 'Probuf Decoder',
+            'type': 'danger'
+        })
+
     socketio.emit('mqtt_message', 
         {   
             'topic': message.topic,
-            'message': decode_response(message.payload), 
+            'message': mqtt_response, 
             'messageHex': message.payload.hex(" ").upper()
         })
 
@@ -312,7 +371,7 @@ def handle_mytopic(client, userdata, message):
 
 def decode_response(rcvdMsg):
     """
-    Decode and print the received MQTT message.
+    Decode command response received in the MQTT message.
 
     Parameters:
     - rcvdMsg (bytes): The received MQTT message in bytes.
@@ -342,8 +401,25 @@ def decode_response(rcvdMsg):
 
         return response_table + payload_table
     except Exception as e:
+        print("Error in decode_response: ", e)
+        return None
+
+
+def decode_telemetry(rcvdMsg):
+    """
+    Decode telemetry message received in MQTT Protobuf.
+    """
+    try:
+        telemetry_message = tmcvp_vehicletelemetry_message_pb2.VehicleTelemetryMessage()
+        telemetry_message.ParseFromString(rcvdMsg)
+
+        response_table = utils.MessageToTable(telemetry_message, tablefmt='unsafehtml')
+        response_table = response_table.replace('<table>', '<table class="table table-bordered">')
+
+        return response_table 
+    except Exception as e:
         print("Error: ", e)
-        return '<p class="text-danger">Parsing Failed</p>'
+        return None
 
 def TmcvpMQTTProtobufServer():
     return app
@@ -351,4 +427,4 @@ def TmcvpMQTTProtobufServer():
 
 if __name__ == '__main__':
     # app.run(debug=True,use_reloader=False)
-    socketio.run(app, debug=False, host='0.0.0.0', port=5000)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
