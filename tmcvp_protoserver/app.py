@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 import uuid
+import json
 from datetime import datetime
 
 from flask import Flask, render_template, request, jsonify, session
@@ -9,6 +10,7 @@ from flask_socketio import SocketIO
 from flask_mqtt import Mqtt
 from flask_wtf import CSRFProtect, FlaskForm
 from wtforms import StringField, IntegerField, SelectField, BooleanField, FloatField, FieldList, FormField
+from flask_rich import RichApplication
 
 # sys.path.append("./TataMotorsCVP630")
 # Adding TataMotorsCV630 to sys path
@@ -30,7 +32,6 @@ from tmcvp_protoserver import utils
 MQTT_BROKER = "test.mosquitto.org"
 PORT_NO = 1883
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'  # Replace with a secret key in production
 app.config['MQTT_BROKER_URL'] = MQTT_BROKER
@@ -38,9 +39,11 @@ app.config['MQTT_BROKER_PORT'] = PORT_NO
 app.config['MQTT_USERNAME'] = ''
 app.config['MQTT_PASSWORD'] = ' '
 app.config['MQTT_REFRESH_TIME'] = 5.0  # refresh time in seconds
+app.config['RICH_LOGGING'] = True   # for rich logging
 mqtt = Mqtt(app)
 csrf = CSRFProtect(app)
-socketio = SocketIO(app, async_mode='threading') 
+socketio = SocketIO(app) 
+rich = RichApplication(app)
 
 ###########################################################
 ##################  COMMAND RESPONSE   ####################
@@ -69,7 +72,7 @@ class CommandMessageForm(FlaskForm):
     in future proto versions of `CommandMessage` as in version TMCVP 6.3.
     If any of these headers change, the code needs to be modified.
     """
-    message_id = StringField('Message ID', default=str(uuid.uuid4()), **CONTROL_RENDER_KW)
+    # message_id = StringField('Message ID', default=str(uuid.uuid4()), **CONTROL_RENDER_KW)
     correlation_id = StringField('Correlation ID', default='correlation-id', **CONTROL_RENDER_KW)
     vehicle_id = StringField('Vehicle ID', default='MH12VF1121', **CONTROL_RENDER_KW)
     type = SelectField('Type', choices=[(e.number, e.name) for e in tmcvp_common_pb2.eTcuMessageType.DESCRIPTOR.values], default=tmcvp_common_pb2.eTcuMessageType.command, coerce=int, **SELECT_RENDER_KW)
@@ -86,7 +89,6 @@ class CommandMessageForm(FlaskForm):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     session.clear()
-    # form = UserForm(request.form)
     form = CommandMessageForm(request.form)
 
     vinNo = session.get('vin_no', '')
@@ -97,7 +99,6 @@ def index():
 @app.route('/set_vin', methods=['POST'])
 def set_vin():
     vin_no = request.form.get('vin_no')
-    # Set VIN in the session
     session['vin_no'] = vin_no
     return jsonify({'status': 'success'})
 
@@ -139,9 +140,11 @@ def send_command():
     mqtt.publish(CommandTopic, serialized_message)
     socketio.emit('message', 'Command Sent: ' + CommandTopic)
 
+    message_dict = utils.MessageToDict(command_message)
+    app.logger.debug(f"Published CommandMessage on Topic: {CommandTopic}\n{json.dumps(message_dict, indent=4)}")
     return jsonify({
         'status': 'success',
-        'message': utils.MessageToDict(command_message),
+        'message': message_dict,
         'messageHex': serialized_message.hex(' ').upper()
     })
 
@@ -180,7 +183,6 @@ def generateDynamicForm(payload):
                 # for _ in range(num_repeated):
                 nested_payload = getattr(payload, field_descriptor.name).add()
                 nested_form  = FieldList(FormField(generateDynamicForm(nested_payload), render_kw={"class":"table table-bordered"}), min_entries=num_repeated, max_entries=NUM_REPEATED_MAX, render_kw={"class":"list-group list-unstyled"})
-                print(nested_form)
                 setattr(DynamicForm, field_name, nested_form)
             # IS NON REPEATED MESSAGE
             else:
@@ -226,13 +228,12 @@ def generate_command_message(subtype, form):
     command_message = tmcvp_command_message_pb2.CommandMessage()
 
     command_message = ParseDict(form, command_message, ignore_unknown_fields=True)
-    print("Command Message with headers", command_message)
 
-    # command_message.message_id = str(uuid.uuid4())
+    command_message.message_id = str(uuid.uuid4())
     # command_message.correlation_id = form["correlation_id"]
     # command_message.vehicle_id = form["vehicle_id"]
 
-    # command_message.type = int(form["type"])
+    command_message.type =  tmcvp_common_pb2.eTcuMessageType.command    # Because this is Command type message
 
     # command_message.subtype = subtype
     # command_message.priority = form["priority"]
@@ -250,7 +251,7 @@ def generate_command_message(subtype, form):
     # fill_payload(command_payload, form)
     command_payload = ParseDict(payload_form.data, command_payload, ignore_unknown_fields=True)
 
-    # Set the payload in the command message
+    # Cannot direct assign nested messsage so using CopyFrom
     getattr(
         command_message.command_payload,
         command_message.command_payload.DESCRIPTOR.fields[subtype].name,
@@ -318,7 +319,6 @@ def fill_payload(message, form):
 def telemetry():
 
     vinNo = session.get('vin_no', '')
-    print('Got vinNo:', vinNo)
     if vinNo:
         _handle_subscribe({'vinNo': vinNo, 'topic': 'telemetry'}) 
     return render_template('telemetry.html', vin_no=vinNo, topic="telemetry")
@@ -329,21 +329,48 @@ def telemetry():
 
 @socketio.on('connect')                                                         
 def connect():                                                                  
-    socketio.emit('message', {'hello': "Hello"})
+    socketio.emit('message', {
+        'showToast': True,
+        'message': "Connected to SocketIO Client",
+        'header': 'Flask Server',
+        'type': 'info'
+    })
+    app.logger.info("Client connected")
 
 def _handle_subscribe(data):
-    print(data)
     mqtt.unsubscribe_all()
     MQTTTopic = "/device/" + data['vinNo'] + "/MQTTPROTOBUF/" + data['topic']
-    print("Subcribed to Topic: {}".format(MQTTTopic))
+    app.logger.info("Subcribed to Topic: {}".format(MQTTTopic))
     mqtt.subscribe(MQTTTopic)
 @socketio.on('subscribe')
 def handle_subscribe(data):
     _handle_subscribe(data)
 
+@mqtt.on_connect()
+def handle_connect(client, userdata, flags, rc):
+    if rc == 0:
+        app.logger.info("Connected to MQTT Broker")
+        socketio.emit('message', {
+            'showToast': True,
+            'message': "Connected to MQTT Broker",
+            'header': 'MQTT',
+            'type': 'success'
+        })
+
+@mqtt.on_disconnect()
+def handle_disconnect(client, userdata, rc):
+    app.logger.info("Disconnected from MQTT Broker")
+    socketio.emit('message', {
+        'showToast': True,
+        'message': "Disconnected from MQTT Broker",
+        'header': 'MQTT',
+        'type': 'danger'
+    })
+
 @mqtt.on_message()
 def handle_mytopic(client, userdata, message):
-    print("Received Message on Topic: {}".format(message.topic))
+    app.logger.info("Received Message on Topic: {}".format(message.topic))
+    # app.logger.debug("Message payload: {}".format(message.payload.hex(" ").upper()))
 
     mqtt_response = None
     if message.topic.endswith("commandresponse"):
@@ -357,7 +384,7 @@ def handle_mytopic(client, userdata, message):
             'showToast': True,
             'message': "Message Parsing Failed",
             'header': 'Probuf Decoder',
-            'type': 'danger'
+            'type': 'waarning'
         })
 
     socketio.emit('mqtt_message', 
@@ -401,7 +428,7 @@ def decode_response(rcvdMsg):
 
         return response_table + payload_table
     except Exception as e:
-        print("Error in decode_response: ", e)
+        app.logger.error("Error in decode_response: ", exc_info=e)
         return None
 
 
@@ -418,13 +445,15 @@ def decode_telemetry(rcvdMsg):
 
         return response_table 
     except Exception as e:
-        print("Error: ", e)
+        app.logger.error("Error in decode_response: ", exc_info=e)
         return None
 
 def TmcvpMQTTProtobufServer():
     return app
 
-
-if __name__ == '__main__':
+def main():
     # app.run(debug=True,use_reloader=False)
     socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+
+if __name__ == '__main__':
+    main()

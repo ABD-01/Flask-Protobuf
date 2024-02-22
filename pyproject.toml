@@ -19,6 +19,7 @@ include = [ "tmcvp_protoserver/static", "tmcvp_protoserver/templates", "tmcvp_pr
 python = "^3.9" 
 Flask = "3.0.2"
 Flask-MQTT = "1.1.1"
+Flask-Rich= "0.4.1"
 Flask-SocketIO = "5.3.6"
 Flask-WTF = "1.2.1"
 Jinja2 = "3.1.3"
@@ -29,4 +30,5 @@ WTForms = "3.1.2"
 
 [tool.poetry.scripts]
 commander = "tmcvp_protoserver.commander:main"
+tmcvp-server-flask = "tmcvp_protoserver.app:main"
 tmcvp-server = "tmcvp_protoserver.app:TmcvpMQTTProtobufServer"
