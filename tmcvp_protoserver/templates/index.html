@@ -46,8 +46,17 @@
                             {% if field.name != 'subtype' and field.name != 'numEntries' and field.name != 'csrf_token' and field.type != 'HiddenField' %}
                                 <div class="col-md-4">
                                     <label for="{{ field.id }}" class="form-label">{{ field.label }}</label>
-                                    <!-- {{ field(class="form-control form-control-sm") }} -->
-                                    {{ field }}
+                                    {% if field.id == 'type' %}
+                                        <label id="typeInfo" class="text-muted small" style="display: none;">Good luck changing it to a different type!</label>
+                                        {{ field(
+                                            onchange="setTimeout(function() { document.getElementById('type').selectedIndex = 0; }, 1000);",
+                                            onfocus="document.getElementById('typeInfo').style.display='block'",
+                                            onblur="document.getElementById('typeInfo').style.display='none'") 
+                                        }}
+                                    {% else %}
+                                        <!-- {{ field(class="form-control form-control-sm") }} -->
+                                        {{ field }}
+                                    {% endif %}
                                     {% if field.errors %}
                                         <span style="color: red;">{{ ', '.join(field.errors) }}</span>
                                     {% endif %}
