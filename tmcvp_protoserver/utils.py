@@ -189,7 +189,9 @@ def MessageToDict(message):
     """
     Convert a protocol buffer message into a dictionary representation.
 
-    Directly stolen from `Stackoverflow <ref: https://stackoverflow.com/a/57359749>`_
+    Directly stolen from `Stackoverflow <https://stackoverflow.com/a/57359749>`_
+    I am not using `google.protobuf.json_format.MessageToDict<https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToDict>`_
+    because the keynames are not being matched properly.
 
     Args:
         message(google.protobuf.message.Message): The protocol buffer message to be converted.

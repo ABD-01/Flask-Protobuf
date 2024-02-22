@@ -1,9 +1,37 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Commander
+    Command-Response
 {% endblock %}
   
+{% block navbar %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-default navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Proto Server</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Command-Response</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/telemetry">Telemetry</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#">Events</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" aria-disabled="true">Vsoh</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+{% endblock %}
+
 {% block content %}
     <!-- Container for Command Form and Preview -->
     <div class="container">
@@ -15,7 +43,7 @@
 
                     <div class="row">
                         {% for field in form %}
-                            {% if field.name != 'subtype' and field.name != 'csrf_token' and field.type != 'HiddenField' %}
+                            {% if field.name != 'subtype' and field.name != 'numEntries' and field.name != 'csrf_token' and field.type != 'HiddenField' %}
                                 <div class="col-md-4">
                                     <label for="{{ field.id }}" class="form-label">{{ field.label }}</label>
                                     <!-- {{ field(class="form-control form-control-sm") }} -->
@@ -26,6 +54,17 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="This is not a part of command message. Only needed for Repeated fields in the message.">
+                            <label for="{{ form.numEntries.id }}" class="form-label">{{ form.numEntries.label }}</label>
+                            {{ form.numEntries(onfocus="document.getElementById('numEntriesInfo').style.display='block'", onblur="document.getElementById('numEntriesInfo').style.display='none'") }}
+                            {% if form.numEntries.errors %}
+                                <span style="color: red;">{{ ', '.join(form.numEntries.errors) }}</span>
+                            {% endif %}
+                            <label id="numEntriesInfo" class="text-muted small" style="display: none;">This is not a part of command message. Only needed for Repeated fields in the message.</label>
+                        </div>
                     </div>
 
                     <div class="row">
@@ -72,5 +111,56 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Load additional fields dynamically based on the selected subtype
+        var csrf_token = "{{ csrf_token() }}";
+        
+        $('#{{ form.subtype.id }}').change( function() {
+            var selectedSubtype = $(this).val();
+            var numEntries = $('#{{ form.numEntries.id }}').val();
+    
+            $.ajax({
+                url: '/get_additional_fields',
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: { 'subtype': selectedSubtype, 'numEntries': numEntries },
+                success: function (response) {
+                    $('#additionalFieldsContainer').html(response.additional_fields_html);
+                }
+            });
+    
+        })
+    </script>
+    <script>
+        $('#commandForm').submit(function (e) {
+            e.preventDefault();  // Prevent the default form submission
+
+            $.ajax({
+                url: '/send_command',
+                type: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
+                data: $('#commandForm').serialize(),
+                success: function (response) {
+                    if (response.status === "success") {
+                        $message = $('<pre/>');
+                        $message.text(JSON.stringify(response.message, null, 4));
+                        $('#commandMessage').html($message);
+                        $('#commandMessageHex').html(response.messageHex);
+                    }
+                    else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+        })
+    </script> 
 
 {% endblock %}

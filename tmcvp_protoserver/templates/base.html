@@ -21,34 +21,20 @@
     <!-- For Theme Toggle -->
     <script src="/static/color-modes.js"></script>
     <link rel="stylesheet" href="/static/color-modes.css">
+    <style>
+      main {
+        min-height: 70vh;
+        height: auto !important;
+        height: 100%;
+        margin: 0 auto -60px;
+      }
+      /* ref: https://stackoverflow.com/a/66453930 */
+      /* for sticky footer */
+    </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-default navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Commander</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Command-Response</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" href="#">Telemetry</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" href="#">Events</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true">Vsoh</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+    {% block navbar %}{% endblock %}
 
     <!-- Vin No Container -->
     <div class="container">      
@@ -72,9 +58,11 @@
     </div>
     </div>
   
-    {% block content %}
+    <main class="container-fluid mb-5">
+      {% block content %}
 
-    {% endblock %}
+      {% endblock %}
+    </main>
 
     <!-- For Toasts -->
     <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 11">
@@ -146,7 +134,6 @@
       </symbol>
     </svg>
 
-    <div class="mt-5"></div>
     <footer class="footer py-4 mt-auto bg-body-secondary">
         <p class="text-center text-body-secondary mx-3">
             TMCVP Protobuf Encoded Communication Testing Server
@@ -164,92 +151,83 @@
     </footer>
 
 <script>
-    function showToast(message) {
-        // Create a new toast element
-        var toastElement = document.createElement('div');
-        toastElement.className = 'toast text-bg-primary';
-        toastElement.setAttribute('role', 'alert');
-        toastElement.setAttribute('aria-live', 'assertive');
-        toastElement.setAttribute('aria-atomic', 'true');
+  function showToast(message = {}) {
+    // Set default values if properties do not exist
+    const { type = 'primary', header = 'Message', data = '' } = message;
 
-        // Create the toast body
-        var toastBody = document.createElement('div');
-        toastBody.className = 'd-flex';
-        toastBody.innerHTML = `<div class="toast-body">${message}</div>`;
+    
+    // Determine the background color based on the type of message
+    var bgColorClass = `text-bg-${type}`;
+    // Create a new toast element
+    var toastElement = document.createElement('div');
+    toastElement.className = `toast ${bgColorClass}`;
+    toastElement.setAttribute('role', 'alert');
+    toastElement.setAttribute('aria-live', 'assertive');
+    toastElement.setAttribute('aria-atomic', 'true');
 
-        // Create the close button
-        var closeButton = document.createElement('button');
-        closeButton.type = 'button';
-        closeButton.className = 'btn-close me-2 m-auto';
-        closeButton.setAttribute('data-bs-dismiss', 'toast');
-        closeButton.setAttribute('aria-label', 'Close');
+    // Create the toast header
+    var toastHeader = document.createElement('div');
+    toastHeader.className = 'toast-header';
+    toastHeader.innerHTML = `
+        <strong class="me-auto">${header}</strong>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    `;
 
-        // Append the close button to the toast body
-        toastBody.appendChild(closeButton);
+    // Create the toast body
+    var toastBody = document.createElement('div');
+    toastBody.className = 'toast-body';
+    toastBody.innerText = data;
 
-        // Append the body to the toast
-        toastElement.appendChild(toastBody);
+    // Append header and body to the toast
+    toastElement.appendChild(toastHeader);
+    toastElement.appendChild(toastBody);
 
-        // Append the toast to the container
-        document.getElementById('toastContainer').appendChild(toastElement);
+    // Append the toast to the container
+    document.getElementById('toastContainer').appendChild(toastElement);
 
-        // Initialize Bootstrap Toast and show it
-        var bootstrapToast = new bootstrap.Toast(toastElement);
-        bootstrapToast.show();
-    }
+    // Initialize Bootstrap Toast and show it
+    var bootstrapToast = new bootstrap.Toast(toastElement);
+    bootstrapToast.show();
+}
 </script>
 <script type="text/javascript" charset="utf-8">
     const socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
             console.log('connected');
-            showToast("Connected to MQTT broker");
+            showToast({
+                type: 'success',
+                data: 'Connected to MQTT broker'
+            });
     });
     socket.on('message', function(data) {
-            console.log(data);
+            console.log(data.message);
+            if (data.showToast) {
+              showToast({
+                header: data.header,
+                data: data.message,
+                type: data.type || 'primary'
+              })
+            }
     });
     socket.on('mqtt_message', function(data) {
-        showToast("Message received on topic: " + data.topic);
+        showToast({
+            header: 'MQTT Response received on',
+            data: data.topic
+        });
         $('#responseHex').html(data.messageHex);
         $('#response').html(data.message);
     });
 </script>
 <script>
-    $('#commandForm').submit(function (e) {
-        e.preventDefault();  // Prevent the default form submission
-
-        $.ajax({
-            url: '/send_command',
-            type: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token() }}'
-            },
-            data: $('#commandForm').serialize(),
-            success: function (response) {
-                if (response.status === "success") {
-                    $message = $('<pre/>');
-                    $message.text(JSON.stringify(response.message, null, 4));
-                    $('#commandMessage').html($message);
-                    $('#commandMessageHex').html(response.messageHex);
-                }
-                else {
-                    alert("Error: " + response.message);
-                }
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        })
-    })
-</script> 
-<script>
     var csrf_token = "{{ csrf_token() }}";
+    var topic = "{{ topic }}";
 
     // Check if VIN is set in session or not
-    var vinIsSet = {% if 'vin_no' in session %}true{% else %}false{% endif %};
+    var rcvdVinNo = "{{ vin_no }}"
 
     const vinModal = new bootstrap.Modal(document.getElementById('vinModalStaticBackdrop'));
     // If VIN is not set, show the modal
-    if (!vinIsSet) {
+    if (rcvdVinNo == '') {
         vinModal.show();
     }
     // Handle VIN submission
@@ -268,29 +246,10 @@
                 // Close the modal
                 vinModal.hide();
                 document.getElementById('vinNo').innerHTML = 'VIN No: ' + vinNo;
-                socket.emit('subscribe', { 'vinNo': vinNo });
+                socket.emit('subscribe', { 'vinNo': vinNo, 'topic': topic });
             }
         });
     });
-
-    // Load additional fields dynamically based on the selected gender
-    $('#{{ form.subtype.id }}').change( function() {
-        var selectedSubtype = $(this).val();
-
-        $.ajax({
-            url: '/get_additional_fields',
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrf_token
-            },
-            data: { 'subtype': selectedSubtype },
-            success: function (response) {
-                $('#additionalFieldsContainer').html(response.additional_fields_html);
-            }
-        });
-
-    })
 </script>
-
 </body>
 </html>
