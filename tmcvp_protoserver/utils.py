@@ -253,12 +253,18 @@ def MessageToTable(message, show_empty=False, tablefmt="grid"):
             for sub_message in value:
                 if field_descriptor.type == field_descriptor.TYPE_MESSAGE:
                     table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(sub_message, show_empty=show_empty, tablefmt=tablefmt)])
+                elif field_descriptor.type == field_descriptor.TYPE_ENUM:
+                    table.append([field_descriptor.number, field_descriptor.name, field_type, \
+                        field_descriptor.enum_type.values_by_number[int(sub_message)].name])
                 else:
                     table.append([field_descriptor.number, field_descriptor.name, field_type, sub_message])
             
         else:
             if field_descriptor.type == field_descriptor.TYPE_MESSAGE:
                 table.append([field_descriptor.number, field_descriptor.name, field_type, MessageToTable(value, show_empty=show_empty, tablefmt=tablefmt)])
+            elif field_descriptor.type == field_descriptor.TYPE_ENUM:
+                table.append([field_descriptor.number, field_descriptor.name, field_type, \
+                    field_descriptor.enum_type.values_by_number[int(value)].name])
             else:
                 table.append([field_descriptor.number, field_descriptor.name, field_type, value])
     return tabulate(table, headers=headers, tablefmt=tablefmt)
