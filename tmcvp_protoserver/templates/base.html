@@ -58,14 +58,14 @@
     </div>
     </div>
   
-    <main class="container-fluid mb-5">
+    <main class="container-fluid mb-5 pt-3">
       {% block content %}
 
       {% endblock %}
     </main>
 
     <!-- For Toasts -->
-    <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+    <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 11">
         <!-- Toasts will be appended here -->
     </div>
 
@@ -145,9 +145,9 @@
             <li class="ms-3"><a class="text-body-secondary" href="https://www.linkedin.com/in/muhammedabd/" target="_blank"><svg class="bi" width="24" height="24"><use xlink:href="#linkedin"></use></svg></a></li>
             <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#github"></use></svg></a></li>
         </ul>
-        <p class="border-top m-3 text-center pt-3 px-3">
+        <p class="border-top m-3 mx-5 text-center pt-3 px-3 border-secondary">
             © 2024 Accolade Electronics Pvt. Ltd.
-        </p> 
+        </p>
     </footer>
 
 <script>
@@ -196,7 +196,8 @@
             console.log('connected');
             showToast({
                 type: 'success',
-                data: 'Connected to MQTT broker'
+                header: 'SocketIO',
+                data: 'Web socket connected to Flask Server',
             });
     });
     socket.on('message', function(data) {
