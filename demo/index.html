@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="static/favicon.ico">
+    <title>TMCVP Proto-Server 
+    Command-Response
+</title>
+
+    <!-- For Ajax -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- For Theme Toggle -->
+    <script src="static/color-modes.js"></script>
+    <link rel="stylesheet" href="static/color-modes.css">
+    <style>
+      main {
+        min-height: 70vh;
+        height: auto !important;
+        height: 100%;
+        margin: 0 auto -60px;
+      }
+      /* ref: https://stackoverflow.com/a/66453930 */
+      /* for sticky footer */
+    </style>
+</head>
+<body class="" style="">
+
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-default navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Proto Server</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Command-Response</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="telemetry.html">Telemetry</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#">Events</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" aria-disabled="true">Vsoh</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="../">Docs</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+
+    <!-- Vin No Container -->
+    <div class="container">      
+        <div class="card text-center text-bg-secondary m-1" data-bs-toggle="modal" data-bs-target="#vinModalStaticBackdrop">
+            <h4 class="card-title" id="vinNo">VIN No: testVin</h4> 
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="vinModalStaticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-body">
+            <input type="text" class="form-control" id="vinNoForm" placeholder="Enter VIN No" value="testVin" required="">
+            <span style="color: red; display: none;" id="errorVin">VIN cannot be empty. Please enter a valid VIN.</span>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="submitVin">Submit</button>
+        </div>
+        </div>
+    </div>
+    </div>
+  
+    <main class="container-fluid mb-5 pt-3">
+      
+    <!-- Container for Command Form and Preview -->
+    <div class="container">
+        <div class="row">
+            <!-- Command Message Dynamic Form -->
+            <div class="col-lg-7">
+                <form method="post" id="commandForm" action="/send_command">
+                    <input id="csrf_token" name="csrf_token" type="hidden" value="ImE0MmM5N2JkYjkwZWIwOTM0Yzc3MDlhMDM0MGY3ZDVlNmQ2ODhjZWEi.ZdpN_A.w6y_SE9RGERt3iysCmjYPe8GqGU">
+
+                    <div class="row">
+                        
+                            
+                                <div class="col-md-4">
+                                    <label for="message_id" class="form-label"><label for="message_id">Message ID</label></label>
+                                    
+                                        <!-- <input class="form-control form-control-sm" id="message_id" name="message_id" readonly type="text" value="f51c0caf-d248-4209-ad36-7cbe02576b82"> -->
+                                        <input class="form-control form-control-sm" id="message_id" name="message_id" readonly="" type="text" value="f51c0caf-d248-4209-ad36-7cbe02576b82">
+                                    
+                                    
+                                </div>
+                            
+                        
+                            
+                                <div class="col-md-4">
+                                    <label for="correlation_id" class="form-label"><label for="correlation_id">Correlation ID</label></label>
+                                    
+                                        <!-- <input class="form-control form-control-sm" id="correlation_id" name="correlation_id" type="text" value="correlation-id"> -->
+                                        <input class="form-control form-control-sm" id="correlation_id" name="correlation_id" type="text" value="correlation-id">
+                                    
+                                    
+                                </div>
+                            
+                        
+                            
+                                <div class="col-md-4">
+                                    <label for="vehicle_id" class="form-label"><label for="vehicle_id">Vehicle ID</label></label>
+                                    
+                                        <!-- <input class="form-control form-control-sm" id="vehicle_id" name="vehicle_id" type="text" value="VehicleId"> -->
+                                        <input class="form-control form-control-sm" id="vehicle_id" name="vehicle_id" type="text" value="VehicleId">
+                                    
+                                    
+                                </div>
+                            
+                        
+                            
+                                <div class="col-md-4">
+                                    <label for="type" class="form-label"><label for="type">Type</label></label>
+                                    
+                                        <label id="typeInfo" class="text-muted small">Good luck changing it to a different type!</label>
+                                        <select class="form-select form-select-sm" id="type" name="type" onblur="document.getElementById('typeInfo').style.display='none'" onchange="setTimeout(function() { document.getElementById('type').selectedIndex = 0; }, 1000);" onfocus="document.getElementById('typeInfo').style.display='block'"><option selected="" value="0">command</option><option value="1">Command-Type-1</option><option value="2">Command-Type-2</option><option value="3">Command-Type-3</option><option value="4">Command-Type-4</option><option value="5">Command-Type-5</option><option value="6">Command-Type-6</option><option value="7">Command-Type-7</option><option value="8">Command-Type-8</option><option value="9">Command-Type-9</option><option value="10">Command-Type-10</option><option value="11">Command-Type-11</option><option value="12">Command-Type-12</option><option value="13">Command-Type-13</option><option value="14">Command-Type-14</option><option value="15">Command-Type-15</option><option value="16">Command-Type-16</option><option value="17">Command-Type-17</option><option value="18">Command-Type-18</option><option value="19">Command-Type-19</option><option value="20">Command-Type-20</option><option value="21">Command-Type-21</option><option value="22">Command-Type-22</option><option value="23">Command-Type-23</option><option value="24">Command-Type-24</option><option value="25">Command-Type-25</option><option value="26">Command-Type-26</option><option value="27">Command-Type-27</option><option value="28">Command-Type-28</option><option value="29">Command-Type-29</option><option value="30">Command-Type-30</option><option value="31">Command-Type-31</option><option value="32">Command-Type-32</option><option value="33">Command-Type-33</option><option value="34">Command-Type-34</option><option value="35">Command-Type-35</option><option value="36">Command-Type-36</option></select>
+                                    
+                                    
+                                </div>
+                            
+                        
+                            
+                                <div class="col-md-4">
+                                    <label for="priority" class="form-label"><label for="priority">Priority</label></label>
+                                    
+                                        <!-- <input class="form-control form-control-sm" id="priority" name="priority" type="text" value="moderate"> -->
+                                        <input class="form-control form-control-sm" id="priority" name="priority" type="text" value="moderate">
+                                    
+                                    
+                                </div>
+                            
+                        
+                            
+                                <div class="col-md-4">
+                                    <label for="provisioning_state" class="form-label"><label for="provisioning_state">Provisioning State</label></label>
+                                    
+                                        <!-- <select class="form-control form-control-sm" id="provisioning_state" name="provisioning_state"><option value="0">factory</option><option selected value="1">provisioned</option><option value="2">authorized</option></select> -->
+                                        <select class="form-select form-select-sm" id="provisioning_state" name="provisioning_state"><option value="0">factory</option><option selected="" value="1">provisioned</option><option value="2">authorized</option></select>
+                                    
+                                    
+                                </div>
+                            
+                        
+                            
+                                <div class="col-md-4">
+                                    <label for="version" class="form-label"><label for="version">Version</label></label>
+                                    
+                                        <!-- <input class="form-control form-control-sm" id="version" name="version" type="text" value="V6.3"> -->
+                                        <input class="form-control form-control-sm" id="version" name="version" type="text" value="V6.3">
+                                    
+                                    
+                                </div>
+                            
+                        
+                            
+                                <div class="col-md-4">
+                                    <label for="packet_status" class="form-label"><label for="packet_status">Packet Status</label></label>
+                                    
+                                        <!-- <select class="form-control form-control-sm" id="packet_status" name="packet_status"><option value="0">Packet-Status-0</option><option selected value="76">Packet-Status-76</option><option value="72">Packet-Status-72</option></select> -->
+                                        <select class="form-select form-select-sm" id="packet_status" name="packet_status"><option value="0">Packet-Status-0</option><option selected="" value="76">Packet-Status-76</option><option value="72">Packet-Status-72</option></select>
+                                    
+                                    
+                                </div>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="This is not a part of command message. Only needed for Repeated fields in the message.">
+                            <label for="numEntries" class="form-label"><label for="numEntries">Number of Entries for repeated type</label></label>
+                            <input class="form-control form-control-sm" id="numEntries" name="numEntries" onblur="document.getElementById('numEntriesInfo').style.display='none'" onfocus="document.getElementById('numEntriesInfo').style.display='block'" type="number" value="1">
+                            
+                            <label id="numEntriesInfo" class="text-muted small" style="display: none;">This is not a part of command message. Only needed for Repeated fields in the message.</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="subtype" class="form-label mb-0"><label class="mb-0" for="subtype">Subtype</label></label>
+                            <label id="typeInfo" class="text-muted small">(Creates Dynamic Form on change)</label>
+                            <select class="form-select form-select-sm" id="subtype" name="subtype"><option value="-1">--- Select Subtype ---</option><option value="0">Command-Subtype-0</option><option value="1">Command-Subtype-1</option><option value="2">Command-Subtype-2</option><option value="3">Command-Subtype-3</option><option value="4">Command-Subtype-4</option><option value="5">Command-Subtype-5</option><option value="6">Command-Subtype-6</option><option value="7">Command-Subtype-7</option><option selected="" value="8">FindCarLocationCommand</option><option value="9">Command-Subtype-9</option><option value="10">Command-Subtype-10</option><option value="11">Command-Subtype-11</option><option value="12">Command-Subtype-12</option><option value="13">Command-Subtype-13</option><option value="14">Command-Subtype-14</option><option value="15">Command-Subtype-15</option><option value="16">Command-Subtype-16</option><option value="17">Command-Subtype-17</option><option value="18">Command-Subtype-18</option><option value="19">Command-Subtype-19</option><option value="20">Command-Subtype-20</option><option value="21">Command-Subtype-21</option><option value="22">Command-Subtype-22</option><option value="23">Command-Subtype-23</option><option value="24">Command-Subtype-24</option><option value="25">Command-Subtype-25</option><option value="26">Command-Subtype-26</option><option value="27">Command-Subtype-27</option><option value="28">Command-Subtype-28</option><option value="29">Command-Subtype-29</option><option value="30">Command-Subtype-30</option><option value="31">Command-Subtype-31</option><option value="32">Command-Subtype-32</option><option value="33">Command-Subtype-33</option></select>
+                            
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mt-2" id="additionalFieldsContainer">
+                            <!-- Container to load additional fields dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <input type="submit" value="Submit" class="btn btn-primary">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Command Message JSON Preview -->
+            <div class="col-lg-5">
+                <div class="card">
+                    <h3 class="card-header">Command Message</h3>
+                    <div id="commandMessage" class="card-body"></div>
+                    <div id="commandMessageHex" class="card-footer text-body-secondary"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div>
+            <div class="col-lg-12 card">
+                <h3 class="card-header">Command Response</h3>
+                <div id="response" class="card-body"></div>
+                <div id="responseHex" class="card-footer text-body-secondary"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/add_fields.js"></script>
+    <script>
+        // Load additional fields dynamically based on the selected subtype
+        $('#subtype').change( function() {
+            var selectedSubtype = $(this).val();
+            var numEntries = $('#numEntries').val();
+            numEntries = Math.min(Math.max(numEntries, 1), 30);
+            additional_fields_html = get_additional_fields(selectedSubtype, numEntries);
+            $('#additionalFieldsContainer').html(additional_fields_html);
+            return;
+        })
+    </script>
+    <script>
+        $('#commandForm').submit(function (e) {
+            e.preventDefault();  // Prevent the default form submission
+
+            const response_message = {
+                "command_payload": {
+                    "findCarLocationCommand": {}
+                },
+                "correlation_id": "correlation-id",
+                "message_id": "f51c0caf-d248-4209-ad36-7cbe02576b82",
+                "packet_status": 76,
+                "priority": "moderate",
+                "provisioning_state": 1,
+                "subtype": 8,
+                "time_stamp": {
+                    "nanos": 623891000,
+                    "seconds": 1708783579
+                },
+                "vehicle_id": "VehicleId",
+                "version": "V6.3"
+            }
+            const response_messageHex = "0A 24 66 35 31 63 30 63 61 66 2D 64 32 34 38 2D 34 32 30 39 2D 61 64 33 36 2D 37 63 62 65 30 32 35 37 36 62 38 32 12 0E 63 6F 72 72 65 6C 61 74 69 6F 6E 2D 69 64 1A 09 56 65 68 69 63 6C 65 49 64 28 08 32 08 6D 6F 64 65 72 61 74 65 38 01 42 04 56 36 2E 33 4A 0B 08 EB D9 E8 AE 06 10 C0 EA C3 46 50 4C 5A 02 4A 00"
+            console.log(response_message)
+            message = $('<pre/>');
+            message.text(JSON.stringify(response_message, null, 4));
+            $('#commandMessage').html(message);
+            $('#commandMessageHex').html(response_messageHex);
+            setTimeout(simulateReceive, 1000);
+        })
+    </script> 
+
+
+    </main>
+
+    <!-- For Toasts -->
+    <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 11">
+        <!-- Toasts will be appended here -->
+    <div class="toast text-bg-success fade hide" role="alert" aria-live="assertive" aria-atomic="true"><div class="toast-header">
+        <strong class="me-auto">Connected to MQTT (Demo)</strong>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div><div class="toast-body">/test/topic/response</div></div></div>
+
+    <!-- Toggle Theme -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+        <symbol id="check2" viewBox="0 0 16 16">
+          <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"></path>
+        </symbol>
+        <symbol id="circle-half" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"></path>
+        </symbol>
+        <symbol id="moon-stars-fill" viewBox="0 0 16 16">
+          <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"></path>
+          <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"></path>
+        </symbol>
+        <symbol id="sun-fill" viewBox="0 0 16 16">
+          <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"></path>
+        </symbol>
+      </svg>
+  
+    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+        <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (dark)">
+          <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
+          <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+              <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
+              Light
+              <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="dark" aria-pressed="true">
+              <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
+              Dark
+              <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="false">
+              <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
+              Auto
+              <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+    <!-- Footer -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+      <symbol id="linkedin" viewBox="0 0 448 512">
+        <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
+      </symbol>
+      <symbol id="email" viewBox="0 0 512 512">
+        <path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"></path>
+      </symbol>
+      <symbol id="github" viewBox="0 0 496 512">
+        <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path>
+      </symbol>
+    </svg>
+
+    <footer class="footer py-4 mt-auto bg-body-secondary">
+        <p class="text-center text-body-secondary mx-3">
+            TMCVP Protobuf Encoded Communication Testing Server
+            <br>
+            Developed by: Muhammed Abdullah 
+        </p>
+        <ul class="nav list-unstyled justify-content-center">
+            <li class=""><a class="text-body-secondary" href="mailto:muhammed.shaikh@accoladeelectronics.com" target="_blank"><svg class="bi" width="24" height="24"><use xlink:href="#email"></use></svg></a></li>
+            <li class="ms-3"><a class="text-body-secondary" href="https://www.linkedin.com/in/muhammedabd/" target="_blank"><svg class="bi" width="24" height="24"><use xlink:href="#linkedin"></use></svg></a></li>
+            <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#github"></use></svg></a></li>
+        </ul>
+        <p class="border-top m-3 mx-5 text-center pt-3 px-3 border-secondary">
+            © 2024 Company
+        </p>
+    </footer>
+
+<script>
+  function showToast(message = {}) {
+    // Set default values if properties do not exist
+    const { type = 'primary', header = 'Message', data = '' } = message;
+
+    
+    // Determine the background color based on the type of message
+    var bgColorClass = `text-bg-${type}`;
+    // Create a new toast element
+    var toastElement = document.createElement('div');
+    toastElement.className = `toast ${bgColorClass}`;
+    toastElement.setAttribute('role', 'alert');
+    toastElement.setAttribute('aria-live', 'assertive');
+    toastElement.setAttribute('aria-atomic', 'true');
+
+    // Create the toast header
+    var toastHeader = document.createElement('div');
+    toastHeader.className = 'toast-header';
+    toastHeader.innerHTML = `
+        <strong class="me-auto">${header}</strong>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    `;
+
+    // Create the toast body
+    var toastBody = document.createElement('div');
+    toastBody.className = 'toast-body';
+    toastBody.innerText = data;
+
+    // Append header and body to the toast
+    toastElement.appendChild(toastHeader);
+    toastElement.appendChild(toastBody);
+
+    // Append the toast to the container
+    document.getElementById('toastContainer').appendChild(toastElement);
+
+    // Initialize Bootstrap Toast and show it
+    var bootstrapToast = new bootstrap.Toast(toastElement);
+    bootstrapToast.show();
+}
+</script>
+<script>
+
+const mqtt_response = `<!-- templates/response_table.html -->
+<table class="table table-bordered mt-2 mb-1">
+    <thead>
+        <tr><th>Field</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>message_id</td><td>82b5099a-9b33-49e2-a0f2-405c495a6ca6</td></tr>
+        <tr><td>correlation_id</td><td>ab47c7e3-4e5c-4069-a9b9-ccaa761754bc</td></tr>
+        <tr><td>vehicle_id</td><td>VehicleId</td></tr>
+        <tr><td>type</td><td>commandResponse</td></tr>
+        <tr><td>subtype</td><td>FindCarLocationCommand</td></tr>
+        <tr><td>priority</td><td>0</td></tr>
+        <tr><td>provisioning_state</td><td>authorized</td></tr>
+        <tr><td>version</td><td>6.3.0</td></tr>
+        <tr><td>time_stamp</td><td>2024-02-24 23:28:41</td></tr>
+        <tr><td>packet_status</td><td>Live</td></tr>
+        <tr><td>return_code</td><td class="bg-success-subtle">succeeded</td></tr>
+    </tbody>
+</table><table class="table table-bordered">
+<thead>
+<tr><th style="text-align: right;">  Field Index</th><th>Name            </th><th>Type   </th><th>Content                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           </th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: right;">            1</td><td>errorCode       </td><td>UINT32 </td><td>1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 </td></tr>
+<tr><td style="text-align: right;">            2</td><td>vehicleTelemetry</td><td>MESSAGE</td><td><table class="table table-bordered">
+<thead>
+<tr><th style="text-align: right;">  Field Index</th><th>Name            </th><th>Type   </th><th>Content                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: right;">            1</td><td>timestamp       </td><td>MESSAGE</td><td><table class="table table-bordered">
+<thead>
+<tr><th style="text-align: right;">  Field Index</th><th>Name   </th><th>Type  </th><th style="text-align: right;">   Content</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: right;">            1</td><td>seconds</td><td>INT64 </td><td style="text-align: right;">1708797521</td></tr>
+<tr><td style="text-align: right;">            2</td><td>nanos  </td><td>INT32 </td><td style="text-align: right;"> 221835000</td></tr>
+</tbody>
+</table></td></tr>
+<tr><td style="text-align: right;">            2</td><td>gpsLat          </td><td>INT32  </td><td>48.8582637                                                                                                                                                                                                                                                                                                                                                                                                                                                                 </td></tr>
+<tr><td style="text-align: right;">            3</td><td>gpsLong         </td><td>INT32  </td><td>2.2942401                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </td></tr>
+<tr><td style="text-align: right;">            4</td><td>gpsAlt          </td><td>INT32  </td><td>330.0000                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </td></tr>
+<tr><td style="text-align: right;">            6</td><td>accelX          </td><td>INT32  </td><td>188                                                                                                                                                                                                                                                                                                                                                                                                                                                                       </td></tr>
+<tr><td style="text-align: right;">            7</td><td>accelY          </td><td>INT32  </td><td>785                                                                                                                                                                                                                                                                                                                                                                                                                                                                       </td></tr>
+<tr><td style="text-align: right;">            8</td><td>accelZ          </td><td>INT32  </td><td>1890                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </td></tr>
+<tr><td style="text-align: right;">           12</td><td>gpsSignalQuality</td><td>UINT32 </td><td>18                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </td></tr>
+<tr><td style="text-align: right;">           16</td><td>noOfSatForFix   </td><td>UINT32 </td><td>12                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </td></tr>
+<tr><td style="text-align: right;">           18</td><td>gpsFix          </td><td>BOOL   </td><td>True                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </td></tr>
+<tr><td style="text-align: right;">           20</td><td>ignitionOn      </td><td>BOOL   </td><td>True                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </td></tr>
+<tr><td style="text-align: right;">           21</td><td>crankOn         </td><td>BOOL   </td><td>False                                                                                                                                                                                                                                                                                                                                                                                                                                                                     </td></tr>
+<tr><td style="text-align: right;">           24</td><td>noOfFuelTanks   </td><td>INT32  </td><td>1                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </td></tr>
+<tr><td style="text-align: right;">           39</td><td>gpsLatDir       </td><td>STRING </td><td>N                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </td></tr>
+<tr><td style="text-align: right;">           40</td><td>gpsLongDir      </td><td>STRING </td><td>E                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </td></tr>
+</tbody>
+</table></td></tr>
+</tbody>
+</table>`;
+
+const mqtt_messageHex = "0A 24 39 64 63 66 65 64 30 61 2D 38 30 66 32 2D 34 31 61 39 2D 38 64 38 30 2D 64 30 36 38 66 36 36 30 63 33 33 35 12 24 61 62 34 37 63 37 65 33 2D 34 65 35 63 2D 34 30 36 39 2D 61 39 62 39 2D 63 63 61 61 37 36 31 37 35 34 62 63 1A 09 56 65 68 69 63 6C 65 49 64 20 01 28 08 32 01 30 38 02 42 05 36 2E 33 2E 30 4A 0C 08 F2 E6 E7 AE 06 10 A8 82 EC A0 03 50 4C 62 46 52 44 08 01 12 40 0A 0C 08 F2 E6 E7 AE 06 10 A8 82 EC A0 03 10 ED DB FC E8 01 18 C1 A5 F8 0A 20 A0 B5 C9 01 30 BC 01 38 91 06 40 E2 0E 60 12 80 01 0C 90 01 01 A0 01 01 A8 01 00 C0 01 01 BA 02 01 4E C2 02 01 45";
+
+</script>
+<script type="text/javascript" charset="utf-8">
+    function simulateReceive() {
+        showToast({
+            header: 'MQTT Response received on (Demo)',
+            data: "/test/topic/response",
+        });
+        $('#responseHex').html(mqtt_messageHex);
+        $('#response').html(mqtt_response);
+    }
+</script>
+<script>
+    var topic = "/test/topic/response";
+
+    // Check if VIN is set in session or not
+    var rcvdVinNo = ""
+
+    const vinModal = new bootstrap.Modal(document.getElementById('vinModalStaticBackdrop'));
+    // If VIN is not set, show the modal
+    if (rcvdVinNo == '') {
+        vinModal.show();
+    }
+    // Handle VIN submission
+    $('#submitVin').click(function () {
+        var vinNo = $('#vinNoForm').val();
+        var rcvdVinNo = vinNo
+        document.getElementById('vinNo').innerHTML = 'VIN No: ' + vinNo;
+        showToast({
+            header: 'Connected to MQTT (Demo)',
+            data: "/test/topic/response",
+            type: 'success'
+        });
+        return;
+    });
+</script>
+
+</body></html>
