@@ -1,0 +1,18 @@
+sequenceDiagram
+
+    participant MQTTBroker
+    participant FlaskServer as Flask Application
+    participant SocketIOClient
+    participant User
+
+    User-->>FlaskServer: Connects
+    FlaskServer -->> MQTTBroker: Connects
+    FlaskServer -->> SocketIOClient: Connects
+    User ->> FlaskServer: Identification Number
+    FlaskServer->>MQTTBroker: Subscribes to Topic
+    User ->> FlaskServer: Command Message
+    FlaskServer ->> MQTTBroker: Publish
+    MQTTBroker-)FlaskServer: Receive Message
+    FlaskServer ->> FlaskServer: Parse Command Response
+    FlaskServer ->> SocketIOClient: Sends mqtt_response event
+    SocketIOClient -->> User: Displays Parsed Message
