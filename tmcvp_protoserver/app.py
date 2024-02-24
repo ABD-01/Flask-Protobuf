@@ -5,7 +5,7 @@ import uuid
 import json
 from datetime import datetime
 
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_socketio import SocketIO
 from flask_mqtt import Mqtt
 from flask_wtf import CSRFProtect, FlaskForm
@@ -55,24 +55,26 @@ class CommandMessageForm(FlaskForm):
     """
     FlaskForm for creating a Command Message.
 
-    Fields:
-    - message_id (StringField): Unique identifier for the message.
-    - correlation_id (StringField): Identifier for correlating messages.
-    - vehicle_id (StringField): Identifier for the associated vehicle.
-    - type (SelectField): Type of the message (e.g., command).
-    - priority (StringField): Priority level of the message.
-    - provisioning_state (SelectField): Provisioning state of the message.
-    - version (StringField): Version of the message.
-    - packet_status (SelectField): Status of the packet (e.g., Live).
-    - subtype (SelectField): Subtype of the command message.
+    Attributes:
+        message_id (:class:`StringField <wtforms.fields.StringField>`): Unique identifier for the message.
+        correlation_id (:class:`StringField <wtforms.fields.StringField>`): Identifier for correlating messages.
+        vehicle_id (:class:`StringField <wtforms.fields.StringField>`): Identifier for the associated vehicle.
+        type (:class:`SelectField <wtforms.fields.SelectField>`): Type of the message (e.g., command).
+        priority (:class:`StringField <wtforms.fields.StringField>`): Priority level of the message.
+        provisioning_state (:class:`SelectField <wtforms.fields.SelectField>`): Provisioning state of the message.
+        version (:class:`StringField <wtforms.fields.StringField>`): Version of the message.
+        packet_status (:class:`SelectField <wtforms.fields.SelectField>`): Status of the packet (e.g., Live).
+        subtype (:class:`SelectField <wtforms.fields.SelectField>`): Subtype of the command message.
 
-    Note for Future Upgrades:
-    This form assumes that the fields message_id, correlation_id, vehicle_id, type,
-    priority, provisioning_state, version, packet_status, and subtype are present
-    in future proto versions of `CommandMessage` as in version TMCVP 6.3.
-    If any of these headers change, the code needs to be modified.
+    .. admonition:: For Future Changes
+        :class: caution
+
+        This form assumes that the fields message_id, correlation_id, vehicle_id, type,
+        priority, provisioning_state, version, packet_status, and subtype are present
+        in future proto versions of `CommandMessage` as in version TMCVP 6.3.
+        If any of these headers change, the code needs to be modified.
     """
-    # message_id = StringField('Message ID', default=str(uuid.uuid4()), **CONTROL_RENDER_KW)
+    message_id = StringField('Message ID', default=str(uuid.uuid4()), **CONTROL_RENDER_KW)
     correlation_id = StringField('Correlation ID', default='correlation-id', **CONTROL_RENDER_KW)
     vehicle_id = StringField('Vehicle ID', default='MH12VF1121', **CONTROL_RENDER_KW)
     type = SelectField('Type', choices=[(e.number, e.name) for e in tmcvp_common_pb2.eTcuMessageType.DESCRIPTOR.values], default=tmcvp_common_pb2.eTcuMessageType.command, coerce=int, **SELECT_RENDER_KW)
@@ -105,6 +107,31 @@ def set_vin():
 
 @app.route('/get_additional_fields', methods=['POST'])
 def get_additional_fields():
+    """
+    A function to handle the ``/get_additional_fields`` route and return additional fields HTML based on the request data.
+
+    This function is called on subtype dropdown change
+
+    .. code:: js
+        :number-lines: 131
+
+        $('#{{ form.subtype.id }}').change( function() {
+        var selectedSubtype = $(this).val();
+        var numEntries = $('#{{ form.numEntries.id }}').val();
+
+        $.ajax({
+            url: '/get_additional_fields',
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrf_token
+                },
+            data: { 'subtype': selectedSubtype, 'numEntries': numEntries },
+            success: function (response) {
+                $('#additionalFieldsContainer').html(response.additional_fields_html);
+                }
+            });
+        })
+    """
     subtype = request.form.get('subtype', -1)
     numEntries = int(request.form.get('numEntries', 1))
     session['numEntries'] = max(numEntries, 1)
@@ -125,6 +152,16 @@ def get_additional_fields():
     
 @app.route('/send_command', methods=['POST'])
 def send_command():
+    """
+    Generate and send a command message based on the form data.
+
+    This function extracts the subtype from the form data and generates a command message
+    using the :func:`generate_command_message` function. The generated message is then serialized
+    and published to the appropriate MQTT topic.
+
+    Returns:
+        (str): JSON object containing the response with status, command message as a dictionary, and the hex representation of the serialized message.
+    """
     subtype = request.form.get('subtype')
     try:
         subtype = int(subtype)
@@ -154,13 +191,13 @@ def generateDynamicForm(payload):
     """
     Generate a dynamic form class based on the given payload.
 
-    Works almost same as :func:`utils.fill_message`.
+    Works almost same as :func:`.utils.fill_message`.
 
     Parameters:
         payload (google.protobuf.message.Message): The message fields lled into the form.
     
     Returns:
-        The generated form class.
+        DynamicForm (:class:`FlaskForm <flask_wtf.FlaskForm>`): The generated form class.
 
     """
     class DynamicForm(FlaskForm):
@@ -212,6 +249,9 @@ def generate_command_message(subtype, form):
     """
     Generate a Command Message based on the provided subtype and form input.
 
+    This function uses :func:`google.protobuf.json_format.ParseDict` for parsing the form data,
+    as ``request.form`` is an :class:`ImmutableMultiDict <werkzeug.datastructures.ImmutableMultiDict>` object.
+
     Parameters:
         subtype (int): The subtype of the command message corresponding to `enum commandMessageSubType`
         form (dict): A dictionary containing the form data from the request
@@ -219,9 +259,7 @@ def generate_command_message(subtype, form):
     Returns:
         tmcvp_command_message_pb2.CommandMessage: The generated CommandMessage.
 
-    This function uses `google.protobuf.json_format.ParseDict <https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.ParseDict>`_ for parsing the form data,
-    as `request.form` return an `ImmutableMultiDict` object.
-    Works almost same as :func:`commander.generate_command_message`.    
+    Works almost same as :func:`.commander.generate_command_message`.    
 
     """
     # Create a CommandMessage and set common fields
@@ -263,11 +301,10 @@ def fill_payload(message, form):
     """
     Fills the payload message with data from the form. 
 
-    Literally the same as :func:`utils.fill_message`
+    Literally the same as :func:`.utils.fill_message`
 
     Warning: 
-    Use `google.protobuf.json_format.ParseDict <https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.ParseDict>`_ 
-    instead.
+        Use :func:`google.protobuf.json_format.ParseDict` instead.
 
     """
     for field_descriptor in message.DESCRIPTOR.fields:
@@ -357,18 +394,32 @@ def handle_connect(client, userdata, flags, rc):
             'type': 'success'
         })
 
-@mqtt.on_disconnect()
-def handle_disconnect(client, userdata, rc):
-    app.logger.info("Disconnected from MQTT Broker")
-    socketio.emit('message', {
-        'showToast': True,
-        'message': "Disconnected from MQTT Broker",
-        'header': 'MQTT',
-        'type': 'danger'
-    })
-
 @mqtt.on_message()
 def handle_mytopic(client, userdata, message):
+    """Callback function for handling MQTT messages on a specific topic.
+
+    This function decodes the payload of the received MQTT message based on the topic
+    and emits the decoded information to the connected clients through Socket.IO.
+
+    If the decoding fails, a warning message is emitted, and the payload is marked as
+    "Parsing Failed" in the Socket.IO message.
+
+    The corresponding socket.io event is "mqtt_message" which is handled as
+
+    .. code:: js
+        :number-lines: 195
+
+        const socket = io.connect('http://' + document.domain + ':' + location.port);
+        socket.on('mqtt_message', function(data) {
+            showToast({
+                header: 'MQTT Response received on',
+                data: data.topic
+            });
+            $('#responseHex').html(data.messageHex);
+            $('#response').html(data.message);
+        });
+
+    """
     app.logger.info("Received Message on Topic: {}".format(message.topic))
     # app.logger.debug("Message payload: {}".format(message.payload.hex(" ").upper()))
 
@@ -401,16 +452,16 @@ def decode_response(rcvdMsg):
     Decode command response received in the MQTT message.
 
     Parameters:
-    - rcvdMsg (bytes): The received MQTT message in bytes.
+        rcvdMsg (bytes): The received MQTT message in bytes.
 
-    This is equivalent to :func:`commander.decode_response`
+    This is equivalent to :meth:`tmcvp_protoserver.commander.decode_response`
 
-    Important:
-    This function assumes that the fields message_id, correlation_id, vehicle_id, 
-    type, subtype, priority, provisioning_state, version, time_stamp, packet_status
-    and return_code are present in future proto versions of `CommandResponseMessage`
-    as in version TMCVP 6.3. If any of these fields change, the code needs to be
-    modified. However, it is agnostic to changes `commandResponsePayload`.
+    Caution:
+        This function assumes that the fields ``message_id``, ``correlation_id``, ``vehicle_id``, 
+        ``type``, ``subtype``, ``priority``, ``provisioning_state``, ``version``, ``time_stamp``, 
+        ``packet_status`` and ``return_code`` are present in future proto versions of
+        `CommandResponseMessage` as in version TMCVP 6.3. If any of these fields change,
+        the code needs to be modified. However, it is agnostic to changes ``commandResponsePayload``.
 
     """
     try:
@@ -435,6 +486,12 @@ def decode_response(rcvdMsg):
 def decode_telemetry(rcvdMsg):
     """
     Decode telemetry message received in MQTT Protobuf.
+
+    Parameters:
+        rcvdMsg (bytes): The received MQTT message in bytes.
+
+    Returns:
+        (str): A table representation of the telemetry message.
     """
     try:
         telemetry_message = tmcvp_vehicletelemetry_message_pb2.VehicleTelemetryMessage()
@@ -448,7 +505,40 @@ def decode_telemetry(rcvdMsg):
         app.logger.error("Error in decode_response: ", exc_info=e)
         return None
 
+@app.route('/docs')
+def docs():
+    external_url = url_for('static', filename='docs/html/index.html')
+    return redirect(external_url)
+
 def TmcvpMQTTProtobufServer():
+    """
+    This function is for wsgi server that runs the app
+
+    .. admonition:: Examples
+        :class: tip
+
+        Using `Gunicorn`_ ::
+        
+            $ gunicorn -w 4 -b 0.0.0.0 'tmcvp_protoserver.app:TmcvpMQTTProtobufServer()'
+            # or 
+            $ gunicorn -w 4 -b 0.0.0.0 tmcvp-server
+
+        Using `Waitress`_ ::
+
+            $ waitress-serve --call tmcvp_protoserver.app:TmcvpMQTTProtobufServer
+            # or equivalently
+            $ waitress-serve --call tmcvp-server
+
+    Returns:
+        app (flask.Flask): Flask application object
+
+    .. _Gunicorn:
+        https://flask.palletsprojects.com/en/3.0.x/deploying/gunicorn/
+
+    .. _Waitress:
+        https://flask.palletsprojects.com/en/3.0.x/deploying/waitress/
+
+    """
     return app
 
 def main():
