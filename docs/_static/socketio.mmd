@@ -1,0 +1,12 @@
+sequenceDiagram
+
+    participant MQTTBroker
+    participant FlaskServer
+    participant SocketIOClient
+    participant User
+
+    User ->> FlaskServer: Provides Topic
+    FlaskServer->>MQTTBroker: Subscribes to Topic
+    MQTTBroker--)FlaskServer: Received Message
+    FlaskServer ->> SocketIOClient: Sends MQTT Response
+    SocketIOClient -> User: Displays Message
