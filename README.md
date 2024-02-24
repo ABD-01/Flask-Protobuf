@@ -45,6 +45,8 @@ Usage:
 tmcvp-server-flask
 ```
 
+The static depiction of Flask Application can be seen [here](demo/index.html)
+
 ## Scaling for Future Usage
 
 The server is designed with scalability in mind, anticipating future changes and updates to the TMCVP protocol. It is independent of specific command subtype payloads, providing flexibility for integration with new message types or additional fields introduced in future versions.
