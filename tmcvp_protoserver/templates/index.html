@@ -26,6 +26,9 @@
               <li class="nav-item">
                 <a class="nav-link disabled" aria-disabled="true">Vsoh</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/docs">Docs</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -47,7 +50,7 @@
                                 <div class="col-md-4">
                                     <label for="{{ field.id }}" class="form-label">{{ field.label }}</label>
                                     {% if field.id == 'type' %}
-                                        <label id="typeInfo" class="text-muted small" style="display: none;">Good luck changing it to a different type!</label>
+                                        <label id="typeInfo" class="text-muted small">Good luck changing it to a different type!</label>
                                         {{ field(
                                             onchange="setTimeout(function() { document.getElementById('type').selectedIndex = 0; }, 1000);",
                                             onfocus="document.getElementById('typeInfo').style.display='block'",
@@ -78,7 +81,8 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="{{ form.subtype.id }}" class="form-label">{{ form.subtype.label }}</label>
+                            <label for="{{ form.subtype.id }}" class="form-label mb-0">{{ form.subtype.label(class="mb-0") }}</label>
+                            <label id="typeInfo" class="text-muted small">(Creates Dynamic Form on change)</label>
                             {{ form.subtype(class="form-select form-select-sm") }}
                             {% if form.subtype.errors %}
                                 <span style="color: red;">{{ ', '.join(form.subtype.errors) }}</span>
@@ -121,54 +125,46 @@
         </div>
     </div>
 
+    <script src="static/add_fields.js"></script>
     <script>
         // Load additional fields dynamically based on the selected subtype
-        var csrf_token = "{{ csrf_token() }}";
-        
         $('#{{ form.subtype.id }}').change( function() {
             var selectedSubtype = $(this).val();
             var numEntries = $('#{{ form.numEntries.id }}').val();
-    
-            $.ajax({
-                url: '/get_additional_fields',
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrf_token
-                },
-                data: { 'subtype': selectedSubtype, 'numEntries': numEntries },
-                success: function (response) {
-                    $('#additionalFieldsContainer').html(response.additional_fields_html);
-                }
-            });
-    
+            numEntries = Math.min(Math.max(numEntries, 1), 30);
+            additional_fields_html = get_additional_fields(selectedSubtype, numEntries);
+            $('#additionalFieldsContainer').html(additional_fields_html);
+            return;
         })
     </script>
     <script>
         $('#commandForm').submit(function (e) {
             e.preventDefault();  // Prevent the default form submission
 
-            $.ajax({
-                url: '/send_command',
-                type: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token() }}'
+            const response_message = {
+                "command_payload": {
+                    "findCarLocationCommand": {}
                 },
-                data: $('#commandForm').serialize(),
-                success: function (response) {
-                    if (response.status === "success") {
-                        $message = $('<pre/>');
-                        $message.text(JSON.stringify(response.message, null, 4));
-                        $('#commandMessage').html($message);
-                        $('#commandMessageHex').html(response.messageHex);
-                    }
-                    else {
-                        alert("Error: " + response.message);
-                    }
+                "correlation_id": "correlation-id",
+                "message_id": "f51c0caf-d248-4209-ad36-7cbe02576b82",
+                "packet_status": 76,
+                "priority": "moderate",
+                "provisioning_state": 1,
+                "subtype": 8,
+                "time_stamp": {
+                    "nanos": 623891000,
+                    "seconds": 1708783579
                 },
-                error: function (error) {
-                    console.log(error);
-                }
-            })
+                "vehicle_id": "VehicleId",
+                "version": "V6.3"
+            }
+            const response_messageHex = "0A 24 66 35 31 63 30 63 61 66 2D 64 32 34 38 2D 34 32 30 39 2D 61 64 33 36 2D 37 63 62 65 30 32 35 37 36 62 38 32 12 0E 63 6F 72 72 65 6C 61 74 69 6F 6E 2D 69 64 1A 09 56 65 68 69 63 6C 65 49 64 28 08 32 08 6D 6F 64 65 72 61 74 65 38 01 42 04 56 36 2E 33 4A 0B 08 EB D9 E8 AE 06 10 C0 EA C3 46 50 4C 5A 02 4A 00"
+            console.log(response_message)
+            message = $('<pre/>');
+            message.text(JSON.stringify(response_message, null, 4));
+            $('#commandMessage').html(message);
+            $('#commandMessageHex').html(response_messageHex);
+            setTimeout(simulateReceive, 1000);
         })
     </script> 
 

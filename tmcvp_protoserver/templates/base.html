@@ -39,7 +39,7 @@
     <!-- Vin No Container -->
     <div class="container">      
         <div class="card text-center text-bg-secondary m-1"  data-bs-toggle="modal" data-bs-target="#vinModalStaticBackdrop">
-            <h4 class="card-title" id="vinNo">VIN No: {{ vin_no }}</h4> 
+            <h4 class="card-title" id="vinNo">VIN No: testVin</h4> 
         </div>
     </div>
 
@@ -48,7 +48,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-body">
-            <input type="text" class="form-control" id="vinNoForm" placeholder="Enter VIN No" required>
+            <input type="text" class="form-control" id="vinNoForm" placeholder="Enter VIN No" value="testVin" required>
             <span style="color: red; display: none;" id="errorVin">VIN cannot be empty. Please enter a valid VIN.</span>
         </div>
         <div class="modal-footer">
@@ -146,7 +146,7 @@
             <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#github"></use></svg></a></li>
         </ul>
         <p class="border-top m-3 mx-5 text-center pt-3 px-3 border-secondary">
-            © 2024 Accolade Electronics Pvt. Ltd.
+            © 2024 Company
         </p>
     </footer>
 
@@ -190,41 +190,83 @@
     bootstrapToast.show();
 }
 </script>
+<script>
+
+const mqtt_response = `<!-- templates/response_table.html -->
+<table class="table table-bordered mt-2 mb-1">
+    <thead>
+        <tr><th>Field</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>message_id</td><td>82b5099a-9b33-49e2-a0f2-405c495a6ca6</td></tr>
+        <tr><td>correlation_id</td><td>ab47c7e3-4e5c-4069-a9b9-ccaa761754bc</td></tr>
+        <tr><td>vehicle_id</td><td>VehicleId</td></tr>
+        <tr><td>type</td><td>commandResponse</td></tr>
+        <tr><td>subtype</td><td>FindCarLocationCommand</td></tr>
+        <tr><td>priority</td><td>0</td></tr>
+        <tr><td>provisioning_state</td><td>authorized</td></tr>
+        <tr><td>version</td><td>6.3.0</td></tr>
+        <tr><td>time_stamp</td><td>2024-02-24 23:28:41</td></tr>
+        <tr><td>packet_status</td><td>Live</td></tr>
+        <tr><td>return_code</td><td class="bg-success-subtle">succeeded</td></tr>
+    </tbody>
+</table><table class="table table-bordered">
+<thead>
+<tr><th style="text-align: right;">  Field Index</th><th>Name            </th><th>Type   </th><th>Content                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           </th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: right;">            1</td><td>errorCode       </td><td>UINT32 </td><td>1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 </td></tr>
+<tr><td style="text-align: right;">            2</td><td>vehicleTelemetry</td><td>MESSAGE</td><td><table class="table table-bordered">
+<thead>
+<tr><th style="text-align: right;">  Field Index</th><th>Name            </th><th>Type   </th><th>Content                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: right;">            1</td><td>timestamp       </td><td>MESSAGE</td><td><table class="table table-bordered">
+<thead>
+<tr><th style="text-align: right;">  Field Index</th><th>Name   </th><th>Type  </th><th style="text-align: right;">   Content</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: right;">            1</td><td>seconds</td><td>INT64 </td><td style="text-align: right;">1708797521</td></tr>
+<tr><td style="text-align: right;">            2</td><td>nanos  </td><td>INT32 </td><td style="text-align: right;"> 221835000</td></tr>
+</tbody>
+</table></td></tr>
+<tr><td style="text-align: right;">            2</td><td>gpsLat          </td><td>INT32  </td><td>48.8582637                                                                                                                                                                                                                                                                                                                                                                                                                                                                 </td></tr>
+<tr><td style="text-align: right;">            3</td><td>gpsLong         </td><td>INT32  </td><td>2.2942401                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </td></tr>
+<tr><td style="text-align: right;">            4</td><td>gpsAlt          </td><td>INT32  </td><td>330.0000                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </td></tr>
+<tr><td style="text-align: right;">            6</td><td>accelX          </td><td>INT32  </td><td>188                                                                                                                                                                                                                                                                                                                                                                                                                                                                       </td></tr>
+<tr><td style="text-align: right;">            7</td><td>accelY          </td><td>INT32  </td><td>785                                                                                                                                                                                                                                                                                                                                                                                                                                                                       </td></tr>
+<tr><td style="text-align: right;">            8</td><td>accelZ          </td><td>INT32  </td><td>1890                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </td></tr>
+<tr><td style="text-align: right;">           12</td><td>gpsSignalQuality</td><td>UINT32 </td><td>18                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </td></tr>
+<tr><td style="text-align: right;">           16</td><td>noOfSatForFix   </td><td>UINT32 </td><td>12                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </td></tr>
+<tr><td style="text-align: right;">           18</td><td>gpsFix          </td><td>BOOL   </td><td>True                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </td></tr>
+<tr><td style="text-align: right;">           20</td><td>ignitionOn      </td><td>BOOL   </td><td>True                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </td></tr>
+<tr><td style="text-align: right;">           21</td><td>crankOn         </td><td>BOOL   </td><td>False                                                                                                                                                                                                                                                                                                                                                                                                                                                                     </td></tr>
+<tr><td style="text-align: right;">           24</td><td>noOfFuelTanks   </td><td>INT32  </td><td>1                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </td></tr>
+<tr><td style="text-align: right;">           39</td><td>gpsLatDir       </td><td>STRING </td><td>N                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </td></tr>
+<tr><td style="text-align: right;">           40</td><td>gpsLongDir      </td><td>STRING </td><td>E                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </td></tr>
+</tbody>
+</table></td></tr>
+</tbody>
+</table>`;
+
+const mqtt_messageHex = "0A 24 39 64 63 66 65 64 30 61 2D 38 30 66 32 2D 34 31 61 39 2D 38 64 38 30 2D 64 30 36 38 66 36 36 30 63 33 33 35 12 24 61 62 34 37 63 37 65 33 2D 34 65 35 63 2D 34 30 36 39 2D 61 39 62 39 2D 63 63 61 61 37 36 31 37 35 34 62 63 1A 09 56 65 68 69 63 6C 65 49 64 20 01 28 08 32 01 30 38 02 42 05 36 2E 33 2E 30 4A 0C 08 F2 E6 E7 AE 06 10 A8 82 EC A0 03 50 4C 62 46 52 44 08 01 12 40 0A 0C 08 F2 E6 E7 AE 06 10 A8 82 EC A0 03 10 ED DB FC E8 01 18 C1 A5 F8 0A 20 A0 B5 C9 01 30 BC 01 38 91 06 40 E2 0E 60 12 80 01 0C 90 01 01 A0 01 01 A8 01 00 C0 01 01 BA 02 01 4E C2 02 01 45";
+
+</script>
 <script type="text/javascript" charset="utf-8">
-    const socket = io.connect('http://' + document.domain + ':' + location.port);
-    socket.on('connect', function() {
-            console.log('connected');
-            showToast({
-                type: 'success',
-                header: 'SocketIO',
-                data: 'Web socket connected to Flask Server',
-            });
-    });
-    socket.on('message', function(data) {
-            console.log(data.message);
-            if (data.showToast) {
-              showToast({
-                header: data.header,
-                data: data.message,
-                type: data.type || 'primary'
-              })
-            }
-    });
-    socket.on('mqtt_message', function(data) {
+    function simulateReceive() {
         showToast({
-            header: 'MQTT Response received on',
-            data: data.topic
+            header: 'MQTT Response received on (Demo)',
+            data: "/test/topic/response",
         });
-        $('#responseHex').html(data.messageHex);
-        $('#response').html(data.message);
-    });
+        $('#responseHex').html(mqtt_messageHex);
+        $('#response').html(mqtt_response);
+    }
 </script>
 <script>
-    var csrf_token = "{{ csrf_token() }}";
-    var topic = "{{ topic }}";
+    var topic = "/test/topic/response";
 
     // Check if VIN is set in session or not
-    var rcvdVinNo = "{{ vin_no }}"
+    var rcvdVinNo = ""
 
     const vinModal = new bootstrap.Modal(document.getElementById('vinModalStaticBackdrop'));
     // If VIN is not set, show the modal
@@ -234,22 +276,14 @@
     // Handle VIN submission
     $('#submitVin').click(function () {
         var vinNo = $('#vinNoForm').val();
-
-        // Make an AJAX request to set VIN in session
-        $.ajax({
-            url: '/set_vin',
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrf_token
-            },
-            data: { 'vin_no': vinNo },
-            success: function (response) {
-                // Close the modal
-                vinModal.hide();
-                document.getElementById('vinNo').innerHTML = 'VIN No: ' + vinNo;
-                socket.emit('subscribe', { 'vinNo': vinNo, 'topic': topic });
-            }
+        var rcvdVinNo = vinNo
+        document.getElementById('vinNo').innerHTML = 'VIN No: ' + vinNo;
+        showToast({
+            header: 'Connected to MQTT (Demo)',
+            data: "/test/topic/response",
+            type: 'success'
         });
+        return;
     });
 </script>
 </body>

@@ -132,7 +132,12 @@ def get_enum_input(enum_type):
     print(f"Select from {len(values)} options for {enum_type.name}:")
     max_len = max(len(value.name) for value in values) # find the longest key
     for enum_value in values:
-        print(f"{enum_value.name.ljust(max_len + 5, '.')}{enum_value.number}")
+        if (enum_value.number) == 8:
+            print(f"{enum_value.name.ljust(max_len + 5, '.')}{enum_value.number}")
+        else:
+            _ = f"Command-Subtype-{enum_value.number}".ljust(max_len + 5, '.')
+            print(f"{_}{enum_value.number}")
+
     while True:
         try:
             selected_enum = input("Enter the number corresponding to your choice (or press Enter to skip): ").strip()

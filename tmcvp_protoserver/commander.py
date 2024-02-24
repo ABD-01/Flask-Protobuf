@@ -61,14 +61,14 @@ def generate_command_message(subtype):
 
     command_message.message_id = str(uuid.uuid4())
     command_message.correlation_id = "correlation-id"
-    command_message.vehicle_id = "MH12VF1121"
+    command_message.vehicle_id = "Vehicle ID"
 
     command_message.type = tmcvp_common_pb2.eTcuMessageType.command
 
     command_message.subtype = subtype
     command_message.priority = "moderate"
     command_message.provisioning_state = tmcvp_common_pb2.eProvisioningState.provisioned
-    command_message.version = "V6.2"
+    command_message.version = "V6.3"
     command_message.time_stamp.GetCurrentTime()
     command_message.packet_status = tmcvp_common_pb2.PacketStatus.Live
 
@@ -110,14 +110,50 @@ def decode_response(rcvdMsg):
             decode_response(rcvd_message)
     """
 
-    print("In Hex:\n{}".format(rcvdMsg.hex(" ").upper()))
+    # print("In Hex:\n{}".format(rcvdMsg.hex(" ").upper()))
     try:
-        # Decode and print the response based on subtype
-        response_message = tmcvp_commandresponse_message_pb2.CommandResponseMessage()
-        response_message.ParseFromString(rcvdMsg)
+    # Decode and print the response based on subtype
+        print("Recived Response")
+        response_message = tmcvp_commandresponse_message_pb2.CommandResponseMessage(
+            type=1,
+            subtype=8,
+            priority=str(0),
+            provisioning_state=2,
+            version="6.3.0",
+            packet_status=76,
+            return_code=0,
+            correlation_id=b"ab47c7e3-4e5c-4069-a9b9-ccaa761754bc",
+            message_id=bytes(str(uuid.uuid4()), "utf-8"),
+        )
+        response_message.time_stamp.GetCurrentTime()
+        
+        getMyCarPayload = tmcvp_command_pb2.FindCarLocationCommandResponsePayload(errorCode=1)
+        telemetryReading = tmcvp_common_pb2.TelemetryReading(
+            gpsLat=int(48.8582637*10000000),
+            gpsLong=int(2.2942401*10000000),
+            gpsAlt=int(330*10000),
+            accelX=188,
+            accelY=785,
+            accelZ=1890,
+            gpsSignalQuality=18,
+            noOfSatForFix=12,
+            gpsFix=True,
+            ignitionOn=True,
+            crankOn=False,
+            noOfFuelTanks=1,
+            gpsLatDir=b'N',
+            gpsLongDir=b'E'
+        )
+        telemetryReading.timestamp.GetCurrentTime()
+        getMyCarPayload.vehicleTelemetry.CopyFrom(telemetryReading)
+        response_message.commandResponsePayload.findCarLocationCommandResponse.CopyFrom(getMyCarPayload)
+        # response_message.ParseFromString(rcvdMsg)
+        # print("In Hex:\n{}".format(response_message.SerializeToString().hex(" ").upper()))
 
         response_payload_type = str(response_message.commandResponsePayload.WhichOneof("commandResponsePayload"))
+        print(response_payload_type)
         response_payload = getattr(response_message.commandResponsePayload, response_payload_type)
+        print( response_payload)
 
         print("message_id:", response_message.message_id)
         print("correlation_id:", response_message.correlation_id)
@@ -130,7 +166,7 @@ def decode_response(rcvdMsg):
         print("time_stamp:", datetime.fromtimestamp(response_message.time_stamp.seconds).strftime('%Y-%m-%d %H:%M:%S'))
         print("packet_status:", tmcvp_common_pb2.PacketStatus.Name(response_message.packet_status))
         print("return_code:", tmcvp_commandresponse_message_pb2.eReturnCode.Name(response_message.return_code))
-        print("commandResponsePayload:\n{}".format(utils.MessageToTable(response_payload, show_empty=True)))
+        print("commandResponsePayload:\n{}".format(utils.MessageToTable(response_payload, show_empty=False)))
 
         logging.info("Command Response:\n{}".format(utils.MessageToTable(response_message)))
     except Exception as e:
@@ -147,7 +183,7 @@ def start_mqtt(client):
     
     """
     def on_connect(client, userdata, flags, rc):
-        print("Client with id: " + str(client._client_id) + " Connected")
+        # print("Client with id: " + str(client._client_id) + " Connected")
         logging.info("Connected with result code %s", str(rc))
         # client.subscribe("/device/+/MQTTPROTOBUF/commandresponse")
 
@@ -195,7 +231,7 @@ def mqtt_subscribe(vin_no='+'):
         vin_no (str):  VIN number for MQTT topic subscription
     """
     CommandResponseTopic = "/device/" + vin_no + "/MQTTPROTOBUF/commandresponse"
-    print("Subcribed to Topic: {}".format(CommandResponseTopic))
+    # print("Subcribed to Topic: {}".format(CommandResponseTopic))
     subscribe.callback(handle_mytopic, CommandResponseTopic, hostname=MQTT_BROKER, port=PORT_NO)
 
 VinNo = ""
@@ -229,6 +265,9 @@ def main():
 
             client.publish(CommandTopic, serialized_message)
             logging.info("Published CommandMessage:\n%s", utils.MessageToTable(command_message))
+
+            time.sleep(2)
+            decode_response(b"Hello")
 
             input("Press Enter to continue...")
 

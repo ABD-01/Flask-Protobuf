@@ -26,6 +26,9 @@
               <li class="nav-item">
                 <a class="nav-link disabled" aria-disabled="true">Vsoh</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/docs">Docs</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -44,4 +47,16 @@
         </div>
     </div>
 
+    <script src="static/random_table.js"></script>
+    <script>
+      function simulateTelemetry() {
+        showToast({
+            header: 'MQTT Response received on (Demo)',
+            data: "/test/topic/telemetry",
+        });
+        $('#response').html(generateRandomTable());
+      }
+      setInterval(simulateTelemetry, 3000); 
+      
+    </script>
 {% endblock %}

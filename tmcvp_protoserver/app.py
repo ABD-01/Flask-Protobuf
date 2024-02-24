@@ -41,7 +41,7 @@ app.config['MQTT_PASSWORD'] = ' '
 app.config['MQTT_REFRESH_TIME'] = 5.0  # refresh time in seconds
 app.config['RICH_LOGGING'] = True   # for rich logging
 mqtt = Mqtt(app)
-csrf = CSRFProtect(app)
+# csrf = CSRFProtect(app)
 socketio = SocketIO(app) 
 rich = RichApplication(app)
 
@@ -74,16 +74,16 @@ class CommandMessageForm(FlaskForm):
         in future proto versions of `CommandMessage` as in version TMCVP 6.3.
         If any of these headers change, the code needs to be modified.
     """
-    message_id = StringField('Message ID', default=str(uuid.uuid4()), **CONTROL_RENDER_KW)
+    message_id = StringField('Message ID', default="f51c0caf-d248-4209-ad36-7cbe02576b82", render_kw={"class":"form-control form-control-sm", "readonly": True})
     correlation_id = StringField('Correlation ID', default='correlation-id', **CONTROL_RENDER_KW)
-    vehicle_id = StringField('Vehicle ID', default='MH12VF1121', **CONTROL_RENDER_KW)
-    type = SelectField('Type', choices=[(e.number, e.name) for e in tmcvp_common_pb2.eTcuMessageType.DESCRIPTOR.values], default=tmcvp_common_pb2.eTcuMessageType.command, coerce=int, **SELECT_RENDER_KW)
+    vehicle_id = StringField('Vehicle ID', default='VehicleId', **CONTROL_RENDER_KW)
+    type = SelectField('Type', choices=[(e.number, f"Command-Type-{e.number}")  if e.number !=0 else (e.number, e.name) for e in tmcvp_common_pb2.eTcuMessageType.DESCRIPTOR.values], default=tmcvp_common_pb2.eTcuMessageType.command, coerce=int, **SELECT_RENDER_KW)
     priority = StringField('Priority', default='moderate', **CONTROL_RENDER_KW)
     provisioning_state = SelectField('Provisioning State', choices=[(e.number, e.name) for e in tmcvp_common_pb2.eProvisioningState.DESCRIPTOR.values], default=tmcvp_common_pb2.eProvisioningState.provisioned, coerce=int, **SELECT_RENDER_KW)
     version = StringField('Version', default='V6.3', **CONTROL_RENDER_KW)
     # time_stamp = StringField('Time Stamp', default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), render_kw={'readonly': True})
-    packet_status = SelectField('Packet Status', choices=[(e.number, e.name) for e in tmcvp_common_pb2.PacketStatus.DESCRIPTOR.values], default=tmcvp_common_pb2.PacketStatus.Live, coerce=int, **SELECT_RENDER_KW)
-    subtype = SelectField('Subtype', choices=[(-1, "--- Select Subtype ---")]+[(e.number, e.name) for e in tmcvp_command_message_pb2.commandMessageSubType.DESCRIPTOR.values], coerce=int, **SELECT_RENDER_KW)
+    packet_status = SelectField('Packet Status', choices=[(e.number, f"Packet-Status-{e.number}") if e.number !=8 else (e.number, e.name) for e in tmcvp_common_pb2.PacketStatus.DESCRIPTOR.values], default=tmcvp_common_pb2.PacketStatus.Live, coerce=int, **SELECT_RENDER_KW)
+    subtype = SelectField('Subtype', choices=[(-1, "--- Select Subtype ---")]+[(e.number, f"Command-Subtype-{e.number}")  if e.number !=8 else (e.number, e.name) for e in tmcvp_command_message_pb2.commandMessageSubType.DESCRIPTOR.values], coerce=int, default=8, **SELECT_RENDER_KW)
 
     numEntries = IntegerField('Number of Entries for repeated type', default=1, **CONTROL_RENDER_KW)
 
@@ -179,6 +179,18 @@ def send_command():
 
     message_dict = utils.MessageToDict(command_message)
     app.logger.debug(f"Published CommandMessage on Topic: {CommandTopic}\n{json.dumps(message_dict, indent=4)}")
+
+    mqtt_response = decode_response(b"Hello")
+    with open("mqtt_response.html", "w") as f:
+        f.write(mqtt_response)
+    message_payload = "0A 24 39 64 63 66 65 64 30 61 2D 38 30 66 32 2D 34 31 61 39 2D 38 64 38 30 2D 64 30 36 38 66 36 36 30 63 33 33 35 12 24 61 62 34 37 63 37 65 33 2D 34 65 35 63 2D 34 30 36 39 2D 61 39 62 39 2D 63 63 61 61 37 36 31 37 35 34 62 63 1A 09 56 65 68 69 63 6C 65 49 64 20 01 28 08 32 01 30 38 02 42 05 36 2E 33 2E 30 4A 0C 08 F2 E6 E7 AE 06 10 A8 82 EC A0 03 50 4C 62 46 52 44 08 01 12 40 0A 0C 08 F2 E6 E7 AE 06 10 A8 82 EC A0 03 10 ED DB FC E8 01 18 C1 A5 F8 0A 20 A0 B5 C9 01 30 BC 01 38 91 06 40 E2 0E 60 12 80 01 0C 90 01 01 A0 01 01 A8 01 00 C0 01 01 BA 02 01 4E C2 02 01 45"
+    socketio.emit('mqtt_message', 
+        {   
+            'topic': "/my/test/topic",
+            'message': mqtt_response, 
+            'messageHex': message_payload
+        })
+
     return jsonify({
         'status': 'success',
         'message': message_dict,
@@ -187,7 +199,7 @@ def send_command():
 
 NUM_REPEATED_MAX = 30
 NUM_MIN = 1
-def generateDynamicForm(payload):
+def generateDynamicForm(payload, prefix=""):
     """
     Generate a dynamic form class based on the given payload.
 
@@ -203,45 +215,46 @@ def generateDynamicForm(payload):
     class DynamicForm(FlaskForm):
         pass
 
+    
     num_repeated = min(session.get('numEntries', NUM_MIN), NUM_REPEATED_MAX)
-    for field_descriptor in payload.DESCRIPTOR.fields:
+    for i, field_descriptor in enumerate(payload.DESCRIPTOR.fields):
         field_name = field_descriptor.name
         field_type = field_descriptor.type
 
         # IS ENUM
         if  field_descriptor.type == field_descriptor.TYPE_ENUM:
             values = field_descriptor.enum_type.values
-            enum_choices = [(e.number, e.name) for e in values]
-            setattr(DynamicForm, field_name, SelectField(field_name, choices=enum_choices, coerce=int, **SELECT_RENDER_KW))
+            enum_choices = [(e.number, f"Enum-Options-{e.number}") for e in values]
+            setattr(DynamicForm, f"{prefix}Field-{i}", SelectField(f"{prefix}Field-{i}", choices=enum_choices, coerce=int, **SELECT_RENDER_KW))
         # IS MESSAGE
         elif field_descriptor.type == field_descriptor.TYPE_MESSAGE:
             # IS REPEATED MESSAGE
             if field_descriptor.label == field_descriptor.LABEL_REPEATED:
                 # for _ in range(num_repeated):
                 nested_payload = getattr(payload, field_descriptor.name).add()
-                nested_form  = FieldList(FormField(generateDynamicForm(nested_payload), render_kw={"class":"table table-bordered"}), min_entries=num_repeated, max_entries=NUM_REPEATED_MAX, render_kw={"class":"list-group list-unstyled"})
-                setattr(DynamicForm, field_name, nested_form)
+                nested_form  = FieldList(FormField(generateDynamicForm(nested_payload, "Nested-"+prefix), render_kw={"class":"table table-bordered"}), min_entries=num_repeated, max_entries=NUM_REPEATED_MAX, render_kw={"class":"list-group list-unstyled"})
+                setattr(DynamicForm, f"{prefix}Field-{i}", nested_form)
             # IS NON REPEATED MESSAGE
             else:
                 nested_payload = getattr(payload, field_descriptor.name)
-                nested_form = generateDynamicForm(nested_payload)
-                setattr(DynamicForm, field_name, nested_form)
+                nested_form = generateDynamicForm(nested_payload, "Nested-"+prefix)
+                setattr(DynamicForm, f"{prefix}Field-{i}", nested_form)
         # IS REPEATED BASIC TYPE
         elif field_descriptor.label == field_descriptor.LABEL_REPEATED:
             # for _ in range(num_repeated):
             #     setattr(DynamicForm, field_name, StringField(field_name, **CONTROL_RENDER_KW))
-            setattr(DynamicForm, field_name, FieldList(StringField(field_name, **CONTROL_RENDER_KW), min_entries=num_repeated, max_entries=NUM_REPEATED_MAX, render_kw={"class":"list-group list-unstyled"}))
+            setattr(DynamicForm, f"{prefix}Field-{i}", FieldList(StringField(f"{prefix}Field-{i}", **CONTROL_RENDER_KW), min_entries=num_repeated, max_entries=NUM_REPEATED_MAX, render_kw={"class":"list-group list-unstyled"}))
         else:
             if field_descriptor.type == field_descriptor.TYPE_DOUBLE or field_descriptor.type == field_descriptor.TYPE_FLOAT:
-                setattr(DynamicForm, field_name, FloatField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, f"{prefix}Field-{i}", FloatField(f"{prefix}Field-{i}", **CONTROL_RENDER_KW))
             elif field_descriptor.type in [field_descriptor.TYPE_INT32, field_descriptor.TYPE_INT64, field_descriptor.TYPE_UINT32, field_descriptor.TYPE_UINT64]:
-                setattr(DynamicForm, field_name, IntegerField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, f"{prefix}Field-{i}", IntegerField(f"{prefix}Field-{i}", **CONTROL_RENDER_KW))
             elif field_descriptor.type == field_descriptor.TYPE_BOOL:
-                setattr(DynamicForm, field_name, BooleanField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, f"{prefix}Field-{i}", BooleanField(f"{prefix}Field-{i}", **CONTROL_RENDER_KW))
             elif field_descriptor.type == field_descriptor.TYPE_STRING:
-                setattr(DynamicForm, field_name, StringField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, f"{prefix}Field-{i}", StringField(f"{prefix}Field-{i}", **CONTROL_RENDER_KW))
             elif field_descriptor.type == field_descriptor.TYPE_BYTES:
-                setattr(DynamicForm, field_name, StringField(field_name, **CONTROL_RENDER_KW))
+                setattr(DynamicForm, f"{prefix}Field-{i}", StringField(f"{prefix}Field-{i}", **CONTROL_RENDER_KW))
 
     return DynamicForm
 
@@ -267,7 +280,7 @@ def generate_command_message(subtype, form):
 
     command_message = ParseDict(form, command_message, ignore_unknown_fields=True)
 
-    command_message.message_id = str(uuid.uuid4())
+    command_message.message_id = "f51c0caf-d248-4209-ad36-7cbe02576b82"
     # command_message.correlation_id = form["correlation_id"]
     # command_message.vehicle_id = form["vehicle_id"]
 
@@ -442,7 +455,7 @@ def handle_mytopic(client, userdata, message):
         {   
             'topic': message.topic,
             'message': mqtt_response, 
-            'messageHex': message.payload.hex(" ").upper()
+            'messageHex': message_payload
         })
 
     return
@@ -465,6 +478,44 @@ def decode_response(rcvdMsg):
 
     """
     try:
+        print("Recived Response")
+        response_message = tmcvp_commandresponse_message_pb2.CommandResponseMessage(
+            type=1,
+            subtype=8,
+            priority=str(0),
+            provisioning_state=2,
+            version="6.3.0",
+            packet_status=76,
+            return_code=0,
+            correlation_id=b"ab47c7e3-4e5c-4069-a9b9-ccaa761754bc",
+            message_id=bytes(str(uuid.uuid4()), "utf-8"),
+            vehicle_id="VehicleId"
+        )
+        response_message.time_stamp.GetCurrentTime()
+        
+        getMyCarPayload = tmcvp_command_pb2.FindCarLocationCommandResponsePayload(errorCode=1)
+        telemetryReading = tmcvp_common_pb2.TelemetryReading(
+            gpsLat=int(48.8582637*10000000),
+            gpsLong=int(2.2942401*10000000),
+            gpsAlt=int(330*10000),
+            accelX=188,
+            accelY=785,
+            accelZ=1890,
+            gpsSignalQuality=18,
+            noOfSatForFix=12,
+            gpsFix=True,
+            ignitionOn=True,
+            crankOn=False,
+            noOfFuelTanks=1,
+            gpsLatDir=b'N',
+            gpsLongDir=b'E'
+        )
+        telemetryReading.timestamp.GetCurrentTime()
+        getMyCarPayload.vehicleTelemetry.CopyFrom(telemetryReading)
+        response_message.commandResponsePayload.findCarLocationCommandResponse.CopyFrom(getMyCarPayload)
+        rcvdMsg = response_message.SerializeToString()
+        print(rcvdMsg.hex(" ").upper())
+
         # Decode and print the response based on subtype
         response_message = tmcvp_commandresponse_message_pb2.CommandResponseMessage()
         response_message.ParseFromString(rcvdMsg)
@@ -474,7 +525,7 @@ def decode_response(rcvdMsg):
 
         with app.app_context():
             response_table = render_template('response_table.html', response_message=response_message, tmcvp_common_pb2=tmcvp_common_pb2, tmcvp_command_message_pb2=tmcvp_command_message_pb2, tmcvp_commandresponse_message_pb2=tmcvp_commandresponse_message_pb2, datetime=datetime)
-        payload_table = utils.MessageToTable(response_payload, show_empty=True, tablefmt='unsafehtml')
+        payload_table = utils.MessageToTable(response_payload, show_empty=False, tablefmt='unsafehtml')
         payload_table = payload_table.replace('<table>', '<table class="table table-bordered">')
 
         return response_table + payload_table
