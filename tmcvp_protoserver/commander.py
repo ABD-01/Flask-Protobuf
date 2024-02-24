@@ -42,18 +42,19 @@ def generate_command_message(subtype):
     Returns:
         tmcvp_command_message_pb2.CommandMessage: The generated CommandMessage.
 
-    .. admonition:: For Future Updates
-        This function creates sets common fields of command message such as
-        message_id, correlation_id, vehicle_id, type, priority, provisioning_state,
-        version, time_stamp, and packet_status to hard code values.
-        If any of these fields change, the code needs to be modified. However, 
-        it is agnostic to changes `commandResponsePayload`.
+    .. admonition:: For Future Changes
+        :class: caution
 
-    Example:
-    ```
-    command_message = generate_command_message(1)
-    print(command_message)
-    ```
+        This function creates and sets common fields of command message such as
+        ``message_id``, ``correlation_id``, ``vehicle_id``, ``type``, ``priority``, ``provisioning_state``,
+        ``version``, ``time_stamp``, and ``packet_status`` to hard code values.
+        If any of these fields change, the code needs to be modified. However, 
+        it is agnostic to changes ``commandPayload``.
+
+    Example::
+
+        command_message = generate_command_message(1)
+        print(command_message)
     """
     # Create a CommandMessage and set common fields
     command_message = tmcvp_command_message_pb2.CommandMessage()
@@ -87,28 +88,28 @@ def generate_command_message(subtype):
     return command_message
 
 def decode_response(rcvdMsg):
-    """
+    r"""
     Decode and print the received MQTT message.
 
-    Parameters:
-    - rcvdMsg (bytes): The received MQTT message in bytes.
+    :param bytes rcvdMsg: The received MQTT message in bytes.
 
-    Returns:
-    None
+    .. admonition:: For Future Changes
+        :class: caution
 
-    Important:
-    This function assumes that the fields message_id, correlation_id, vehicle_id, 
-    type, subtype, priority, provisioning_state, version, time_stamp, packet_status
-    and return_code are present in future proto versions of `CommandResponseMessage`
-    as in version TMCVP 6.3. If any of these fields change, the code needs to be
-    modified. However, it is agnostic to changes `commandResponsePayload`.
+        This function assumes that the fields ``message_id``, ``correlation_id``, ``vehicle_id``,
+        ``type``, ``subtype``, ``priority``, ``provisioning_state``, ``version``, ``time_stamp``, ``packet_status``
+        and ``return_code`` are present in future proto versions of ``CommandResponseMessage``
+        as in version TMCVP 6.3. If any of these fields change, the code needs to be
+        modified. However, it is agnostic to changes ``commandResponsePayload``.
 
     Example:
-    ```
-    rcvd_message = b'\n$ebc4a199-67d7-4bea-9fed-d05db21e7744\x12$b82a63a2-6619-496a-8b92-be7a763db448\x1a\x11ACCDEV14012078186 \x01(\x112\x0108\x02B\x056.2.0J\t\x08\x9f\x93\xd6\xae\x06\x10\x8a\x02PLb\x05\x9a\x01\x02\x08\x01'
-    decode_response(rcvd_message)
-    ```
+
+    .. code-block:: python
+    
+            rcvd_message = b'\n$ebc4a199-67d7-4bea-9fed-d05db21e7744\x12$b82a63a2-6619-496a-8b92-be7a763db448\x1a\x11ACCDEV14012078186 \x01(\x112\x0108\x02B\x056.2.0J\t\x08\x9f\x93\xd6\xae\x06\x10\x8a\x02PLb\x05\x9a\x01\x02\x08\x01'
+            decode_response(rcvd_message)
     """
+
     print("In Hex:\n{}".format(rcvdMsg.hex(" ").upper()))
     try:
         # Decode and print the response based on subtype
@@ -186,7 +187,7 @@ def handle_mytopic(client, userdata, message):
 def mqtt_subscribe(vin_no='+'):
     """Subscribe to a MQTT topic for a given VIN number else uses wild card (+)
 
-    .. note::
+    .. hint::
         This function uses `paho.mqtt.subscribe <https://eclipse.dev/paho/files/paho.mqtt.python/html/index.html#subscribe>`_ instead of subcribing with same client.
         Reason: I was facing issues when publishing and subcribing with the same client object. 
 
