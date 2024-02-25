@@ -1,31 +1,11 @@
-import os
 import sys
-import logging
-import uuid
-import json
-from datetime import datetime
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-from flask_socketio import SocketIO
-from flask_mqtt import Mqtt
-from flask_wtf import CSRFProtect, FlaskForm
+from flask import render_template
+from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SelectField, BooleanField, FloatField, FieldList, FormField
-from flask_rich import RichApplication
 
-package_dir = os.path.abspath(os.path.dirname(__file__))
-tata_motors_path = os.path.join(package_dir, 'TataMotorsCVP630')
-if tata_motors_path not in sys.path:
-    sys.path.append(tata_motors_path)
-logging.root.setLevel(logging.DEBUG)
-
-from google.protobuf.json_format import MessageToJson, MessageToDict, Parse, ParseDict
-import tmcvp_common_pb2
 import tmcvp_command_pb2
 import tmcvp_command_message_pb2
-import tmcvp_commandresponse_message_pb2
-import tmcvp_vehicletelemetry_message_pb2
-
-import utils
 
 from app import app
 

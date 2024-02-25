@@ -23,7 +23,7 @@ The `.pyi` files to help in IDEs and code editors like VsCode or PyCharm.
 The python protobuf provides an api {meth}`ListField <google.protobuf.message.Message.ListFields>`, however does not lists empty fields.
 This causes fields specifically set to values like `0` to be skipped.
 
-Another vale is to use `message.DESCRIPTOR.fields` which will list all the field descriptors for that message type. This includes empty ones. 
+Another way is to use {py:attr}`message.DESCRIPTOR.fields <google.protobuf.descriptor.Descriptor.fields>` which will list all the field descriptors for that message type. This includes empty ones. 
 This creates a list of names of all fields in the message, where field is of type {class}`google.protobuf.descriptor.FieldDescriptor`
 ```python
 [f.name for f in a.DESCRIPTOR.fields] 
@@ -50,7 +50,7 @@ for field_descriptor, value in gen:
 ### Getting string name of Enum in protobuf message
 
 Suppose we have an enum class `ExampleEnum` we can get name for corresponding int type as `ExampleEnum.Name(1)`.
-In case of enum field inside a message we can use [`field.enum_type.values_by_number`](https://googleapis.dev/python/protobuf/latest/google/protobuf/descriptor.html#google.protobuf.descriptor.EnumDescriptor.values_by_number)
+In case of enum field inside a message we can use {py:attr}`field.enum_type.values_by_number <google.protobuf.descriptor.EnumDescriptor.values_by_number>`
 ```{code-block} python
 :lineno-start: 261
 
@@ -73,7 +73,7 @@ class MyFLaskForm(FlaskForm):
     selectField = SelectField("Select Field", choices=[(e.number, e.name) for e in enum_type.values] render_kw={"class":"form-select"})
 ```
 
-### Real Stuff
+### Creating Dynamic Flask Forms based on Protobuf Payload 
 
 ```{code-block} python
 :lineno-start: 201
@@ -97,7 +97,7 @@ def generateDynamicForm(message):
     
     return DynamicForm
 ```
-This enables me to create form based on protobuf payload.
+This enabled me to create form based fields in protobuf payload.
 
 ## Flask
 
@@ -161,6 +161,8 @@ def decode_response():
 
 ## SocketIO
 
+### To send message from backend to frontend
+
 This is what ChatGPT said when I asked about how do I pass MQTT response from background thread to front html.
 > If you're receiving MQTT responses in another thread in your Flask application and you want to update the HTML template with this data, you need a mechanism to communicate between threads. Flask-SocketIO is one way to achieve real-time communication between the server and the client using WebSockets.
 
@@ -175,3 +177,38 @@ So this is what I needed SocketIO for
 :align: center
 :class: only-light
 ```
+
+`````{tab-set}
+````{tab-item} Python
+```{code-block} python
+---
+lineno-start: 441
+---
+
+socketio.emit('mqtt_message', 
+    {   
+        'topic': message.topic,
+        'message': mqtt_response, 
+        'messageHex': message.payload.hex(" ").upper()
+    })
+```
+````
+
+````{tab-item} JavaSricpt
+```{code-block} javascript
+---
+lineno-start: 194
+---
+
+const socket = io.connect('http://' + document.domain + ':' + location.port);
+socket.on('mqtt_message', function(data) {
+    showToast({
+        header: 'MQTT Response received on',
+        data: data.topic
+    });
+    $('#responseHex').html(data.messageHex);
+    $('#response').html(data.message);
+});
+```
+````
+`````

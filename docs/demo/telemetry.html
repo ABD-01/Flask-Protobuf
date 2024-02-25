@@ -32,6 +32,13 @@
         </style>
     </head>
     <body>
+
+        <div class="alert alert-info alert-dismissible fade show m-0" role="alert">
+            This is a static depiction of the Flask Application.
+            The telemetry data displayed is dummy data for demonstration purposes.
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+
         <!-- Navbar -->
         <nav class="navbar navbar-default navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
@@ -42,7 +49,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Command-Response</a>
+                            <a class="nav-link" href="demo-protoserver.html">Command-Response</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="#">Telemetry</a>
@@ -54,7 +61,7 @@
                             <a class="nav-link disabled" aria-disabled="true">Vsoh</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../">Docs</a>
+                            <a class="nav-link" href="Notes.html">Notes</a>
                         </li>
                     </ul>
                 </div>
@@ -92,7 +99,7 @@
             </div>
         </main>
         <!-- For Toasts -->
-        <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 11">
+        <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3 mt-5" style="z-index: 11">
         <!-- Toasts will be appended here -->
         </div>
         <!-- Toggle Theme -->

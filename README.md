@@ -45,7 +45,7 @@ Usage:
 tmcvp-server-flask
 ```
 
-The static depiction of Flask Application can be seen [here](demo/index.html)
+**The static depiction of Flask Application can be seen [here](demo-protoserver.html)**
 
 ## Scaling for Future Usage
 

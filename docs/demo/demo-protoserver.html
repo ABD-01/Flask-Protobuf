@@ -30,9 +30,14 @@
       /* for sticky footer */
     </style>
 </head>
-<body class="" style="">
+<body>
 
-    
+  <div class="alert alert-info alert-dismissible fade show m-0" role="alert">
+    This is a static depiction of the Flask Application.
+    The MQTT toasts and other interactive features such as the dynamic form for subtype payload are simulated using JavaScript magic.
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+ 
     <!-- Navbar -->
     <nav class="navbar navbar-default navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
@@ -55,7 +60,7 @@
                 <a class="nav-link disabled" aria-disabled="true">Vsoh</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="../">Docs</a>
+                <a class="nav-link" href="Notes.html">Notes</a>
               </li>
             </ul>
           </div>
@@ -180,17 +185,7 @@
                                     
                                         <!-- <select class="form-control form-control-sm" id="packet_status" name="packet_status"><option value="0">Packet-Status-0</option><option selected value="76">Packet-Status-76</option><option value="72">Packet-Status-72</option></select> -->
                                         <select class="form-select form-select-sm" id="packet_status" name="packet_status"><option value="0">Packet-Status-0</option><option selected="" value="76">Packet-Status-76</option><option value="72">Packet-Status-72</option></select>
-                                    
-                                    
                                 </div>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
                     </div>
 
                     <div class="row">
@@ -293,7 +288,7 @@
     </main>
 
     <!-- For Toasts -->
-    <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 11">
+    <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3 mt-4" style="z-index: 11">
         <!-- Toasts will be appended here -->
     <div class="toast text-bg-success fade hide" role="alert" aria-live="assertive" aria-atomic="true"><div class="toast-header">
         <strong class="me-auto">Connected to MQTT (Demo)</strong>
