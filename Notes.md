@@ -29,7 +29,7 @@ This creates a list of names of all fields in the message, where field is of typ
 [f.name for f in a.DESCRIPTOR.fields] 
 ```
 
-See {meth}`tmcvp_protoserver.utils.MessageToTable` for entire code, but here is the gist
+See {meth}`protoserver.utils.MessageToTable` for entire code, but here is the gist
 
 
 ```{code-block} python
@@ -60,7 +60,7 @@ for field_descriptor, value in message.ListFields():
 
 ## WTForms
 
-I have used this for creating dynamic flask forms. See {meth}`tmcvp_protoserver.app.generateDynamicForm` for more deatils.
+I have used this for creating dynamic flask forms. See {meth}`protoserver.app.generateDynamicForm` for more deatils.
 
 ### Basic Stuff
 
@@ -141,7 +141,7 @@ emphasize-lines: 4,5
 
 ### Using `render_template` outside of registered URL Route
 
-This is just to solve an error which occured in :func:`decode_response <tmcvp_protoserver.app.decode_response>`.
+This is just to solve an error which occured in :func:`decode_response <protoserver.app.decode_response>`.
 <div style="background-color: #1A1A1A; color: white; padding: 10px;">
     <span style="color: #FF6E6E; font-weight: bold;">RuntimeError:</span>
     <span>Working outside of application context.</span>

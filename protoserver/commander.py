@@ -16,8 +16,8 @@ logging.basicConfig(format='[%(asctime)s] [%(levelname)-8s] : "%(message)s"', le
 import paho.mqtt.client as mqtt
 import paho.mqtt.subscribe as subscribe
 
-from tmcvp_protoserver import utils
-from tmcvp_protoserver.utils import fill_message as fill_payload
+from protoserver import utils
+from protoserver.utils import fill_message as fill_payload
 
 import tmcvp_common_pb2
 import tmcvp_command_pb2
