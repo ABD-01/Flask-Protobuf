@@ -1,0 +1,504 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>protoserver.commander - TMCVP Protobuf Server 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">TMCVP Protobuf Server 1.0.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference external" href="demo-protoserver.html#http://">Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Notes.html">Notes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API References:</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../protoserver.html">protoserver</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of protoserver</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../commander.html">CLI Command-Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../app.html">Flask Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for protoserver.commander</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">uuid</span><span class="o">,</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="c1"># sys.path.append(&quot;./TataMotorsCVP630&quot;)</span>
+<span class="c1"># Adding TataMotorsCV630 to sys path</span>
+<span class="n">package_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">tata_motors_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_dir</span><span class="p">,</span> <span class="s1">&#39;TataMotorsCVP630&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">tata_motors_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tata_motors_path</span><span class="p">)</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;[</span><span class="si">%(asctime)s</span><span class="s1">] [</span><span class="si">%(levelname)-8s</span><span class="s1">] : &quot;</span><span class="si">%(message)s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;commander.log&quot;</span><span class="p">,</span> <span class="n">filemode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+
+
+<span class="kn">import</span> <span class="nn">paho.mqtt.client</span> <span class="k">as</span> <span class="nn">mqtt</span>
+<span class="kn">import</span> <span class="nn">paho.mqtt.subscribe</span> <span class="k">as</span> <span class="nn">subscribe</span>
+
+<span class="kn">from</span> <span class="nn">protoserver</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">protoserver.utils</span> <span class="kn">import</span> <span class="n">fill_message</span> <span class="k">as</span> <span class="n">fill_payload</span>
+
+<span class="kn">import</span> <span class="nn">tmcvp_common_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_command_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_command_message_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_commandresponse_message_pb2</span>
+<span class="c1"># from TataMotorsCVP630 import tmcvp_common_pb2</span>
+<span class="c1"># from TataMotorsCVP630 import tmcvp_command_pb2</span>
+<span class="c1"># from TataMotorsCVP630 import tmcvp_command_message_pb2</span>
+<span class="c1"># from TataMotorsCVP630 import tmcvp_commandresponse_message_pb2</span>
+
+
+<span class="n">MQTT_BROKER</span> <span class="o">=</span> <span class="s2">&quot;test.mosquitto.org&quot;</span>
+<span class="n">PORT_NO</span> <span class="o">=</span> <span class="mi">1883</span>
+
+<div class="viewcode-block" id="generate_command_message">
+<a class="viewcode-back" href="../../commander.html#protoserver.commander.generate_command_message">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_command_message</span><span class="p">(</span><span class="n">subtype</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a CommandMessage with common fields and payload based on subtype from user input.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        subtype (int): The subtype of the command message corresponding to `enum commandMessageSubType`</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tmcvp_command_message_pb2.CommandMessage: The generated CommandMessage.</span>
+
+<span class="sd">    .. admonition:: For Future Changes</span>
+<span class="sd">        :class: caution</span>
+
+<span class="sd">        This function creates and sets common fields of command message such as</span>
+<span class="sd">        ``message_id``, ``correlation_id``, ``vehicle_id``, ``type``, ``priority``, ``provisioning_state``,</span>
+<span class="sd">        ``version``, ``time_stamp``, and ``packet_status`` to hard code values.</span>
+<span class="sd">        If any of these fields change, the code needs to be modified. However, </span>
+<span class="sd">        it is agnostic to changes ``commandPayload``.</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        command_message = generate_command_message(1)</span>
+<span class="sd">        print(command_message)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create a CommandMessage and set common fields</span>
+    <span class="n">command_message</span> <span class="o">=</span> <span class="n">tmcvp_command_message_pb2</span><span class="o">.</span><span class="n">CommandMessage</span><span class="p">()</span>
+
+    <span class="n">command_message</span><span class="o">.</span><span class="n">message_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="n">command_message</span><span class="o">.</span><span class="n">correlation_id</span> <span class="o">=</span> <span class="s2">&quot;correlation-id&quot;</span>
+    <span class="n">command_message</span><span class="o">.</span><span class="n">vehicle_id</span> <span class="o">=</span> <span class="s2">&quot;MH12VF1121&quot;</span>
+
+    <span class="n">command_message</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">eTcuMessageType</span><span class="o">.</span><span class="n">command</span>
+
+    <span class="n">command_message</span><span class="o">.</span><span class="n">subtype</span> <span class="o">=</span> <span class="n">subtype</span>
+    <span class="n">command_message</span><span class="o">.</span><span class="n">priority</span> <span class="o">=</span> <span class="s2">&quot;moderate&quot;</span>
+    <span class="n">command_message</span><span class="o">.</span><span class="n">provisioning_state</span> <span class="o">=</span> <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">eProvisioningState</span><span class="o">.</span><span class="n">provisioned</span>
+    <span class="n">command_message</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;V6.2&quot;</span>
+    <span class="n">command_message</span><span class="o">.</span><span class="n">time_stamp</span><span class="o">.</span><span class="n">GetCurrentTime</span><span class="p">()</span>
+    <span class="n">command_message</span><span class="o">.</span><span class="n">packet_status</span> <span class="o">=</span> <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">PacketStatus</span><span class="o">.</span><span class="n">Live</span>
+
+    <span class="c1"># Select the appropriate command payload based on subtype</span>
+    <span class="n">command_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+        <span class="n">tmcvp_command_pb2</span><span class="p">,</span>
+        <span class="n">tmcvp_command_message_pb2</span><span class="o">.</span><span class="n">commandMessageSubType</span><span class="o">.</span><span class="n">Name</span><span class="p">(</span><span class="n">subtype</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;Payload&quot;</span><span class="p">,</span>
+    <span class="p">)()</span>
+    <span class="n">fill_payload</span><span class="p">(</span><span class="n">command_payload</span><span class="p">)</span>
+
+    <span class="c1"># Set the payload in the command message</span>
+    <span class="nb">getattr</span><span class="p">(</span>
+        <span class="n">command_message</span><span class="o">.</span><span class="n">command_payload</span><span class="p">,</span>
+        <span class="n">command_message</span><span class="o">.</span><span class="n">command_payload</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">subtype</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">command_payload</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">command_message</span></div>
+
+
+<div class="viewcode-block" id="decode_response">
+<a class="viewcode-back" href="../../commander.html#protoserver.commander.decode_response">[docs]</a>
+<span class="k">def</span> <span class="nf">decode_response</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decode and print the received MQTT message.</span>
+
+<span class="sd">    :param bytes rcvdMsg: The received MQTT message in bytes.</span>
+
+<span class="sd">    .. admonition:: For Future Changes</span>
+<span class="sd">        :class: caution</span>
+
+<span class="sd">        This function assumes that the fields ``message_id``, ``correlation_id``, ``vehicle_id``,</span>
+<span class="sd">        ``type``, ``subtype``, ``priority``, ``provisioning_state``, ``version``, ``time_stamp``, ``packet_status``</span>
+<span class="sd">        and ``return_code`` are present in future proto versions of ``CommandResponseMessage``</span>
+<span class="sd">        as in version TMCVP 6.3. If any of these fields change, the code needs to be</span>
+<span class="sd">        modified. However, it is agnostic to changes ``commandResponsePayload``.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">    </span>
+<span class="sd">            rcvd_message = b&#39;\n$ebc4a199-67d7-4bea-9fed-d05db21e7744\x12$b82a63a2-6619-496a-8b92-be7a763db448\x1a\x11ACCDEV14012078186 \x01(\x112\x0108\x02B\x056.2.0J\t\x08\x9f\x93\xd6\xae\x06\x10\x8a\x02PLb\x05\x9a\x01\x02\x08\x01&#39;</span>
+<span class="sd">            decode_response(rcvd_message)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;In Hex:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="o">.</span><span class="n">hex</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Decode and print the response based on subtype</span>
+        <span class="n">response_message</span> <span class="o">=</span> <span class="n">tmcvp_commandresponse_message_pb2</span><span class="o">.</span><span class="n">CommandResponseMessage</span><span class="p">()</span>
+        <span class="n">response_message</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">)</span>
+
+        <span class="n">response_payload_type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">commandResponsePayload</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span><span class="s2">&quot;commandResponsePayload&quot;</span><span class="p">))</span>
+        <span class="n">response_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">commandResponsePayload</span><span class="p">,</span> <span class="n">response_payload_type</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;message_id:&quot;</span><span class="p">,</span> <span class="n">response_message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;correlation_id:&quot;</span><span class="p">,</span> <span class="n">response_message</span><span class="o">.</span><span class="n">correlation_id</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vehicle_id:&quot;</span><span class="p">,</span> <span class="n">response_message</span><span class="o">.</span><span class="n">vehicle_id</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;type:&quot;</span><span class="p">,</span> <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">eTcuMessageType</span><span class="o">.</span><span class="n">Name</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">type</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;subtype:&quot;</span><span class="p">,</span> <span class="n">tmcvp_command_message_pb2</span><span class="o">.</span><span class="n">commandMessageSubType</span><span class="o">.</span><span class="n">Name</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">subtype</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;priority:&quot;</span><span class="p">,</span> <span class="n">response_message</span><span class="o">.</span><span class="n">priority</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;provisioning_state:&quot;</span><span class="p">,</span> <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">eProvisioningState</span><span class="o">.</span><span class="n">Name</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">provisioning_state</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;version:&quot;</span><span class="p">,</span> <span class="n">response_message</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time_stamp:&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">time_stamp</span><span class="o">.</span><span class="n">seconds</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;packet_status:&quot;</span><span class="p">,</span> <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">PacketStatus</span><span class="o">.</span><span class="n">Name</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">packet_status</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;return_code:&quot;</span><span class="p">,</span> <span class="n">tmcvp_commandresponse_message_pb2</span><span class="o">.</span><span class="n">eReturnCode</span><span class="o">.</span><span class="n">Name</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">return_code</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;commandResponsePayload:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">MessageToTable</span><span class="p">(</span><span class="n">response_payload</span><span class="p">,</span> <span class="n">show_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Command Response:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">MessageToTable</span><span class="p">(</span><span class="n">response_message</span><span class="p">)))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parsing Failed. Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="start_mqtt">
+<a class="viewcode-back" href="../../commander.html#protoserver.commander.start_mqtt">[docs]</a>
+<span class="k">def</span> <span class="nf">start_mqtt</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configures callbacks and start the MQTT client for communication. Blocks until connection is established.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        client (paho.mqtt.client): MQTT client object</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">on_connect</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">rc</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Client with id: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">_client_id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; Connected&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connected with result code </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">rc</span><span class="p">))</span>
+        <span class="c1"># client.subscribe(&quot;/device/+/MQTTPROTOBUF/commandresponse&quot;)</span>
+
+    <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="n">msg_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Topic: </span><span class="si">%s</span><span class="s2"> Received Message: </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">topic</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">on_publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">mid</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Message Published: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">mid</span><span class="p">))</span>
+
+    <span class="c1"># @client.topic_callback(&quot;/device/+/MQTTPROTOBUF/commandresponse&quot;)</span>
+    <span class="c1"># def handle_mytopic(client, userdata, message):</span>
+    <span class="c1">#     # logging.info(&quot;Received Message on Topic: %s\n&quot;, message.topic)</span>
+    <span class="c1">#     print(&quot;Received Message on Topic: {}&quot;.format(message.topic))</span>
+    <span class="c1">#     decode_response(message.payload)</span>
+
+    <span class="n">client</span><span class="o">.</span><span class="n">on_connect</span> <span class="o">=</span> <span class="n">on_connect</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">on_message</span> <span class="o">=</span> <span class="n">on_message</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">on_publish</span> <span class="o">=</span> <span class="n">on_publish</span>
+
+
+    <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">MQTT_BROKER</span><span class="p">,</span> <span class="n">PORT_NO</span><span class="p">)</span>
+
+    <span class="n">client</span><span class="o">.</span><span class="n">loop_start</span><span class="p">()</span>
+
+    <span class="c1"># Wait for connection</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Waiting for connection...&quot;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">is_connected</span><span class="p">():</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></div>
+
+
+    <span class="c1"># client.subscribe(&quot;/device/ABC/MQTTPROTOBUF/commandresponse&quot;)</span>
+
+<span class="k">def</span> <span class="nf">handle_mytopic</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="c1"># logging.info(&quot;Received Message on Topic: %s\n&quot;, message.topic)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Received Message on Topic: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="p">))</span>
+    <span class="n">decode_response</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
+<div class="viewcode-block" id="mqtt_subscribe">
+<a class="viewcode-back" href="../../commander.html#protoserver.commander.mqtt_subscribe">[docs]</a>
+<span class="k">def</span> <span class="nf">mqtt_subscribe</span><span class="p">(</span><span class="n">vin_no</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Subscribe to a MQTT topic for a given VIN number else uses wild card (+)</span>
+
+<span class="sd">    .. hint::</span>
+<span class="sd">        This function uses `paho.mqtt.subscribe &lt;https://eclipse.dev/paho/files/paho.mqtt.python/html/index.html#subscribe&gt;`_ instead of subcribing with same client.</span>
+<span class="sd">        Reason: I was facing issues when publishing and subcribing with the same client object. </span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        vin_no (str):  VIN number for MQTT topic subscription</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CommandResponseTopic</span> <span class="o">=</span> <span class="s2">&quot;/device/&quot;</span> <span class="o">+</span> <span class="n">vin_no</span> <span class="o">+</span> <span class="s2">&quot;/MQTTPROTOBUF/commandresponse&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Subcribed to Topic: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CommandResponseTopic</span><span class="p">))</span>
+    <span class="n">subscribe</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">handle_mytopic</span><span class="p">,</span> <span class="n">CommandResponseTopic</span><span class="p">,</span> <span class="n">hostname</span><span class="o">=</span><span class="n">MQTT_BROKER</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">PORT_NO</span><span class="p">)</span></div>
+
+
+<span class="n">VinNo</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">CommandTopic</span> <span class="o">=</span><span class="s2">&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+    <span class="k">global</span> <span class="n">VinNo</span><span class="p">,</span> <span class="n">CommandTopic</span>
+    <span class="c1"># VinNo = &quot;ACCDEV14012078186&quot;</span>
+    <span class="n">VinNo</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the VIN number: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">CommandTopic</span> <span class="o">=</span> <span class="s2">&quot;/device/&quot;</span> <span class="o">+</span> <span class="n">VinNo</span> <span class="o">+</span> <span class="s2">&quot;/MQTTPROTOBUF/command&quot;</span>
+
+    <span class="n">client</span> <span class="o">=</span> <span class="n">mqtt</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">client_id</span><span class="o">=</span><span class="s2">&quot;Tester_6.3&quot;</span><span class="p">)</span>
+    <span class="n">start_mqtt</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+
+    <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">mqtt_subscribe</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">VinNo</span><span class="p">,),</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">subtype</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_enum_input</span><span class="p">(</span><span class="n">tmcvp_command_message_pb2</span><span class="o">.</span><span class="n">commandMessageSubType</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">subtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid subtype.&quot;</span><span class="p">)</span>
+                <span class="n">subtype</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_enum_input</span><span class="p">(</span><span class="n">tmcvp_command_message_pb2</span><span class="o">.</span><span class="n">commandMessageSubType</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="p">)</span>
+
+            <span class="c1"># Generate and print the command message</span>
+            <span class="n">command_message</span> <span class="o">=</span> <span class="n">generate_command_message</span><span class="p">(</span><span class="n">subtype</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generated CommandMessage:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Serialized Format (in Hex):&quot;</span><span class="p">)</span>
+            <span class="n">serialized_message</span> <span class="o">=</span> <span class="n">command_message</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">serialized_message</span><span class="o">.</span><span class="n">hex</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+            <span class="c1"># print(&quot;Table format:\n&quot;, utils.MessageToTable(command_message))</span>
+
+            <span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">CommandTopic</span><span class="p">,</span> <span class="n">serialized_message</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Published CommandMessage:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">MessageToTable</span><span class="p">(</span><span class="n">command_message</span><span class="p">))</span>
+
+            <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Press Enter to continue...&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">loop_stop</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, Muhammed Abdullah Shaikh
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/ABD-01" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>

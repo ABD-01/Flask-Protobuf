@@ -1,0 +1,509 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="protoserver.utils module" href="utils.html" /><link rel="prev" title="protoserver.commander module" href="commander.html" />
+
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>protoserver.app module - TMCVP Protobuf Server 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">TMCVP Protobuf Server 1.0.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference external" href="demo-protoserver.html#http://">Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Notes.html">Notes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API References:</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="protoserver.html">protoserver</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of protoserver</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="commander.html">CLI Command-Response</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Flask Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-protoserver.app">
+<span id="protoserver-app-module"></span><h1>protoserver.app module<a class="headerlink" href="#module-protoserver.app" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="protoserver.app.CommandMessageForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">CommandMessageForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#CommandMessageForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.CommandMessageForm" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://flask-wtf.readthedocs.io/en/1.2.x/api/#flask_wtf.FlaskForm" title="(in Flask-WTF v1.2.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlaskForm</span></code></a></p>
+<p>FlaskForm for creating a Command Message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message_id</strong> (<a class="reference external" href="https://wtforms.readthedocs.io/en/3.1.x/fields/#wtforms.fields.StringField" title="(in WTForms v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringField</span></code></a>) – Unique identifier for the message.</p></li>
+<li><p><strong>correlation_id</strong> (<a class="reference external" href="https://wtforms.readthedocs.io/en/3.1.x/fields/#wtforms.fields.StringField" title="(in WTForms v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringField</span></code></a>) – Identifier for correlating messages.</p></li>
+<li><p><strong>vehicle_id</strong> (<a class="reference external" href="https://wtforms.readthedocs.io/en/3.1.x/fields/#wtforms.fields.StringField" title="(in WTForms v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringField</span></code></a>) – Identifier for the associated vehicle.</p></li>
+<li><p><strong>type</strong> (<a class="reference external" href="https://wtforms.readthedocs.io/en/3.1.x/fields/#wtforms.fields.SelectField" title="(in WTForms v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectField</span></code></a>) – Type of the message (e.g., command).</p></li>
+<li><p><strong>priority</strong> (<a class="reference external" href="https://wtforms.readthedocs.io/en/3.1.x/fields/#wtforms.fields.StringField" title="(in WTForms v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringField</span></code></a>) – Priority level of the message.</p></li>
+<li><p><strong>provisioning_state</strong> (<a class="reference external" href="https://wtforms.readthedocs.io/en/3.1.x/fields/#wtforms.fields.SelectField" title="(in WTForms v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectField</span></code></a>) – Provisioning state of the message.</p></li>
+<li><p><strong>version</strong> (<a class="reference external" href="https://wtforms.readthedocs.io/en/3.1.x/fields/#wtforms.fields.StringField" title="(in WTForms v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringField</span></code></a>) – Version of the message.</p></li>
+<li><p><strong>packet_status</strong> (<a class="reference external" href="https://wtforms.readthedocs.io/en/3.1.x/fields/#wtforms.fields.SelectField" title="(in WTForms v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectField</span></code></a>) – Status of the packet (e.g., Live).</p></li>
+<li><p><strong>subtype</strong> (<a class="reference external" href="https://wtforms.readthedocs.io/en/3.1.x/fields/#wtforms.fields.SelectField" title="(in WTForms v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectField</span></code></a>) – Subtype of the command message.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="caution admonition">
+<p class="admonition-title">For Future Changes</p>
+<p>This form assumes that the fields message_id, correlation_id, vehicle_id, type,
+priority, provisioning_state, version, packet_status, and subtype are present
+in future proto versions of <cite>CommandMessage</cite> as in version TMCVP 6.3.
+If any of these headers change, the code needs to be modified.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.get_additional_fields">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">get_additional_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#get_additional_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.get_additional_fields" title="Link to this definition">#</a></dt>
+<dd><p>A function to handle the <code class="docutils literal notranslate"><span class="pre">/get_additional_fields</span></code> route and return additional fields HTML based on the request data.</p>
+<p>This function is called on subtype dropdown change</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="linenos">131</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#{{ form.subtype.id }}&#39;</span><span class="p">).</span><span class="nx">change</span><span class="p">(</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos">132</span><span class="kd">var</span><span class="w"> </span><span class="nx">selectedSubtype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
+<span class="linenos">133</span><span class="kd">var</span><span class="w"> </span><span class="nx">numEntries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#{{ form.numEntries.id }}&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
+<span class="linenos">134</span>
+<span class="linenos">135</span><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<span class="linenos">136</span><span class="w">    </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;/get_additional_fields&#39;</span><span class="p">,</span>
+<span class="linenos">137</span><span class="w">    </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+<span class="linenos">138</span><span class="w">    </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos">139</span><span class="w">        </span><span class="s1">&#39;X-CSRFToken&#39;</span><span class="o">:</span><span class="w"> </span><span class="nx">csrf_token</span>
+<span class="linenos">140</span><span class="w">        </span><span class="p">},</span>
+<span class="linenos">141</span><span class="w">    </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">&#39;subtype&#39;</span><span class="o">:</span><span class="w"> </span><span class="nx">selectedSubtype</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;numEntries&#39;</span><span class="o">:</span><span class="w"> </span><span class="nx">numEntries</span><span class="w"> </span><span class="p">},</span>
+<span class="linenos">142</span><span class="w">    </span><span class="nx">success</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">response</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos">143</span><span class="w">        </span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#additionalFieldsContainer&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">additional_fields_html</span><span class="p">);</span>
+<span class="linenos">144</span><span class="w">        </span><span class="p">}</span>
+<span class="linenos">145</span><span class="w">    </span><span class="p">});</span>
+<span class="linenos">146</span><span class="p">})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.send_command">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">send_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#send_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.send_command" title="Link to this definition">#</a></dt>
+<dd><p>Generate and send a command message based on the form data.</p>
+<p>This function extracts the subtype from the form data and generates a command message
+using the <a class="reference internal" href="#protoserver.app.generate_command_message" title="protoserver.app.generate_command_message"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_command_message()</span></code></a> function. The generated message is then serialized
+and published to the appropriate MQTT topic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>JSON object containing the response with status, command message as a dictionary, and the hex representation of the serialized message.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.generateDynamicForm">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">generateDynamicForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#generateDynamicForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.generateDynamicForm" title="Link to this definition">#</a></dt>
+<dd><p>Generate a dynamic form class based on the given payload.</p>
+<p>Works almost same as <a class="reference internal" href="utils.html#protoserver.utils.fill_message" title="protoserver.utils.fill_message"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.fill_message()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>payload</strong> (<a class="reference external" href="https://googleapis.dev/python/protobuf/latest/google/protobuf/message.html#google.protobuf.message.Message" title="(in Protocol Buffers)"><em>google.protobuf.message.Message</em></a>) – The message fields lled into the form.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The generated form class.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DynamicForm (<a class="reference external" href="https://flask-wtf.readthedocs.io/en/1.2.x/api/#flask_wtf.FlaskForm" title="(in Flask-WTF v1.2.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlaskForm</span></code></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.generate_command_message">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">generate_command_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#generate_command_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.generate_command_message" title="Link to this definition">#</a></dt>
+<dd><p>Generate a Command Message based on the provided subtype and form input.</p>
+<p>This function uses <a class="reference external" href="https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.ParseDict" title="(in Protocol Buffers)"><code class="xref py py-func docutils literal notranslate"><span class="pre">google.protobuf.json_format.ParseDict()</span></code></a> for parsing the form data,
+as <code class="docutils literal notranslate"><span class="pre">request.form</span></code> is an <a class="reference external" href="https://werkzeug.palletsprojects.com/en/latest/datastructures/#werkzeug.datastructures.ImmutableMultiDict" title="(in Werkzeug v3.0.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImmutableMultiDict</span></code></a> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The subtype of the command message corresponding to <cite>enum commandMessageSubType</cite></p></li>
+<li><p><strong>form</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – A dictionary containing the form data from the request</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The generated CommandMessage.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tmcvp_command_message_pb2.CommandMessage</p>
+</dd>
+</dl>
+<p>Works almost same as <a class="reference internal" href="commander.html#protoserver.commander.generate_command_message" title="protoserver.commander.generate_command_message"><code class="xref py py-func docutils literal notranslate"><span class="pre">commander.generate_command_message()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.fill_payload">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">fill_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#fill_payload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.fill_payload" title="Link to this definition">#</a></dt>
+<dd><p>Fills the payload message with data from the form.</p>
+<p>Literally the same as <a class="reference internal" href="utils.html#protoserver.utils.fill_message" title="protoserver.utils.fill_message"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.fill_message()</span></code></a></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Use <a class="reference external" href="https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.ParseDict" title="(in Protocol Buffers)"><code class="xref py py-func docutils literal notranslate"><span class="pre">google.protobuf.json_format.ParseDict()</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.handle_mytopic">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">handle_mytopic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#handle_mytopic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.handle_mytopic" title="Link to this definition">#</a></dt>
+<dd><p>Callback function for handling MQTT messages on a specific topic.</p>
+<p>This function decodes the payload of the received MQTT message based on the topic
+and emits the decoded information to the connected clients through Socket.IO.</p>
+<p>If the decoding fails, a warning message is emitted, and the payload is marked as
+“Parsing Failed” in the Socket.IO message.</p>
+<p>The corresponding socket.io event is “mqtt_message” which is handled as</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="linenos">195</span><span class="kd">const</span><span class="w"> </span><span class="nx">socket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">io</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">domain</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;:&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">location</span><span class="p">.</span><span class="nx">port</span><span class="p">);</span>
+<span class="linenos">196</span><span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;mqtt_message&#39;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos">197</span><span class="w">    </span><span class="nx">showToast</span><span class="p">({</span>
+<span class="linenos">198</span><span class="w">        </span><span class="nx">header</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;MQTT Response received on&#39;</span><span class="p">,</span>
+<span class="linenos">199</span><span class="w">        </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">topic</span>
+<span class="linenos">200</span><span class="w">    </span><span class="p">});</span>
+<span class="linenos">201</span><span class="w">    </span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#responseHex&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">messageHex</span><span class="p">);</span>
+<span class="linenos">202</span><span class="w">    </span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#response&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="linenos">203</span><span class="p">});</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.decode_response">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">decode_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rcvdMsg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#decode_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.decode_response" title="Link to this definition">#</a></dt>
+<dd><p>Decode command response received in the MQTT message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rcvdMsg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a>) – The received MQTT message in bytes.</p>
+</dd>
+</dl>
+<p>This is equivalent to <a class="reference internal" href="commander.html#protoserver.commander.decode_response" title="protoserver.commander.decode_response"><code class="xref py py-meth docutils literal notranslate"><span class="pre">protoserver.commander.decode_response()</span></code></a></p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>This function assumes that the fields <code class="docutils literal notranslate"><span class="pre">message_id</span></code>, <code class="docutils literal notranslate"><span class="pre">correlation_id</span></code>, <code class="docutils literal notranslate"><span class="pre">vehicle_id</span></code>,
+<code class="docutils literal notranslate"><span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">subtype</span></code>, <code class="docutils literal notranslate"><span class="pre">priority</span></code>, <code class="docutils literal notranslate"><span class="pre">provisioning_state</span></code>, <code class="docutils literal notranslate"><span class="pre">version</span></code>, <code class="docutils literal notranslate"><span class="pre">time_stamp</span></code>,
+<code class="docutils literal notranslate"><span class="pre">packet_status</span></code> and <code class="docutils literal notranslate"><span class="pre">return_code</span></code> are present in future proto versions of
+<cite>CommandResponseMessage</cite> as in version TMCVP 6.3. If any of these fields change,
+the code needs to be modified. However, it is agnostic to changes <code class="docutils literal notranslate"><span class="pre">commandResponsePayload</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.decode_telemetry">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">decode_telemetry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rcvdMsg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#decode_telemetry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.decode_telemetry" title="Link to this definition">#</a></dt>
+<dd><p>Decode telemetry message received in MQTT Protobuf.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rcvdMsg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a>) – The received MQTT message in bytes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A table representation of the telemetry message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.TmcvpMQTTProtobufServer">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">TmcvpMQTTProtobufServer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#TmcvpMQTTProtobufServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.TmcvpMQTTProtobufServer" title="Link to this definition">#</a></dt>
+<dd><p>This function is for wsgi server that runs the app</p>
+<div class="tip admonition">
+<p class="admonition-title">Examples</p>
+<p>Using <a class="reference external" href="https://flask.palletsprojects.com/en/3.0.x/deploying/gunicorn/">Gunicorn</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ gunicorn -w 4 -b 0.0.0.0 &#39;protoserver.app:TmcvpMQTTProtobufServer()&#39;
+# or
+$ gunicorn -w 4 -b 0.0.0.0 tmcvp-server
+</pre></div>
+</div>
+<p>Using <a class="reference external" href="https://flask.palletsprojects.com/en/3.0.x/deploying/waitress/">Waitress</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ waitress-serve --call protoserver.app:TmcvpMQTTProtobufServer
+# or equivalently
+$ waitress-serve --call tmcvp-server
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Flask application object</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>app (<a class="reference external" href="https://flask.palletsprojects.com/en/latest/api/#flask.Flask" title="(in Flask v3.0.x)">flask.Flask</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="utils.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">protoserver.utils module</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="commander.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">protoserver.commander module</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, Muhammed Abdullah Shaikh
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/ABD-01" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">protoserver.app module</a><ul>
+<li><a class="reference internal" href="#protoserver.app.CommandMessageForm"><code class="docutils literal notranslate"><span class="pre">CommandMessageForm</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.get_additional_fields"><code class="docutils literal notranslate"><span class="pre">get_additional_fields()</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.send_command"><code class="docutils literal notranslate"><span class="pre">send_command()</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.generateDynamicForm"><code class="docutils literal notranslate"><span class="pre">generateDynamicForm()</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.generate_command_message"><code class="docutils literal notranslate"><span class="pre">generate_command_message()</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.fill_payload"><code class="docutils literal notranslate"><span class="pre">fill_payload()</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.handle_mytopic"><code class="docutils literal notranslate"><span class="pre">handle_mytopic()</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.decode_response"><code class="docutils literal notranslate"><span class="pre">decode_response()</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.decode_telemetry"><code class="docutils literal notranslate"><span class="pre">decode_telemetry()</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.TmcvpMQTTProtobufServer"><code class="docutils literal notranslate"><span class="pre">TmcvpMQTTProtobufServer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=8d563738"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    </body>
+</html>

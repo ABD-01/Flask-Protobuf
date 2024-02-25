@@ -1,0 +1,829 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>protoserver.app - TMCVP Protobuf Server 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">TMCVP Protobuf Server 1.0.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference external" href="demo-protoserver.html#http://">Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Notes.html">Notes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API References:</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../protoserver.html">protoserver</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of protoserver</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../commander.html">CLI Command-Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../app.html">Flask Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for protoserver.app</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span>
+<span class="kn">from</span> <span class="nn">flask_socketio</span> <span class="kn">import</span> <span class="n">SocketIO</span>
+<span class="kn">from</span> <span class="nn">flask_mqtt</span> <span class="kn">import</span> <span class="n">Mqtt</span>
+<span class="kn">from</span> <span class="nn">flask_wtf</span> <span class="kn">import</span> <span class="n">CSRFProtect</span><span class="p">,</span> <span class="n">FlaskForm</span>
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">StringField</span><span class="p">,</span> <span class="n">IntegerField</span><span class="p">,</span> <span class="n">SelectField</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">,</span> <span class="n">FloatField</span><span class="p">,</span> <span class="n">FieldList</span><span class="p">,</span> <span class="n">FormField</span>
+<span class="kn">from</span> <span class="nn">flask_rich</span> <span class="kn">import</span> <span class="n">RichApplication</span>
+
+<span class="c1"># sys.path.append(&quot;./TataMotorsCVP630&quot;)</span>
+<span class="c1"># Adding TataMotorsCV630 to sys path</span>
+<span class="n">package_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">tata_motors_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_dir</span><span class="p">,</span> <span class="s1">&#39;TataMotorsCVP630&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">tata_motors_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tata_motors_path</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToJson</span><span class="p">,</span> <span class="n">MessageToDict</span><span class="p">,</span> <span class="n">Parse</span><span class="p">,</span> <span class="n">ParseDict</span>
+<span class="kn">import</span> <span class="nn">tmcvp_common_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_command_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_command_message_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_commandresponse_message_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_vehicletelemetry_message_pb2</span>
+
+<span class="kn">from</span> <span class="nn">protoserver</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="n">MQTT_BROKER</span> <span class="o">=</span> <span class="s2">&quot;test.mosquitto.org&quot;</span>
+<span class="n">PORT_NO</span> <span class="o">=</span> <span class="mi">1883</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;secret_key&#39;</span>  <span class="c1"># Replace with a secret key in production</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MQTT_BROKER_URL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MQTT_BROKER</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MQTT_BROKER_PORT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PORT_NO</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MQTT_USERNAME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MQTT_PASSWORD&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MQTT_REFRESH_TIME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span>  <span class="c1"># refresh time in seconds</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;RICH_LOGGING&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>   <span class="c1"># for rich logging</span>
+<span class="n">mqtt</span> <span class="o">=</span> <span class="n">Mqtt</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">csrf</span> <span class="o">=</span> <span class="n">CSRFProtect</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">socketio</span> <span class="o">=</span> <span class="n">SocketIO</span><span class="p">(</span><span class="n">app</span><span class="p">)</span> 
+<span class="n">rich</span> <span class="o">=</span> <span class="n">RichApplication</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="c1">###########################################################</span>
+<span class="c1">##################  COMMAND RESPONSE   ####################</span>
+<span class="c1">###########################################################</span>
+
+<span class="n">CONTROL_RENDER_KW</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">render_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;form-control form-control-sm&quot;</span><span class="p">})</span>
+<span class="n">SELECT_RENDER_KW</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">render_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;form-select form-select-sm&quot;</span><span class="p">})</span>
+<div class="viewcode-block" id="CommandMessageForm">
+<a class="viewcode-back" href="../../app.html#protoserver.app.CommandMessageForm">[docs]</a>
+<span class="k">class</span> <span class="nc">CommandMessageForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    FlaskForm for creating a Command Message.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        message_id (:class:`StringField &lt;wtforms.fields.StringField&gt;`): Unique identifier for the message.</span>
+<span class="sd">        correlation_id (:class:`StringField &lt;wtforms.fields.StringField&gt;`): Identifier for correlating messages.</span>
+<span class="sd">        vehicle_id (:class:`StringField &lt;wtforms.fields.StringField&gt;`): Identifier for the associated vehicle.</span>
+<span class="sd">        type (:class:`SelectField &lt;wtforms.fields.SelectField&gt;`): Type of the message (e.g., command).</span>
+<span class="sd">        priority (:class:`StringField &lt;wtforms.fields.StringField&gt;`): Priority level of the message.</span>
+<span class="sd">        provisioning_state (:class:`SelectField &lt;wtforms.fields.SelectField&gt;`): Provisioning state of the message.</span>
+<span class="sd">        version (:class:`StringField &lt;wtforms.fields.StringField&gt;`): Version of the message.</span>
+<span class="sd">        packet_status (:class:`SelectField &lt;wtforms.fields.SelectField&gt;`): Status of the packet (e.g., Live).</span>
+<span class="sd">        subtype (:class:`SelectField &lt;wtforms.fields.SelectField&gt;`): Subtype of the command message.</span>
+
+<span class="sd">    .. admonition:: For Future Changes</span>
+<span class="sd">        :class: caution</span>
+
+<span class="sd">        This form assumes that the fields message_id, correlation_id, vehicle_id, type,</span>
+<span class="sd">        priority, provisioning_state, version, packet_status, and subtype are present</span>
+<span class="sd">        in future proto versions of `CommandMessage` as in version TMCVP 6.3.</span>
+<span class="sd">        If any of these headers change, the code needs to be modified.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">message_id</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;Message ID&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">)</span>
+    <span class="n">correlation_id</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;Correlation ID&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;correlation-id&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">)</span>
+    <span class="n">vehicle_id</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;Vehicle ID&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;MH12VF1121&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">)</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span><span class="s1">&#39;Type&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="n">e</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">eTcuMessageType</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">eTcuMessageType</span><span class="o">.</span><span class="n">command</span><span class="p">,</span> <span class="n">coerce</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">SELECT_RENDER_KW</span><span class="p">)</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;Priority&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;moderate&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">)</span>
+    <span class="n">provisioning_state</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span><span class="s1">&#39;Provisioning State&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="n">e</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">eProvisioningState</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">eProvisioningState</span><span class="o">.</span><span class="n">provisioned</span><span class="p">,</span> <span class="n">coerce</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">SELECT_RENDER_KW</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;Version&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;V6.3&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">)</span>
+    <span class="c1"># time_stamp = StringField(&#39;Time Stamp&#39;, default=datetime.now().strftime(&#39;%Y-%m-%d %H:%M:%S&#39;), render_kw={&#39;readonly&#39;: True})</span>
+    <span class="n">packet_status</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span><span class="s1">&#39;Packet Status&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="n">e</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">PacketStatus</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">PacketStatus</span><span class="o">.</span><span class="n">Live</span><span class="p">,</span> <span class="n">coerce</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">SELECT_RENDER_KW</span><span class="p">)</span>
+    <span class="n">subtype</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span><span class="s1">&#39;Subtype&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;--- Select Subtype ---&quot;</span><span class="p">)]</span><span class="o">+</span><span class="p">[(</span><span class="n">e</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">tmcvp_command_message_pb2</span><span class="o">.</span><span class="n">commandMessageSubType</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">coerce</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">SELECT_RENDER_KW</span><span class="p">)</span>
+
+    <span class="n">numEntries</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;Number of Entries for repeated type&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">CommandMessageForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="n">vinNo</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vin_no&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vinNo</span><span class="p">:</span>
+        <span class="n">_handle_subscribe</span><span class="p">({</span><span class="s1">&#39;vinNo&#39;</span><span class="p">:</span> <span class="n">vinNo</span><span class="p">,</span> <span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="s1">&#39;commandresponse&#39;</span><span class="p">})</span> 
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">vin_no</span><span class="o">=</span><span class="n">vinNo</span><span class="p">,</span> <span class="n">topic</span><span class="o">=</span><span class="s2">&quot;commandresponse&quot;</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/set_vin&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">set_vin</span><span class="p">():</span>
+    <span class="n">vin_no</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vin_no&#39;</span><span class="p">)</span>
+    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;vin_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vin_no</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">})</span>
+
+
+<div class="viewcode-block" id="get_additional_fields">
+<a class="viewcode-back" href="../../app.html#protoserver.app.get_additional_fields">[docs]</a>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get_additional_fields&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_additional_fields</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A function to handle the ``/get_additional_fields`` route and return additional fields HTML based on the request data.</span>
+
+<span class="sd">    This function is called on subtype dropdown change</span>
+
+<span class="sd">    .. code:: js</span>
+<span class="sd">        :number-lines: 131</span>
+
+<span class="sd">        $(&#39;#{{ form.subtype.id }}&#39;).change( function() {</span>
+<span class="sd">        var selectedSubtype = $(this).val();</span>
+<span class="sd">        var numEntries = $(&#39;#{{ form.numEntries.id }}&#39;).val();</span>
+
+<span class="sd">        $.ajax({</span>
+<span class="sd">            url: &#39;/get_additional_fields&#39;,</span>
+<span class="sd">            method: &#39;POST&#39;,</span>
+<span class="sd">            headers: {</span>
+<span class="sd">                &#39;X-CSRFToken&#39;: csrf_token</span>
+<span class="sd">                },</span>
+<span class="sd">            data: { &#39;subtype&#39;: selectedSubtype, &#39;numEntries&#39;: numEntries },</span>
+<span class="sd">            success: function (response) {</span>
+<span class="sd">                $(&#39;#additionalFieldsContainer&#39;).html(response.additional_fields_html);</span>
+<span class="sd">                }</span>
+<span class="sd">            });</span>
+<span class="sd">        })</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">subtype</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;subtype&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">numEntries</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;numEntries&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;numEntries&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">numEntries</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subtype</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">subtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">subtype</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;additional_fields_html&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;additional_fields_html&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+
+    <span class="n">payloadType</span> <span class="o">=</span> <span class="n">tmcvp_command_message_pb2</span><span class="o">.</span><span class="n">commandMessageSubType</span><span class="o">.</span><span class="n">Name</span><span class="p">(</span><span class="n">subtype</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;Payload&quot;</span>
+    <span class="n">command_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tmcvp_command_pb2</span><span class="p">,</span> <span class="n">payloadType</span><span class="p">)()</span>
+
+    <span class="n">form</span>  <span class="o">=</span> <span class="n">generateDynamicForm</span><span class="p">(</span><span class="n">command_payload</span><span class="p">)(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="n">additional_fields_html</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;additional_fields.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;additional_fields_html&#39;</span><span class="p">:</span> <span class="n">additional_fields_html</span><span class="p">})</span></div>
+
+    
+<div class="viewcode-block" id="send_command">
+<a class="viewcode-back" href="../../app.html#protoserver.app.send_command">[docs]</a>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/send_command&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">send_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate and send a command message based on the form data.</span>
+
+<span class="sd">    This function extracts the subtype from the form data and generates a command message</span>
+<span class="sd">    using the :func:`generate_command_message` function. The generated message is then serialized</span>
+<span class="sd">    and published to the appropriate MQTT topic.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (str): JSON object containing the response with status, command message as a dictionary, and the hex representation of the serialized message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">subtype</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;subtype&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subtype</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">subtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">subtype</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Invalid Subtype&#39;</span><span class="p">})</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Invalid Subtype&#39;</span><span class="p">})</span>
+
+    <span class="n">command_message</span> <span class="o">=</span> <span class="n">generate_command_message</span><span class="p">(</span><span class="n">subtype</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+    <span class="n">serialized_message</span> <span class="o">=</span> <span class="n">command_message</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span>
+
+    <span class="n">CommandTopic</span> <span class="o">=</span> <span class="s2">&quot;/device/&quot;</span> <span class="o">+</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vin_no&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/MQTTPROTOBUF/command&quot;</span>
+    <span class="n">mqtt</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">CommandTopic</span><span class="p">,</span> <span class="n">serialized_message</span><span class="p">)</span>
+    <span class="n">socketio</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="s1">&#39;Command Sent: &#39;</span> <span class="o">+</span> <span class="n">CommandTopic</span><span class="p">)</span>
+
+    <span class="n">message_dict</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">MessageToDict</span><span class="p">(</span><span class="n">command_message</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Published CommandMessage on Topic: </span><span class="si">{</span><span class="n">CommandTopic</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message_dict</span><span class="p">,</span><span class="w"> </span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span>
+        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">message_dict</span><span class="p">,</span>
+        <span class="s1">&#39;messageHex&#39;</span><span class="p">:</span> <span class="n">serialized_message</span><span class="o">.</span><span class="n">hex</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="p">})</span></div>
+
+
+<span class="n">NUM_REPEATED_MAX</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">NUM_MIN</span> <span class="o">=</span> <span class="mi">1</span>
+<div class="viewcode-block" id="generateDynamicForm">
+<a class="viewcode-back" href="../../app.html#protoserver.app.generateDynamicForm">[docs]</a>
+<span class="k">def</span> <span class="nf">generateDynamicForm</span><span class="p">(</span><span class="n">payload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a dynamic form class based on the given payload.</span>
+
+<span class="sd">    Works almost same as :func:`.utils.fill_message`.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        payload (google.protobuf.message.Message): The message fields lled into the form.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        DynamicForm (:class:`FlaskForm &lt;flask_wtf.FlaskForm&gt;`): The generated form class.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">class</span> <span class="nc">DynamicForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="n">num_repeated</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;numEntries&#39;</span><span class="p">,</span> <span class="n">NUM_MIN</span><span class="p">),</span> <span class="n">NUM_REPEATED_MAX</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">field_descriptor</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+        <span class="n">field_name</span> <span class="o">=</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">field_type</span> <span class="o">=</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span>
+
+        <span class="c1"># IS ENUM</span>
+        <span class="k">if</span>  <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_ENUM</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">enum_type</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">enum_choices</span> <span class="o">=</span> <span class="p">[(</span><span class="n">e</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">DynamicForm</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">SelectField</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">enum_choices</span><span class="p">,</span> <span class="n">coerce</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">SELECT_RENDER_KW</span><span class="p">))</span>
+        <span class="c1"># IS MESSAGE</span>
+        <span class="k">elif</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_MESSAGE</span><span class="p">:</span>
+            <span class="c1"># IS REPEATED MESSAGE</span>
+            <span class="k">if</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">LABEL_REPEATED</span><span class="p">:</span>
+                <span class="c1"># for _ in range(num_repeated):</span>
+                <span class="n">nested_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
+                <span class="n">nested_form</span>  <span class="o">=</span> <span class="n">FieldList</span><span class="p">(</span><span class="n">FormField</span><span class="p">(</span><span class="n">generateDynamicForm</span><span class="p">(</span><span class="n">nested_payload</span><span class="p">),</span> <span class="n">render_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;table table-bordered&quot;</span><span class="p">}),</span> <span class="n">min_entries</span><span class="o">=</span><span class="n">num_repeated</span><span class="p">,</span> <span class="n">max_entries</span><span class="o">=</span><span class="n">NUM_REPEATED_MAX</span><span class="p">,</span> <span class="n">render_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;list-group list-unstyled&quot;</span><span class="p">})</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">DynamicForm</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">nested_form</span><span class="p">)</span>
+            <span class="c1"># IS NON REPEATED MESSAGE</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nested_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">nested_form</span> <span class="o">=</span> <span class="n">generateDynamicForm</span><span class="p">(</span><span class="n">nested_payload</span><span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">DynamicForm</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">nested_form</span><span class="p">)</span>
+        <span class="c1"># IS REPEATED BASIC TYPE</span>
+        <span class="k">elif</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">LABEL_REPEATED</span><span class="p">:</span>
+            <span class="c1"># for _ in range(num_repeated):</span>
+            <span class="c1">#     setattr(DynamicForm, field_name, StringField(field_name, **CONTROL_RENDER_KW))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">DynamicForm</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">FieldList</span><span class="p">(</span><span class="n">StringField</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">),</span> <span class="n">min_entries</span><span class="o">=</span><span class="n">num_repeated</span><span class="p">,</span> <span class="n">max_entries</span><span class="o">=</span><span class="n">NUM_REPEATED_MAX</span><span class="p">,</span> <span class="n">render_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;list-group list-unstyled&quot;</span><span class="p">}))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_DOUBLE</span> <span class="ow">or</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_FLOAT</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">DynamicForm</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">FloatField</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_INT32</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_INT64</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_UINT32</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_UINT64</span><span class="p">]:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">DynamicForm</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">IntegerField</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_BOOL</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">DynamicForm</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_STRING</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">DynamicForm</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">StringField</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_BYTES</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">DynamicForm</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">StringField</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="o">**</span><span class="n">CONTROL_RENDER_KW</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">DynamicForm</span></div>
+
+
+<div class="viewcode-block" id="generate_command_message">
+<a class="viewcode-back" href="../../app.html#protoserver.app.generate_command_message">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_command_message</span><span class="p">(</span><span class="n">subtype</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a Command Message based on the provided subtype and form input.</span>
+
+<span class="sd">    This function uses :func:`google.protobuf.json_format.ParseDict` for parsing the form data,</span>
+<span class="sd">    as ``request.form`` is an :class:`ImmutableMultiDict &lt;werkzeug.datastructures.ImmutableMultiDict&gt;` object.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        subtype (int): The subtype of the command message corresponding to `enum commandMessageSubType`</span>
+<span class="sd">        form (dict): A dictionary containing the form data from the request</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tmcvp_command_message_pb2.CommandMessage: The generated CommandMessage.</span>
+
+<span class="sd">    Works almost same as :func:`.commander.generate_command_message`.    </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create a CommandMessage and set common fields</span>
+    <span class="n">command_message</span> <span class="o">=</span> <span class="n">tmcvp_command_message_pb2</span><span class="o">.</span><span class="n">CommandMessage</span><span class="p">()</span>
+
+    <span class="n">command_message</span> <span class="o">=</span> <span class="n">ParseDict</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">command_message</span><span class="p">,</span> <span class="n">ignore_unknown_fields</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">command_message</span><span class="o">.</span><span class="n">message_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="c1"># command_message.correlation_id = form[&quot;correlation_id&quot;]</span>
+    <span class="c1"># command_message.vehicle_id = form[&quot;vehicle_id&quot;]</span>
+
+    <span class="n">command_message</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span>  <span class="n">tmcvp_common_pb2</span><span class="o">.</span><span class="n">eTcuMessageType</span><span class="o">.</span><span class="n">command</span>    <span class="c1"># Because this is Command type message</span>
+
+    <span class="c1"># command_message.subtype = subtype</span>
+    <span class="c1"># command_message.priority = form[&quot;priority&quot;]</span>
+    <span class="c1"># command_message.provisioning_state = int(form[&quot;provisioning_state&quot;])</span>
+    <span class="c1"># command_message.version = form[&quot;version&quot;]</span>
+    <span class="n">command_message</span><span class="o">.</span><span class="n">time_stamp</span><span class="o">.</span><span class="n">GetCurrentTime</span><span class="p">()</span>
+    <span class="c1"># command_message.packet_status = int(form[&quot;packet_status&quot;])</span>
+
+    <span class="c1"># Select the appropriate command payload based on subtype</span>
+    <span class="n">command_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+        <span class="n">tmcvp_command_pb2</span><span class="p">,</span>
+        <span class="n">tmcvp_command_message_pb2</span><span class="o">.</span><span class="n">commandMessageSubType</span><span class="o">.</span><span class="n">Name</span><span class="p">(</span><span class="n">subtype</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;Payload&quot;</span><span class="p">,</span>
+    <span class="p">)()</span>
+    <span class="n">payload_form</span> <span class="o">=</span> <span class="n">generateDynamicForm</span><span class="p">(</span><span class="n">command_payload</span><span class="p">)(</span><span class="n">form</span><span class="p">)</span>
+    <span class="c1"># fill_payload(command_payload, form)</span>
+    <span class="n">command_payload</span> <span class="o">=</span> <span class="n">ParseDict</span><span class="p">(</span><span class="n">payload_form</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">command_payload</span><span class="p">,</span> <span class="n">ignore_unknown_fields</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Cannot direct assign nested messsage so using CopyFrom</span>
+    <span class="nb">getattr</span><span class="p">(</span>
+        <span class="n">command_message</span><span class="o">.</span><span class="n">command_payload</span><span class="p">,</span>
+        <span class="n">command_message</span><span class="o">.</span><span class="n">command_payload</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">subtype</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">command_payload</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">command_message</span></div>
+
+
+<div class="viewcode-block" id="fill_payload">
+<a class="viewcode-back" href="../../app.html#protoserver.app.fill_payload">[docs]</a>
+<span class="k">def</span> <span class="nf">fill_payload</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fills the payload message with data from the form. </span>
+
+<span class="sd">    Literally the same as :func:`.utils.fill_message`</span>
+
+<span class="sd">    Warning: </span>
+<span class="sd">        Use :func:`google.protobuf.json_format.ParseDict` instead.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">field_descriptor</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+        <span class="n">field_name</span> <span class="o">=</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">field_type</span> <span class="o">=</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span>
+        <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">form</span> <span class="ow">and</span> <span class="n">form</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="c1"># IS ENUM</span>
+            <span class="k">if</span> <span class="n">field_type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_ENUM</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="n">field_name</span><span class="p">]))</span>
+            <span class="c1"># IS MESSAGE</span>
+            <span class="k">elif</span> <span class="n">field_type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_MESSAGE</span><span class="p">:</span>
+                <span class="c1"># IS REPEATED MESSAGE</span>
+                <span class="k">if</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">LABEL_REPEATED</span><span class="p">:</span>
+                    <span class="n">num_repeated</span> <span class="o">=</span> <span class="n">NUM_MIN</span>
+                    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_repeated</span><span class="p">):</span>
+                        <span class="n">nested_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
+                        <span class="n">fill_payload</span><span class="p">(</span><span class="n">nested_payload</span><span class="p">,</span> <span class="n">form</span><span class="p">)</span>
+                <span class="c1"># IS NOT REPEATED MESSAGE</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">nested_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">fill_payload</span><span class="p">(</span><span class="n">nested_payload</span><span class="p">,</span> <span class="n">form</span><span class="p">)</span>
+
+            <span class="c1"># IS REPEATED BASIC TYPE</span>
+            <span class="k">elif</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">LABEL_REPEATED</span><span class="p">:</span>
+                <span class="n">num_repeated</span> <span class="o">=</span> <span class="n">NUM_MIN</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_repeated</span><span class="p">):</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">form</span><span class="p">[</span><span class="n">field_name</span><span class="p">])</span>
+            <span class="c1"># IS BASIC TYPE</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">field_type</span> <span class="o">=</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">type</span>
+                <span class="k">if</span> <span class="n">field_type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_DOUBLE</span> <span class="ow">or</span> <span class="n">field_type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_FLOAT</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="n">field_name</span><span class="p">]))</span>
+                <span class="k">elif</span> <span class="n">field_type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_INT32</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_INT64</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_UINT32</span><span class="p">,</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_UINT64</span><span class="p">]:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="n">field_name</span><span class="p">]))</span>
+                <span class="k">elif</span> <span class="n">field_type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_BOOL</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="nb">bool</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="n">field_name</span><span class="p">]))</span>
+                <span class="k">elif</span> <span class="n">field_type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_STRING</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">form</span><span class="p">[</span><span class="n">field_name</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">field_type</span> <span class="o">==</span> <span class="n">field_descriptor</span><span class="o">.</span><span class="n">TYPE_BYTES</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="n">field_name</span><span class="p">],</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">message</span></div>
+
+
+<span class="c1">###########################################################</span>
+<span class="c1">#####################  TELEMETRY   ########################</span>
+<span class="c1">###########################################################</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/telemetry&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">telemetry</span><span class="p">():</span>
+
+    <span class="n">vinNo</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vin_no&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vinNo</span><span class="p">:</span>
+        <span class="n">_handle_subscribe</span><span class="p">({</span><span class="s1">&#39;vinNo&#39;</span><span class="p">:</span> <span class="n">vinNo</span><span class="p">,</span> <span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="s1">&#39;telemetry&#39;</span><span class="p">})</span> 
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;telemetry.html&#39;</span><span class="p">,</span> <span class="n">vin_no</span><span class="o">=</span><span class="n">vinNo</span><span class="p">,</span> <span class="n">topic</span><span class="o">=</span><span class="s2">&quot;telemetry&quot;</span><span class="p">)</span>
+
+<span class="c1">###########################################################</span>
+<span class="c1">#######################  UTILS   ##########################</span>
+<span class="c1">###########################################################</span>
+
+<span class="nd">@socketio</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s1">&#39;connect&#39;</span><span class="p">)</span>                                                         
+<span class="k">def</span> <span class="nf">connect</span><span class="p">():</span>                                                                  
+    <span class="n">socketio</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s1">&#39;showToast&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&quot;Connected to SocketIO Client&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Flask Server&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;info&#39;</span>
+    <span class="p">})</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Client connected&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_handle_subscribe</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">mqtt</span><span class="o">.</span><span class="n">unsubscribe_all</span><span class="p">()</span>
+    <span class="n">MQTTTopic</span> <span class="o">=</span> <span class="s2">&quot;/device/&quot;</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;vinNo&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/MQTTPROTOBUF/&quot;</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Subcribed to Topic: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MQTTTopic</span><span class="p">))</span>
+    <span class="n">mqtt</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">MQTTTopic</span><span class="p">)</span>
+<span class="nd">@socketio</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s1">&#39;subscribe&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">handle_subscribe</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">_handle_subscribe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nd">@mqtt</span><span class="o">.</span><span class="n">on_connect</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">handle_connect</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">rc</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connected to MQTT Broker&quot;</span><span class="p">)</span>
+        <span class="n">socketio</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s1">&#39;showToast&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&quot;Connected to MQTT Broker&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;MQTT&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span>
+        <span class="p">})</span>
+
+<div class="viewcode-block" id="handle_mytopic">
+<a class="viewcode-back" href="../../app.html#protoserver.app.handle_mytopic">[docs]</a>
+<span class="nd">@mqtt</span><span class="o">.</span><span class="n">on_message</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">handle_mytopic</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback function for handling MQTT messages on a specific topic.</span>
+
+<span class="sd">    This function decodes the payload of the received MQTT message based on the topic</span>
+<span class="sd">    and emits the decoded information to the connected clients through Socket.IO.</span>
+
+<span class="sd">    If the decoding fails, a warning message is emitted, and the payload is marked as</span>
+<span class="sd">    &quot;Parsing Failed&quot; in the Socket.IO message.</span>
+
+<span class="sd">    The corresponding socket.io event is &quot;mqtt_message&quot; which is handled as</span>
+
+<span class="sd">    .. code:: js</span>
+<span class="sd">        :number-lines: 195</span>
+
+<span class="sd">        const socket = io.connect(&#39;http://&#39; + document.domain + &#39;:&#39; + location.port);</span>
+<span class="sd">        socket.on(&#39;mqtt_message&#39;, function(data) {</span>
+<span class="sd">            showToast({</span>
+<span class="sd">                header: &#39;MQTT Response received on&#39;,</span>
+<span class="sd">                data: data.topic</span>
+<span class="sd">            });</span>
+<span class="sd">            $(&#39;#responseHex&#39;).html(data.messageHex);</span>
+<span class="sd">            $(&#39;#response&#39;).html(data.message);</span>
+<span class="sd">        });</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received Message on Topic: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="p">))</span>
+    <span class="c1"># app.logger.debug(&quot;Message payload: {}&quot;.format(message.payload.hex(&quot; &quot;).upper()))</span>
+
+    <span class="n">mqtt_response</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;commandresponse&quot;</span><span class="p">):</span>
+        <span class="n">mqtt_response</span> <span class="o">=</span> <span class="n">decode_response</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;telemetry&quot;</span><span class="p">):</span>
+        <span class="n">mqtt_response</span> <span class="o">=</span> <span class="n">decode_telemetry</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mqtt_response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mqtt_response</span> <span class="o">=</span> <span class="s1">&#39;&lt;p class=&quot;text-danger&quot;&gt;Parsing Failed&lt;/p&gt;&#39;</span>
+        <span class="n">socketio</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s1">&#39;showToast&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&quot;Message Parsing Failed&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Probuf Decoder&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;waarning&#39;</span>
+        <span class="p">})</span>
+
+    <span class="n">socketio</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s1">&#39;mqtt_message&#39;</span><span class="p">,</span> 
+        <span class="p">{</span>   
+            <span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="p">,</span>
+            <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">mqtt_response</span><span class="p">,</span> 
+            <span class="s1">&#39;messageHex&#39;</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">hex</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="p">})</span>
+
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="decode_response">
+<a class="viewcode-back" href="../../app.html#protoserver.app.decode_response">[docs]</a>
+<span class="k">def</span> <span class="nf">decode_response</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decode command response received in the MQTT message.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        rcvdMsg (bytes): The received MQTT message in bytes.</span>
+
+<span class="sd">    This is equivalent to :meth:`protoserver.commander.decode_response`</span>
+
+<span class="sd">    Caution:</span>
+<span class="sd">        This function assumes that the fields ``message_id``, ``correlation_id``, ``vehicle_id``, </span>
+<span class="sd">        ``type``, ``subtype``, ``priority``, ``provisioning_state``, ``version``, ``time_stamp``, </span>
+<span class="sd">        ``packet_status`` and ``return_code`` are present in future proto versions of</span>
+<span class="sd">        `CommandResponseMessage` as in version TMCVP 6.3. If any of these fields change,</span>
+<span class="sd">        the code needs to be modified. However, it is agnostic to changes ``commandResponsePayload``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Decode and print the response based on subtype</span>
+        <span class="n">response_message</span> <span class="o">=</span> <span class="n">tmcvp_commandresponse_message_pb2</span><span class="o">.</span><span class="n">CommandResponseMessage</span><span class="p">()</span>
+        <span class="n">response_message</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">)</span>
+
+        <span class="n">response_payload_type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">commandResponsePayload</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span><span class="s2">&quot;commandResponsePayload&quot;</span><span class="p">))</span>
+        <span class="n">response_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">commandResponsePayload</span><span class="p">,</span> <span class="n">response_payload_type</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>
+            <span class="n">response_table</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;response_table.html&#39;</span><span class="p">,</span> <span class="n">response_message</span><span class="o">=</span><span class="n">response_message</span><span class="p">,</span> <span class="n">tmcvp_common_pb2</span><span class="o">=</span><span class="n">tmcvp_common_pb2</span><span class="p">,</span> <span class="n">tmcvp_command_message_pb2</span><span class="o">=</span><span class="n">tmcvp_command_message_pb2</span><span class="p">,</span> <span class="n">tmcvp_commandresponse_message_pb2</span><span class="o">=</span><span class="n">tmcvp_commandresponse_message_pb2</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="n">datetime</span><span class="p">)</span>
+        <span class="n">payload_table</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">MessageToTable</span><span class="p">(</span><span class="n">response_payload</span><span class="p">,</span> <span class="n">show_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;unsafehtml&#39;</span><span class="p">)</span>
+        <span class="n">payload_table</span> <span class="o">=</span> <span class="n">payload_table</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;table&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;table class=&quot;table table-bordered&quot;&gt;&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response_table</span> <span class="o">+</span> <span class="n">payload_table</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in decode_response: &quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="decode_telemetry">
+<a class="viewcode-back" href="../../app.html#protoserver.app.decode_telemetry">[docs]</a>
+<span class="k">def</span> <span class="nf">decode_telemetry</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decode telemetry message received in MQTT Protobuf.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        rcvdMsg (bytes): The received MQTT message in bytes.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (str): A table representation of the telemetry message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">telemetry_message</span> <span class="o">=</span> <span class="n">tmcvp_vehicletelemetry_message_pb2</span><span class="o">.</span><span class="n">VehicleTelemetryMessage</span><span class="p">()</span>
+        <span class="n">telemetry_message</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">)</span>
+
+        <span class="n">response_table</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">MessageToTable</span><span class="p">(</span><span class="n">telemetry_message</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;unsafehtml&#39;</span><span class="p">)</span>
+        <span class="n">response_table</span> <span class="o">=</span> <span class="n">response_table</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;table&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;table class=&quot;table table-bordered&quot;&gt;&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response_table</span> 
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in decode_response: &quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/docs&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">docs</span><span class="p">():</span>
+    <span class="n">external_url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;docs/html/index.html&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">external_url</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TmcvpMQTTProtobufServer">
+<a class="viewcode-back" href="../../app.html#protoserver.app.TmcvpMQTTProtobufServer">[docs]</a>
+<span class="k">def</span> <span class="nf">TmcvpMQTTProtobufServer</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is for wsgi server that runs the app</span>
+
+<span class="sd">    .. admonition:: Examples</span>
+<span class="sd">        :class: tip</span>
+
+<span class="sd">        Using `Gunicorn`_ ::</span>
+<span class="sd">        </span>
+<span class="sd">            $ gunicorn -w 4 -b 0.0.0.0 &#39;protoserver.app:TmcvpMQTTProtobufServer()&#39;</span>
+<span class="sd">            # or </span>
+<span class="sd">            $ gunicorn -w 4 -b 0.0.0.0 tmcvp-server</span>
+
+<span class="sd">        Using `Waitress`_ ::</span>
+
+<span class="sd">            $ waitress-serve --call protoserver.app:TmcvpMQTTProtobufServer</span>
+<span class="sd">            # or equivalently</span>
+<span class="sd">            $ waitress-serve --call tmcvp-server</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        app (flask.Flask): Flask application object</span>
+
+<span class="sd">    .. _Gunicorn:</span>
+<span class="sd">        https://flask.palletsprojects.com/en/3.0.x/deploying/gunicorn/</span>
+
+<span class="sd">    .. _Waitress:</span>
+<span class="sd">        https://flask.palletsprojects.com/en/3.0.x/deploying/waitress/</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">app</span></div>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># app.run(debug=True,use_reloader=False)</span>
+    <span class="n">socketio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, Muhammed Abdullah Shaikh
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/ABD-01" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>
