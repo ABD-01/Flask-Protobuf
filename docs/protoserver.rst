@@ -1,7 +1,7 @@
-tmcvp\_protoserver
+protoserver
 ==========================
 
-Code documentation for  the TMCL protocol server.
+Code documentation for  the TMCVP protobuf server.
 
 .. toctree::
    :maxdepth: 1

@@ -1,4 +1,4 @@
-tmcvp\_protoserver.utils module
+protoserver.utils module
 ===============================
 
 .. automodule:: protoserver.utils

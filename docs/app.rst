@@ -1,4 +1,4 @@
-tmcvp\_protoserver.app module
+protoserver.app module
 =============================
 
 .. automodule:: protoserver.app
