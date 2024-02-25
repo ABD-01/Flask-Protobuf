@@ -1,24 +1,15 @@
 # TMCVP Protobuf Encoded Communication Testing Server.
 
-```{admonition} Must See
-:class: tip
 
-[Notes on Flask, WTForms, Protocol Buffers and more…](Notes)
-```
+**Must See: [Notes on Flask, WTForms, Protocol Buffers and more…](Notes)**
+
 
 <!-- index.rst content start -->
 
 The TMCVP Proto Server is a versatile tool designed for seamless communication using Protocol Buffers (protobuf) for TMCVP messages. This server provides a Command-Response Commander via a Command Line Interface (CLI) and a Flask application for handling MQTT communication with TMCVP messages.
 
-```{image} _static/sequence-diagram-dark.svg
-:align: center
-:class: only-dark
-```
+![sequence-diagram](docs/_static/sequence-diagram-dark.svg)
 
-```{image} _static/sequence-diagram-light.svg 
-:align: center
-:class: only-light
-```
 
 ## Installation
 
@@ -37,7 +28,7 @@ Usage:
 commander
 ```
 
-![commander](_static/commander.gif)
+![commander](docs/_static/commander.gif)
 
 - **Flask Application for MQTT Communication:** The Flask application is designed to offer users a user-friendly web interface, incorporating Bootstrap for an enhanced visual experience and dynamic form generation. This allows users to easily handle MQTT communication with TMCVP messages. The integration of Socket.IO ensures real-time updates, providing immediate feedback. This combination of technologies creates a seamless and interactive environment, simplifying the process of generating, sending and receiving messages. 
 Usage:
@@ -45,7 +36,7 @@ Usage:
 tmcvp-server-flask
 ```
 
-**The static depiction of Flask Application can be seen [here](demo-protoserver.html)**
+**The static depiction of Flask Application can be seen [here](https://abd-01.github.io/Flask-Protobuf/demo-protoserver.html)**
 
 ## Scaling for Future Usage
 
