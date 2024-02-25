@@ -1,4 +1,4 @@
-tmcvp\_protoserver.commander module
+protoserver.commander module
 ===================================
 
 .. automodule:: protoserver.commander

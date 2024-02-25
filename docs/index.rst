@@ -16,6 +16,7 @@ Welcome to TMCVP Protobuf Server's documentation!
    :maxdepth: 1
    :hidden:
 
+   Demo <demo-protoserver.html#http://>
    Notes <Notes>
 
 .. toctree::
