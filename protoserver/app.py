@@ -27,7 +27,7 @@ import tmcvp_command_message_pb2
 import tmcvp_commandresponse_message_pb2
 import tmcvp_vehicletelemetry_message_pb2
 
-from tmcvp_protoserver import utils
+from protoserver import utils
 
 MQTT_BROKER = "test.mosquitto.org"
 PORT_NO = 1883
@@ -454,7 +454,7 @@ def decode_response(rcvdMsg):
     Parameters:
         rcvdMsg (bytes): The received MQTT message in bytes.
 
-    This is equivalent to :meth:`tmcvp_protoserver.commander.decode_response`
+    This is equivalent to :meth:`protoserver.commander.decode_response`
 
     Caution:
         This function assumes that the fields ``message_id``, ``correlation_id``, ``vehicle_id``, 
@@ -519,13 +519,13 @@ def TmcvpMQTTProtobufServer():
 
         Using `Gunicorn`_ ::
         
-            $ gunicorn -w 4 -b 0.0.0.0 'tmcvp_protoserver.app:TmcvpMQTTProtobufServer()'
+            $ gunicorn -w 4 -b 0.0.0.0 'protoserver.app:TmcvpMQTTProtobufServer()'
             # or 
             $ gunicorn -w 4 -b 0.0.0.0 tmcvp-server
 
         Using `Waitress`_ ::
 
-            $ waitress-serve --call tmcvp_protoserver.app:TmcvpMQTTProtobufServer
+            $ waitress-serve --call protoserver.app:TmcvpMQTTProtobufServer
             # or equivalently
             $ waitress-serve --call tmcvp-server
 

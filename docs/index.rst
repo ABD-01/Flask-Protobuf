@@ -23,7 +23,7 @@ Welcome to TMCVP Protobuf Server's documentation!
    :maxdepth: 2
    :caption: API References:
 
-   tmcvp_protoserver
+   protoserver
 
 .. include:: ../README.md
    :parser: myst_parser.sphinx_
