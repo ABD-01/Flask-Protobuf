@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="protoserver.app module" href="app.html" /><link rel="prev" title="protoserver" href="protoserver.html" />
 
     <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>protoserver.commander module - TMCVP Protobuf Server 1.0.0 documentation</title>
+        <title>protoserver.commander module - TMCVP Protobuf Server 1.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
@@ -127,7 +127,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">TMCVP Protobuf Server 1.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">TMCVP Protobuf Server 1.0.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -150,7 +150,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.0 documentation</span>
+  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -206,6 +206,14 @@
         <article role="main">
           <section id="module-protoserver.commander">
 <span id="protoserver-commander-module"></span><h1>protoserver.commander module<a class="headerlink" href="#module-protoserver.commander" title="Link to this heading">#</a></h1>
+<p>Description: This script implements an MQTT client for sending and receiving command messages for TMCVP.
+It utilizes the Paho MQTT library and Protocol Buffers for message serialization.</p>
+<p>Author: Muhammed Abdullah Shaikh
+Date Created: Feb 14, 2024
+Last Modified: Feb 26, 2024
+Python Version: 3.10.11
+Dependencies: Paho MQTT, Protocol Buffers, protoserver
+License: BSD-3-Clause License</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="protoserver.commander.generate_command_message">
 <span class="sig-prename descclassname"><span class="pre">protoserver.commander.</span></span><span class="sig-name descname"><span class="pre">generate_command_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/commander.html#generate_command_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.commander.generate_command_message" title="Link to this definition">#</a></dt>
@@ -367,7 +375,7 @@ Reason: I was facing issues when publishing and subcribing with the same client 
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=8d563738"></script>
+</div><script src="_static/documentation_options.js?v=292eb321"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

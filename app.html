@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="protoserver.utils module" href="utils.html" /><link rel="prev" title="protoserver.commander module" href="commander.html" />
 
     <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>protoserver.app module - TMCVP Protobuf Server 1.0.0 documentation</title>
+        <title>protoserver.app module - TMCVP Protobuf Server 1.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
@@ -127,7 +127,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">TMCVP Protobuf Server 1.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">TMCVP Protobuf Server 1.0.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -150,7 +150,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.0 documentation</span>
+  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -206,6 +206,13 @@
         <article role="main">
           <section id="module-protoserver.app">
 <span id="protoserver-app-module"></span><h1>protoserver.app module<a class="headerlink" href="#module-protoserver.app" title="Link to this heading">#</a></h1>
+<p>Description: Flask application for handling MQTT Protobuf messages related to TMCVP commands and telemetry.
+Author: Muhammed Abdullah Shaikh
+Date Created: Feb 14, 2024
+Last Modified: Feb 26, 2024
+Python Version: 3.10.11
+Dependencies: Flask, Flask-SocketIO, Flask-MQTT, Flask-WTF, Flask-Rich, protobuf
+License: BSD-3-Clause License</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="protoserver.app.CommandMessageForm">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">CommandMessageForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#CommandMessageForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.CommandMessageForm" title="Link to this definition">#</a></dt>
@@ -373,11 +380,14 @@ the code needs to be modified. However, it is agnostic to changes <code class="d
 
 <dl class="py function">
 <dt class="sig sig-object py" id="protoserver.app.decode_telemetry">
-<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">decode_telemetry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rcvdMsg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#decode_telemetry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.decode_telemetry" title="Link to this definition">#</a></dt>
-<dd><p>Decode telemetry message received in MQTT Protobuf.</p>
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">decode_telemetry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rcvdMsg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#decode_telemetry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.decode_telemetry" title="Link to this definition">#</a></dt>
+<dd><p>Decodes different types of telemetry messages received in MQTT Protobuf.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>rcvdMsg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a>) – The received MQTT message in bytes.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The topic of the received MQTT message.</p></li>
+<li><p><strong>rcvdMsg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a>) – The received MQTT message in bytes.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A table representation of the telemetry message.</p>
@@ -503,7 +513,7 @@ $ waitress-serve --call tmcvp-server
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=8d563738"></script>
+</div><script src="_static/documentation_options.js?v=292eb321"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

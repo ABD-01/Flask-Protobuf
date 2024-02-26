@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>protoserver.app - TMCVP Protobuf Server 1.0.0 documentation</title>
+        <title>protoserver.app - TMCVP Protobuf Server 1.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">TMCVP Protobuf Server 1.0.0 documentation</div></a>
+      <a href="../../index.html"><div class="brand">TMCVP Protobuf Server 1.0.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.0 documentation</span>
+  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -200,7 +200,19 @@
         </div>
         <article role="main">
           <h1>Source code for protoserver.app</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Description: Flask application for handling MQTT Protobuf messages related to TMCVP commands and telemetry.</span>
+<span class="sd">Author: Muhammed Abdullah Shaikh</span>
+<span class="sd">Date Created: Feb 14, 2024</span>
+<span class="sd">Last Modified: Feb 26, 2024</span>
+<span class="sd">Python Version: 3.10.11</span>
+<span class="sd">Dependencies: Flask, Flask-SocketIO, Flask-MQTT, Flask-WTF, Flask-Rich, protobuf</span>
+<span class="sd">License: BSD-3-Clause License</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
@@ -220,6 +232,14 @@
 <span class="n">tata_motors_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_dir</span><span class="p">,</span> <span class="s1">&#39;TataMotorsCVP630&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">tata_motors_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tata_motors_path</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">)</span>
+
+<span class="n">file_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;logs/server_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">))</span><span class="si">}</span><span class="s1">.log&#39;</span><span class="p">)</span>
+<span class="n">file_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
+<span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">%(asctime)s</span><span class="s1">] [</span><span class="si">%(levelname)s</span><span class="s1">] : </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">))</span>
+
 <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToJson</span><span class="p">,</span> <span class="n">MessageToDict</span><span class="p">,</span> <span class="n">Parse</span><span class="p">,</span> <span class="n">ParseDict</span>
@@ -228,6 +248,8 @@
 <span class="kn">import</span> <span class="nn">tmcvp_command_message_pb2</span>
 <span class="kn">import</span> <span class="nn">tmcvp_commandresponse_message_pb2</span>
 <span class="kn">import</span> <span class="nn">tmcvp_vehicletelemetry_message_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_high_speed_telemetry_message_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_ev_high_speed_telemetry_message_pb2</span>
 
 <span class="kn">from</span> <span class="nn">protoserver</span> <span class="kn">import</span> <span class="n">utils</span>
 
@@ -246,6 +268,7 @@
 <span class="n">csrf</span> <span class="o">=</span> <span class="n">CSRFProtect</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 <span class="n">socketio</span> <span class="o">=</span> <span class="n">SocketIO</span><span class="p">(</span><span class="n">app</span><span class="p">)</span> 
 <span class="n">rich</span> <span class="o">=</span> <span class="n">RichApplication</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
 
 <span class="c1">###########################################################</span>
 <span class="c1">##################  COMMAND RESPONSE   ####################</span>
@@ -307,6 +330,7 @@
 <span class="k">def</span> <span class="nf">set_vin</span><span class="p">():</span>
     <span class="n">vin_no</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vin_no&#39;</span><span class="p">)</span>
     <span class="n">session</span><span class="p">[</span><span class="s1">&#39;vin_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vin_no</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting VIN No to: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vin_no</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">})</span>
 
 
@@ -572,13 +596,21 @@
 <span class="c1">#####################  TELEMETRY   ########################</span>
 <span class="c1">###########################################################</span>
 
+<span class="n">TELEMETRY_TOPICS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;telemetry&#39;</span><span class="p">,</span> <span class="s1">&#39;highSpeedTelemetry&#39;</span><span class="p">,</span> <span class="s1">&#39;evHighSpeedTelemetry&#39;</span><span class="p">]</span>
+<span class="n">TELEMETRY_MESSAGES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;telemetry&#39;</span><span class="p">:</span> <span class="n">tmcvp_vehicletelemetry_message_pb2</span><span class="o">.</span><span class="n">VehicleTelemetryMessage</span><span class="p">,</span>
+    <span class="s1">&#39;highSpeedTelemetry&#39;</span><span class="p">:</span> <span class="n">tmcvp_high_speed_telemetry_message_pb2</span><span class="o">.</span><span class="n">HighSpeedTelemetryMessage</span><span class="p">,</span>
+    <span class="s1">&#39;evHighSpeedTelemetry&#39;</span><span class="p">:</span> <span class="n">tmcvp_ev_high_speed_telemetry_message_pb2</span><span class="o">.</span><span class="n">EVHighSpeedTelemetryMessage</span>
+<span class="p">}</span>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/telemetry&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">telemetry</span><span class="p">():</span>
-
+    <span class="n">telemetryTopic</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;telemetryTopic&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">telemetryTopic</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">telemetryTopic</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TELEMETRY_TOPICS</span><span class="p">:</span>
+        <span class="n">telemetryTopic</span> <span class="o">=</span> <span class="s1">&#39;telemetry&#39;</span>
     <span class="n">vinNo</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vin_no&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">vinNo</span><span class="p">:</span>
-        <span class="n">_handle_subscribe</span><span class="p">({</span><span class="s1">&#39;vinNo&#39;</span><span class="p">:</span> <span class="n">vinNo</span><span class="p">,</span> <span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="s1">&#39;telemetry&#39;</span><span class="p">})</span> 
-    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;telemetry.html&#39;</span><span class="p">,</span> <span class="n">vin_no</span><span class="o">=</span><span class="n">vinNo</span><span class="p">,</span> <span class="n">topic</span><span class="o">=</span><span class="s2">&quot;telemetry&quot;</span><span class="p">)</span>
+        <span class="n">_handle_subscribe</span><span class="p">({</span><span class="s1">&#39;vinNo&#39;</span><span class="p">:</span> <span class="n">vinNo</span><span class="p">,</span> <span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="n">telemetryTopic</span><span class="p">})</span> 
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;telemetry.html&#39;</span><span class="p">,</span> <span class="n">vin_no</span><span class="o">=</span><span class="n">vinNo</span><span class="p">,</span> <span class="n">topic</span><span class="o">=</span><span class="n">telemetryTopic</span><span class="p">,</span> <span class="n">telemetryType</span><span class="o">=</span><span class="n">telemetryTopic</span><span class="p">)</span>
 
 <span class="c1">###########################################################</span>
 <span class="c1">#######################  UTILS   ##########################</span>
@@ -643,13 +675,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received Message on Topic: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="p">))</span>
-    <span class="c1"># app.logger.debug(&quot;Message payload: {}&quot;.format(message.payload.hex(&quot; &quot;).upper()))</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Message payload: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">hex</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
 
     <span class="n">mqtt_response</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;commandresponse&quot;</span><span class="p">):</span>
         <span class="n">mqtt_response</span> <span class="o">=</span> <span class="n">decode_response</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;telemetry&quot;</span><span class="p">):</span>
-        <span class="n">mqtt_response</span> <span class="o">=</span> <span class="n">decode_telemetry</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;telemetry&quot;</span><span class="p">):</span>
+        <span class="n">mqtt_response</span> <span class="o">=</span> <span class="n">decode_telemetry</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">mqtt_response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">mqtt_response</span> <span class="o">=</span> <span class="s1">&#39;&lt;p class=&quot;text-danger&quot;&gt;Parsing Failed&lt;/p&gt;&#39;</span>
@@ -696,6 +728,8 @@
 
         <span class="n">response_payload_type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">commandResponsePayload</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span><span class="s2">&quot;commandResponsePayload&quot;</span><span class="p">))</span>
         <span class="n">response_payload</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">response_message</span><span class="o">.</span><span class="n">commandResponsePayload</span><span class="p">,</span> <span class="n">response_payload_type</span><span class="p">)</span>
+        
+        <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received Command Response:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">MessageToTable</span><span class="p">(</span><span class="n">response_message</span><span class="p">)))</span>
 
         <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>
             <span class="n">response_table</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;response_table.html&#39;</span><span class="p">,</span> <span class="n">response_message</span><span class="o">=</span><span class="n">response_message</span><span class="p">,</span> <span class="n">tmcvp_common_pb2</span><span class="o">=</span><span class="n">tmcvp_common_pb2</span><span class="p">,</span> <span class="n">tmcvp_command_message_pb2</span><span class="o">=</span><span class="n">tmcvp_command_message_pb2</span><span class="p">,</span> <span class="n">tmcvp_commandresponse_message_pb2</span><span class="o">=</span><span class="n">tmcvp_commandresponse_message_pb2</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="n">datetime</span><span class="p">)</span>
@@ -711,22 +745,28 @@
 
 <div class="viewcode-block" id="decode_telemetry">
 <a class="viewcode-back" href="../../app.html#protoserver.app.decode_telemetry">[docs]</a>
-<span class="k">def</span> <span class="nf">decode_telemetry</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">decode_telemetry</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">rcvdMsg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decode telemetry message received in MQTT Protobuf.</span>
+<span class="sd">    Decodes different types of telemetry messages received in MQTT Protobuf.</span>
 
 <span class="sd">    Parameters:</span>
+<span class="sd">        topic (str): The topic of the received MQTT message.</span>
 <span class="sd">        rcvdMsg (bytes): The received MQTT message in bytes.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        (str): A table representation of the telemetry message.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">topic</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TELEMETRY_MESSAGES</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unknown topic: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topic</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">telemetry_message</span> <span class="o">=</span> <span class="n">tmcvp_vehicletelemetry_message_pb2</span><span class="o">.</span><span class="n">VehicleTelemetryMessage</span><span class="p">()</span>
+        <span class="n">telemetry_message</span> <span class="o">=</span> <span class="n">TELEMETRY_MESSAGES</span><span class="p">[</span><span class="n">topic</span><span class="p">]()</span>
         <span class="n">telemetry_message</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">)</span>
 
         <span class="n">response_table</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">MessageToTable</span><span class="p">(</span><span class="n">telemetry_message</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;unsafehtml&#39;</span><span class="p">)</span>
         <span class="n">response_table</span> <span class="o">=</span> <span class="n">response_table</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;table&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;table class=&quot;table table-bordered&quot;&gt;&#39;</span><span class="p">)</span>
+
+        <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received Telemetry Message:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">MessageToTable</span><span class="p">(</span><span class="n">telemetry_message</span><span class="p">)))</span>
 
         <span class="k">return</span> <span class="n">response_table</span> 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -775,7 +815,7 @@
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="c1"># app.run(debug=True,use_reloader=False)</span>
-    <span class="n">socketio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+    <span class="n">socketio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
@@ -818,7 +858,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=8d563738"></script>
+</div><script src="../../_static/documentation_options.js?v=292eb321"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
