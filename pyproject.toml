@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "ProtoServer"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Muhammed Abdullah Shaikh <muhammed.shaikh@accoladeelectronics.com>"]
 description = "TMCVP Protobuf Encoded Communication Testing Server"
 readme = "README.md"
-license = "GNU General Public License v2.0"
+license = "BSD-3-Clause License"
 keywords = ["server", "flask", "mqtt", "protobuf","python"]
 packages = [
     { include = "protoserver" },
