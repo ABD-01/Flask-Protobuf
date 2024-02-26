@@ -1,9 +1,18 @@
-# This file contains utility functions to handle Protocol Buffer messages
-# It provides functionalities to fill protobuf messages based on user input,
-# convert protobuf messages to dictionary and display the message content in a tabular format
-# Author: Muhammed Abdullah Shaikh
-# Date: 14 Feb 2024
-# Version: 1.0
+# -*- coding: utf-8 -*-
+
+"""
+This file contains utility functions to handle Protocol Buffer messages
+It provides functionalities to fill protobuf messages based on user input,
+convert protobuf messages to dictionary and display the message content in a tabular format
+
+Author: Muhammed Abdullah Shaikh
+Date Created: Feb 14, 2024
+Last Modified: Feb 22, 2024
+Version: 1.0
+Python Version: 3.10.11
+Dependencies: tabulate
+License: BSD-3-Clause License
+"""
 
 from tabulate import tabulate
 

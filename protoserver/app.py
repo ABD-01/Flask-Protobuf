@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+
+"""
+Description: Flask application for handling MQTT Protobuf messages related to TMCVP commands and telemetry.
+Author: Muhammed Abdullah Shaikh
+Date Created: Feb 14, 2024
+Last Modified: Feb 26, 2024
+Python Version: 3.10.11
+Dependencies: Flask, Flask-SocketIO, Flask-MQTT, Flask-WTF, Flask-Rich, protobuf
+License: BSD-3-Clause License
+"""
+
 import os
 import sys
 import logging
@@ -18,6 +30,14 @@ package_dir = os.path.abspath(os.path.dirname(__file__))
 tata_motors_path = os.path.join(package_dir, 'TataMotorsCVP630')
 if tata_motors_path not in sys.path:
     sys.path.append(tata_motors_path)
+
+if not os.path.exists("logs"):
+    os.mkdir("logs")
+
+file_handler = logging.FileHandler(f'logs/server_{str(datetime.now().strftime("%Y%m%d-%H%M%S"))}.log')
+file_handler.setLevel(logging.NOTSET)
+file_handler.setFormatter(logging.Formatter('[%(asctime)s] [%(levelname)s] : %(message)s'))
+
 logging.root.setLevel(logging.DEBUG)
 
 from google.protobuf.json_format import MessageToJson, MessageToDict, Parse, ParseDict
@@ -26,6 +46,8 @@ import tmcvp_command_pb2
 import tmcvp_command_message_pb2
 import tmcvp_commandresponse_message_pb2
 import tmcvp_vehicletelemetry_message_pb2
+import tmcvp_high_speed_telemetry_message_pb2
+import tmcvp_ev_high_speed_telemetry_message_pb2
 
 from protoserver import utils
 
@@ -44,6 +66,7 @@ mqtt = Mqtt(app)
 csrf = CSRFProtect(app)
 socketio = SocketIO(app) 
 rich = RichApplication(app)
+app.logger.addHandler(file_handler)
 
 ###########################################################
 ##################  COMMAND RESPONSE   ####################
@@ -102,6 +125,7 @@ def index():
 def set_vin():
     vin_no = request.form.get('vin_no')
     session['vin_no'] = vin_no
+    app.logger.info('Setting VIN No to: %s', vin_no)
     return jsonify({'status': 'success'})
 
 
@@ -352,13 +376,21 @@ def fill_payload(message, form):
 #####################  TELEMETRY   ########################
 ###########################################################
 
+TELEMETRY_TOPICS = ['telemetry', 'highSpeedTelemetry', 'evHighSpeedTelemetry']
+TELEMETRY_MESSAGES = {
+    'telemetry': tmcvp_vehicletelemetry_message_pb2.VehicleTelemetryMessage,
+    'highSpeedTelemetry': tmcvp_high_speed_telemetry_message_pb2.HighSpeedTelemetryMessage,
+    'evHighSpeedTelemetry': tmcvp_ev_high_speed_telemetry_message_pb2.EVHighSpeedTelemetryMessage
+}
 @app.route('/telemetry', methods=['GET', 'POST'])
 def telemetry():
-
+    telemetryTopic = request.args.get('telemetryTopic')
+    if telemetryTopic is None or telemetryTopic not in TELEMETRY_TOPICS:
+        telemetryTopic = 'telemetry'
     vinNo = session.get('vin_no', '')
     if vinNo:
-        _handle_subscribe({'vinNo': vinNo, 'topic': 'telemetry'}) 
-    return render_template('telemetry.html', vin_no=vinNo, topic="telemetry")
+        _handle_subscribe({'vinNo': vinNo, 'topic': telemetryTopic}) 
+    return render_template('telemetry.html', vin_no=vinNo, topic=telemetryTopic, telemetryType=telemetryTopic)
 
 ###########################################################
 #######################  UTILS   ##########################
@@ -421,13 +453,13 @@ def handle_mytopic(client, userdata, message):
 
     """
     app.logger.info("Received Message on Topic: {}".format(message.topic))
-    # app.logger.debug("Message payload: {}".format(message.payload.hex(" ").upper()))
+    app.logger.debug("Message payload: {}".format(message.payload.hex(" ").upper()))
 
     mqtt_response = None
     if message.topic.endswith("commandresponse"):
         mqtt_response = decode_response(message.payload)
-    elif message.topic.endswith("telemetry"):
-        mqtt_response = decode_telemetry(message.payload)
+    elif message.topic.lower().endswith("telemetry"):
+        mqtt_response = decode_telemetry(message.topic.split('/')[-1], message.payload)
 
     if mqtt_response is None:
         mqtt_response = '<p class="text-danger">Parsing Failed</p>'
@@ -471,6 +503,8 @@ def decode_response(rcvdMsg):
 
         response_payload_type = str(response_message.commandResponsePayload.WhichOneof("commandResponsePayload"))
         response_payload = getattr(response_message.commandResponsePayload, response_payload_type)
+        
+        app.logger.debug("Received Command Response:\n{}".format(utils.MessageToTable(response_message)))
 
         with app.app_context():
             response_table = render_template('response_table.html', response_message=response_message, tmcvp_common_pb2=tmcvp_common_pb2, tmcvp_command_message_pb2=tmcvp_command_message_pb2, tmcvp_commandresponse_message_pb2=tmcvp_commandresponse_message_pb2, datetime=datetime)
@@ -483,22 +517,28 @@ def decode_response(rcvdMsg):
         return None
 
 
-def decode_telemetry(rcvdMsg):
+def decode_telemetry(topic, rcvdMsg):
     """
-    Decode telemetry message received in MQTT Protobuf.
+    Decodes different types of telemetry messages received in MQTT Protobuf.
 
     Parameters:
+        topic (str): The topic of the received MQTT message.
         rcvdMsg (bytes): The received MQTT message in bytes.
 
     Returns:
         (str): A table representation of the telemetry message.
     """
+    if topic not in TELEMETRY_MESSAGES:
+        app.logger.error("Unknown topic: {}".format(topic))
+        return None
     try:
-        telemetry_message = tmcvp_vehicletelemetry_message_pb2.VehicleTelemetryMessage()
+        telemetry_message = TELEMETRY_MESSAGES[topic]()
         telemetry_message.ParseFromString(rcvdMsg)
 
         response_table = utils.MessageToTable(telemetry_message, tablefmt='unsafehtml')
         response_table = response_table.replace('<table>', '<table class="table table-bordered">')
+
+        app.logger.debug("Received Telemetry Message:\n{}".format(utils.MessageToTable(telemetry_message)))
 
         return response_table 
     except Exception as e:
@@ -543,7 +583,7 @@ def TmcvpMQTTProtobufServer():
 
 def main():
     # app.run(debug=True,use_reloader=False)
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+    socketio.run(app, debug=False, host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
     main()

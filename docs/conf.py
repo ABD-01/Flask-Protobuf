@@ -12,6 +12,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
+from protoserver import __version__
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -19,7 +20,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'TMCVP Protobuf Server'
 copyright = '2024, Muhammed Abdullah Shaikh'
 author = 'Muhammed Abdullah Shaikh'
-release = '1.0.0'
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
