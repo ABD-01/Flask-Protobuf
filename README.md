@@ -1,7 +1,7 @@
 # TMCVP Protobuf Encoded Communication Testing Server.
 
 
-**Must See: [Notes on Flask, WTForms, Protocol Buffers and more…](Notes)**
+**Must See: [Notes on Flask, WTForms, Protocol Buffers and more…](https://abd-01.github.io/Flask-Protobuf/Notes.html)**
 
 
 <!-- index.rst content start -->
