@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="protoserver.utils module" href="utils.html" /><link rel="prev" title="protoserver.commander module" href="commander.html" />
 
     <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>protoserver.app module - TMCVP Protobuf Server 1.0.1 documentation</title>
+        <title>protoserver.app module - TMCVP Protobuf Server 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
@@ -127,7 +127,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">TMCVP Protobuf Server 1.0.1 documentation</div></a>
+      <a href="index.html"><div class="brand">TMCVP Protobuf Server 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -150,7 +150,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.0.1 documentation</span>
+  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -209,7 +209,7 @@
 <p>Description: Flask application for handling MQTT Protobuf messages related to TMCVP commands and telemetry.
 Author: Muhammed Abdullah Shaikh
 Date Created: Feb 14, 2024
-Last Modified: Feb 26, 2024
+Last Modified: Apr 18, 2024
 Python Version: 3.10.11
 Dependencies: Flask, Flask-SocketIO, Flask-MQTT, Flask-WTF, Flask-Rich, protobuf
 License: BSD-3-Clause License</p>
@@ -307,7 +307,7 @@ and published to the appropriate MQTT topic.</p>
 <span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">generate_command_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#generate_command_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.generate_command_message" title="Link to this definition">#</a></dt>
 <dd><p>Generate a Command Message based on the provided subtype and form input.</p>
 <p>This function uses <a class="reference external" href="https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.ParseDict" title="(in Protocol Buffers)"><code class="xref py py-func docutils literal notranslate"><span class="pre">google.protobuf.json_format.ParseDict()</span></code></a> for parsing the form data,
-as <code class="docutils literal notranslate"><span class="pre">request.form</span></code> is an <a class="reference external" href="https://werkzeug.palletsprojects.com/en/latest/datastructures/#werkzeug.datastructures.ImmutableMultiDict" title="(in Werkzeug v3.0.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImmutableMultiDict</span></code></a> object.</p>
+as <code class="docutils literal notranslate"><span class="pre">request.form</span></code> is an <a class="reference external" href="https://werkzeug.palletsprojects.com/en/latest/datastructures/#werkzeug.datastructures.ImmutableMultiDict" title="(in Werkzeug v3.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImmutableMultiDict</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -399,6 +399,33 @@ the code needs to be modified. However, it is agnostic to changes <code class="d
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="protoserver.app.decode_vehicleevents">
+<span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">decode_vehicleevents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rcvdMsg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#decode_vehicleevents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.decode_vehicleevents" title="Link to this definition">#</a></dt>
+<dd><p>Decodes different types of vehicle events messages received in MQTT Protobuf.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rcvdMsg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a>) – The received MQTT message in bytes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A table representation of the vehicle events message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decode_vehicleevents</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">):</span>
+    <span class="n">vehicle_event_message</span> <span class="o">=</span> <span class="n">tmcvp_vehicleevent_message_pb2</span><span class="o">.</span><span class="n">VehicleEventMessage</span><span class="p">()</span>
+    <span class="n">vehicle_event_message</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">MessageToTable</span><span class="p">(</span><span class="n">vehicle_event_message</span><span class="p">))</span>
+
+<span class="n">rcvdMsg</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">$2404c70e-41a6-4908-97d9-2e3c33073db7</span><span class="se">\x12\x02</span><span class="s2">NA</span><span class="se">\x1a\x11</span><span class="s2">ACCDEV14012076255 </span><span class="se">\x04</span><span class="s2">(</span><span class="se">\x14</span><span class="s2">2</span><span class="se">\x01</span><span class="s2">18</span><span class="se">\x02</span><span class="s2">B</span><span class="se">\x05</span><span class="s2">6.3.0J</span><span class="se">\x08\x08\x98\xb6\xe3\xb0\x06\x10</span><span class="s2">6PLZ&#39;</span><span class="se">\xaa\x01</span><span class="s2">$</span><span class="se">\x08\x80\xa4\xa7\xda\x06\x10\x80\xa4\xa7\xda\x06\x18\xf7\xc1\xd7</span><span class="s2">/ </span><span class="se">\xa0\xa7\xe5\x15</span><span class="s2">(</span><span class="se">\x01</span><span class="s2">2</span><span class="se">\x08\x08\x98\xb6\xe3\xb0\x06\x10</span><span class="s2">h8</span><span class="se">\x01</span><span class="s2">&quot;</span>
+<span class="n">decode_vehicleevents</span><span class="p">(</span><span class="n">rcvdMsg</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="protoserver.app.TmcvpMQTTProtobufServer">
 <span class="sig-prename descclassname"><span class="pre">protoserver.app.</span></span><span class="sig-name descname"><span class="pre">TmcvpMQTTProtobufServer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/protoserver/app.html#TmcvpMQTTProtobufServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#protoserver.app.TmcvpMQTTProtobufServer" title="Link to this definition">#</a></dt>
 <dd><p>This function is for wsgi server that runs the app</p>
@@ -422,7 +449,7 @@ $ waitress-serve --call tmcvp-server
 <dd class="field-odd"><p>Flask application object</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>app (<a class="reference external" href="https://flask.palletsprojects.com/en/latest/api/#flask.Flask" title="(in Flask v3.0.x)">flask.Flask</a>)</p>
+<dd class="field-even"><p>app (<a class="reference external" href="https://flask.palletsprojects.com/en/latest/api/#flask.Flask" title="(in Flask v3.1.x)">flask.Flask</a>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -501,6 +528,7 @@ $ waitress-serve --call tmcvp-server
 <li><a class="reference internal" href="#protoserver.app.handle_mytopic"><code class="docutils literal notranslate"><span class="pre">handle_mytopic()</span></code></a></li>
 <li><a class="reference internal" href="#protoserver.app.decode_response"><code class="docutils literal notranslate"><span class="pre">decode_response()</span></code></a></li>
 <li><a class="reference internal" href="#protoserver.app.decode_telemetry"><code class="docutils literal notranslate"><span class="pre">decode_telemetry()</span></code></a></li>
+<li><a class="reference internal" href="#protoserver.app.decode_vehicleevents"><code class="docutils literal notranslate"><span class="pre">decode_vehicleevents()</span></code></a></li>
 <li><a class="reference internal" href="#protoserver.app.TmcvpMQTTProtobufServer"><code class="docutils literal notranslate"><span class="pre">TmcvpMQTTProtobufServer()</span></code></a></li>
 </ul>
 </li>
@@ -513,7 +541,7 @@ $ waitress-serve --call tmcvp-server
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=292eb321"></script>
+</div><script src="_static/documentation_options.js?v=fc837d61"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
