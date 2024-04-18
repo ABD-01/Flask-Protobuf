@@ -4,7 +4,7 @@
 Description: Flask application for handling MQTT Protobuf messages related to TMCVP commands and telemetry.
 Author: Muhammed Abdullah Shaikh
 Date Created: Feb 14, 2024
-Last Modified: Feb 26, 2024
+Last Modified: Apr 18, 2024
 Python Version: 3.10.11
 Dependencies: Flask, Flask-SocketIO, Flask-MQTT, Flask-WTF, Flask-Rich, protobuf
 License: BSD-3-Clause License
@@ -48,6 +48,7 @@ import tmcvp_commandresponse_message_pb2
 import tmcvp_vehicletelemetry_message_pb2
 import tmcvp_high_speed_telemetry_message_pb2
 import tmcvp_ev_high_speed_telemetry_message_pb2
+import tmcvp_vehicleevent_message_pb2
 
 from protoserver import utils
 
@@ -393,6 +394,19 @@ def telemetry():
     return render_template('telemetry.html', vin_no=vinNo, topic=telemetryTopic, telemetryType=telemetryTopic)
 
 ###########################################################
+#######################  EVENTS  ##########################
+###########################################################
+
+@app.route('/vehicleevents', methods=['GET', 'POST'])
+def vehicleevents():
+    vinNo = session.get('vin_no', '')
+    print('Got vinNo:', vinNo)
+    if vinNo:
+        _handle_subscribe({'vinNo': vinNo, 'topic': 'vehicleevents'}) 
+    return render_template('vehicleevents.html', vin_no=vinNo, topic="vehicleevents")
+
+
+###########################################################
 #######################  UTILS   ##########################
 ###########################################################
 
@@ -460,6 +474,8 @@ def handle_mytopic(client, userdata, message):
         mqtt_response = decode_response(message.payload)
     elif message.topic.lower().endswith("telemetry"):
         mqtt_response = decode_telemetry(message.topic.split('/')[-1], message.payload)
+    elif message.topic.lower().endswith("vehicleevents"):
+        mqtt_response = decode_vehicleevents(message.payload)
 
     if mqtt_response is None:
         mqtt_response = '<p class="text-danger">Parsing Failed</p>'
@@ -545,6 +561,43 @@ def decode_telemetry(topic, rcvdMsg):
         app.logger.error("Error in decode_response: ", exc_info=e)
         return None
 
+def decode_vehicleevents(rcvdMsg):
+    r"""
+    Decodes different types of vehicle events messages received in MQTT Protobuf.
+
+    Parameters:
+        rcvdMsg (bytes): The received MQTT message in bytes.
+
+    Returns:
+        (str): A table representation of the vehicle events message.
+
+    Example:
+
+    .. code-block:: python
+    
+            def decode_vehicleevents(rcvdMsg):
+                vehicle_event_message = tmcvp_vehicleevent_message_pb2.VehicleEventMessage()
+                vehicle_event_message.ParseFromString(rcvdMsg)
+                print(utils.MessageToTable(vehicle_event_message))
+                  
+            rcvdMsg = b"\n$2404c70e-41a6-4908-97d9-2e3c33073db7\x12\x02NA\x1a\x11ACCDEV14012076255 \x04(\x142\x0118\x02B\x056.3.0J\x08\x08\x98\xb6\xe3\xb0\x06\x106PLZ'\xaa\x01$\x08\x80\xa4\xa7\xda\x06\x10\x80\xa4\xa7\xda\x06\x18\xf7\xc1\xd7/ \xa0\xa7\xe5\x15(\x012\x08\x08\x98\xb6\xe3\xb0\x06\x10h8\x01"
+            decode_vehicleevents(rcvdMsg)
+    """
+    try:
+        vehicle_event_message = tmcvp_vehicleevent_message_pb2.VehicleEventMessage()
+        vehicle_event_message.ParseFromString(rcvdMsg)
+
+        response_table = utils.MessageToTable(vehicle_event_message, tablefmt='unsafehtml')
+        response_table = response_table.replace('<table>', '<table class="table table-bordered">')
+
+        app.logger.debug("Received Vehicle Event Message:\n{}".format(utils.MessageToTable(vehicle_event_message)))
+
+        return response_table
+    except Exception as e:
+        app.logger.error("Error in decode_response: ", exc_info=e)
+        return None
+
+
 @app.route('/docs')
 def docs():
     external_url = url_for('static', filename='docs/html/index.html')
@@ -583,7 +636,7 @@ def TmcvpMQTTProtobufServer():
 
 def main():
     # app.run(debug=True,use_reloader=False)
-    socketio.run(app, debug=False, host='0.0.0.0', port=5000)
+    socketio.run(app, debug=False, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
 
 if __name__ == '__main__':
     main()

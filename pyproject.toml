@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "ProtoServer"
-version = "1.0.1"
+version = "1.1.0"
 authors = ["Muhammed Abdullah Shaikh <muhammed.shaikh@accoladeelectronics.com>"]
 description = "TMCVP Protobuf Encoded Communication Testing Server"
 readme = "README.md"
