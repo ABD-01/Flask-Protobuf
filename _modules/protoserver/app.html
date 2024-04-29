@@ -226,10 +226,9 @@
 <span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">StringField</span><span class="p">,</span> <span class="n">IntegerField</span><span class="p">,</span> <span class="n">SelectField</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">,</span> <span class="n">FloatField</span><span class="p">,</span> <span class="n">FieldList</span><span class="p">,</span> <span class="n">FormField</span>
 <span class="kn">from</span> <span class="nn">flask_rich</span> <span class="kn">import</span> <span class="n">RichApplication</span>
 
-<span class="c1"># sys.path.append(&quot;./TataMotorsCVP630&quot;)</span>
-<span class="c1"># Adding TataMotorsCV630 to sys path</span>
+<span class="c1"># sys.path.append(&quot;./TMCVP630&quot;)</span>
 <span class="n">package_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-<span class="n">tata_motors_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_dir</span><span class="p">,</span> <span class="s1">&#39;TataMotorsCVP630&#39;</span><span class="p">)</span>
+<span class="n">tata_motors_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_dir</span><span class="p">,</span> <span class="s1">&#39;TMCVP630&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">tata_motors_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tata_motors_path</span><span class="p">)</span>
 
@@ -249,6 +248,7 @@
 <span class="kn">import</span> <span class="nn">tmcvp_commandresponse_message_pb2</span>
 <span class="kn">import</span> <span class="nn">tmcvp_vehicletelemetry_message_pb2</span>
 <span class="kn">import</span> <span class="nn">tmcvp_high_speed_telemetry_message_pb2</span>
+<span class="kn">import</span> <span class="nn">tmcvp_ev_telemetry_message_pb2</span>
 <span class="kn">import</span> <span class="nn">tmcvp_ev_high_speed_telemetry_message_pb2</span>
 <span class="kn">import</span> <span class="nn">tmcvp_vehicleevent_message_pb2</span>
 
@@ -597,10 +597,11 @@
 <span class="c1">#####################  TELEMETRY   ########################</span>
 <span class="c1">###########################################################</span>
 
-<span class="n">TELEMETRY_TOPICS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;telemetry&#39;</span><span class="p">,</span> <span class="s1">&#39;highSpeedTelemetry&#39;</span><span class="p">,</span> <span class="s1">&#39;evHighSpeedTelemetry&#39;</span><span class="p">]</span>
+<span class="n">TELEMETRY_TOPICS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;telemetry&#39;</span><span class="p">,</span> <span class="s1">&#39;highSpeedTelemetry&#39;</span><span class="p">,</span> <span class="s1">&#39;evVehicleTelemetry&#39;</span><span class="p">,</span><span class="s1">&#39;evHighSpeedTelemetry&#39;</span><span class="p">]</span>
 <span class="n">TELEMETRY_MESSAGES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;telemetry&#39;</span><span class="p">:</span> <span class="n">tmcvp_vehicletelemetry_message_pb2</span><span class="o">.</span><span class="n">VehicleTelemetryMessage</span><span class="p">,</span>
     <span class="s1">&#39;highSpeedTelemetry&#39;</span><span class="p">:</span> <span class="n">tmcvp_high_speed_telemetry_message_pb2</span><span class="o">.</span><span class="n">HighSpeedTelemetryMessage</span><span class="p">,</span>
+    <span class="s1">&#39;evVehicleTelemetry&#39;</span><span class="p">:</span> <span class="n">tmcvp_ev_telemetry_message_pb2</span><span class="o">.</span><span class="n">EVVehicleTelemetryMessage</span><span class="p">,</span>
     <span class="s1">&#39;evHighSpeedTelemetry&#39;</span><span class="p">:</span> <span class="n">tmcvp_ev_high_speed_telemetry_message_pb2</span><span class="o">.</span><span class="n">EVHighSpeedTelemetryMessage</span>
 <span class="p">}</span>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/telemetry&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
@@ -832,7 +833,7 @@
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/docs&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">docs</span><span class="p">():</span>
-    <span class="n">external_url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;docs/html/index.html&#39;</span><span class="p">)</span>
+    <span class="n">external_url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;docs/index.html&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">external_url</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TmcvpMQTTProtobufServer">
