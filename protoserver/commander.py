@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-"""
-Description: This script implements an MQTT client for sending and receiving command messages for TMCVP. 
-It utilizes the Paho MQTT library and Protocol Buffers for message serialization.
+###
+# Description: This script implements an MQTT client for sending and receiving command messages for TMCVP. 
+# It utilizes the Paho MQTT library and Protocol Buffers for message serialization.
 
-Author: Muhammed Abdullah Shaikh
-Date Created: Feb 14, 2024
-Last Modified: Feb 26, 2024
-Python Version: 3.10.11
-Dependencies: Paho MQTT, Protocol Buffers, protoserver
-License: BSD-3-Clause License
-"""
+# Author: Muhammed Abdullah Shaikh
+# Date Created: Feb 14, 2024
+# Last Modified: Feb 26, 2024
+# Python Version: 3.10.11
+# Dependencies: Paho MQTT, Protocol Buffers, protoserver
+# License: BSD-3-Clause License
+###
 
 import os, sys, uuid, time
 import logging
