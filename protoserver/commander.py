@@ -17,10 +17,9 @@ import logging
 import threading
 from datetime import datetime
 
-# sys.path.append("./TataMotorsCVP630")
-# Adding TataMotorsCV630 to sys path
+# sys.path.append("./TMCVP630")
 package_dir = os.path.abspath(os.path.dirname(__file__))
-tata_motors_path = os.path.join(package_dir, 'TataMotorsCVP630')
+tata_motors_path = os.path.join(package_dir, 'TMCVP630')
 if tata_motors_path not in sys.path:
     sys.path.append(tata_motors_path)
 
@@ -37,10 +36,10 @@ import tmcvp_common_pb2
 import tmcvp_command_pb2
 import tmcvp_command_message_pb2
 import tmcvp_commandresponse_message_pb2
-# from TataMotorsCVP630 import tmcvp_common_pb2
-# from TataMotorsCVP630 import tmcvp_command_pb2
-# from TataMotorsCVP630 import tmcvp_command_message_pb2
-# from TataMotorsCVP630 import tmcvp_commandresponse_message_pb2
+# from TMCVP630 import tmcvp_common_pb2
+# from TMCVP630 import tmcvp_command_pb2
+# from TMCVP630 import tmcvp_command_message_pb2
+# from TMCVP630 import tmcvp_commandresponse_message_pb2
 
 
 MQTT_BROKER = "test.mosquitto.org"

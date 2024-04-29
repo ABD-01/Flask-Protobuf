@@ -24,10 +24,9 @@ from flask_wtf import CSRFProtect, FlaskForm
 from wtforms import StringField, IntegerField, SelectField, BooleanField, FloatField, FieldList, FormField
 from flask_rich import RichApplication
 
-# sys.path.append("./TataMotorsCVP630")
-# Adding TataMotorsCV630 to sys path
+# sys.path.append("./TMCVP630")
 package_dir = os.path.abspath(os.path.dirname(__file__))
-tata_motors_path = os.path.join(package_dir, 'TataMotorsCVP630')
+tata_motors_path = os.path.join(package_dir, 'TMCVP630')
 if tata_motors_path not in sys.path:
     sys.path.append(tata_motors_path)
 
@@ -47,6 +46,7 @@ import tmcvp_command_message_pb2
 import tmcvp_commandresponse_message_pb2
 import tmcvp_vehicletelemetry_message_pb2
 import tmcvp_high_speed_telemetry_message_pb2
+import tmcvp_ev_telemetry_message_pb2
 import tmcvp_ev_high_speed_telemetry_message_pb2
 import tmcvp_vehicleevent_message_pb2
 
@@ -377,10 +377,11 @@ def fill_payload(message, form):
 #####################  TELEMETRY   ########################
 ###########################################################
 
-TELEMETRY_TOPICS = ['telemetry', 'highSpeedTelemetry', 'evHighSpeedTelemetry']
+TELEMETRY_TOPICS = ['telemetry', 'highSpeedTelemetry', 'evVehicleTelemetry','evHighSpeedTelemetry']
 TELEMETRY_MESSAGES = {
     'telemetry': tmcvp_vehicletelemetry_message_pb2.VehicleTelemetryMessage,
     'highSpeedTelemetry': tmcvp_high_speed_telemetry_message_pb2.HighSpeedTelemetryMessage,
+    'evVehicleTelemetry': tmcvp_ev_telemetry_message_pb2.EVVehicleTelemetryMessage,
     'evHighSpeedTelemetry': tmcvp_ev_high_speed_telemetry_message_pb2.EVHighSpeedTelemetryMessage
 }
 @app.route('/telemetry', methods=['GET', 'POST'])
@@ -600,7 +601,7 @@ def decode_vehicleevents(rcvdMsg):
 
 @app.route('/docs')
 def docs():
-    external_url = url_for('static', filename='docs/html/index.html')
+    external_url = url_for('static', filename='docs/index.html')
     return redirect(external_url)
 
 def TmcvpMQTTProtobufServer():
