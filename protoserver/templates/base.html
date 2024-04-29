@@ -52,6 +52,8 @@
                   Telemetry
                 {% elif telemetryType == 'highSpeedTelemetry' %}
                   High Speed Telemetry
+                {% elif telemetryType == 'evVehicleTelemetry' %}
+                  EV Telemetry
                 {% elif telemetryType == 'evHighSpeedTelemetry' %}
                   EV High Speed Telemetry
                 {% else %}
@@ -61,6 +63,7 @@
                 <ul class="dropdown-menu">
                   <li><a class="nav-link dropdown-item" href="/telemetry">Telemetry</a></li>
                   <li><a class="nav-link dropdown-item" href="/telemetry?telemetryTopic=highSpeedTelemetry">High Speed Telemetry</a></li>
+                  <li><a class="nav-link dropdown-item" href="/telemetry?telemetryTopic=evVehicleTelemetry">EV Telemetry</a></li>
                   <li><a class="nav-link dropdown-item" href="/telemetry?telemetryTopic=evHighSpeedTelemetry">EV High Speed Telemetry</a></li>
                 </ul>
             </li>

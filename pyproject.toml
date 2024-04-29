@@ -13,7 +13,7 @@ keywords = ["server", "flask", "mqtt", "protobuf","python"]
 packages = [
     { include = "protoserver" },
 ]
-include = [ "protoserver/static", "protoserver/templates", "protoserver/TataMotorsCVP630/*.py"]
+include = [ "protoserver/static", "protoserver/templates", "protoserver/TMCVP630/*.py"]
 
 [tool.poetry.dependencies]
 python = "^3.9" 
