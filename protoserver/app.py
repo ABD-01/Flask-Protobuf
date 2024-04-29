@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""
-Description: Flask application for handling MQTT Protobuf messages related to TMCVP commands and telemetry.
-Author: Muhammed Abdullah Shaikh
-Date Created: Feb 14, 2024
-Last Modified: Apr 18, 2024
-Python Version: 3.10.11
-Dependencies: Flask, Flask-SocketIO, Flask-MQTT, Flask-WTF, Flask-Rich, protobuf
-License: BSD-3-Clause License
-"""
+###
+# Description: Flask application for handling MQTT Protobuf messages related to TMCVP commands and telemetry.
+# Author: Muhammed Abdullah Shaikh
+# Date Created: Feb 14, 2024
+# Last Modified: Apr 18, 2024
+# Python Version: 3.10.11
+# Dependencies: Flask, Flask-SocketIO, Flask-MQTT, Flask-WTF, Flask-Rich, protobuf
+# License: BSD-3-Clause License
+###
 
 import os
 import sys
