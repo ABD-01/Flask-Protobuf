@@ -17,7 +17,7 @@ from protoserver import __version__
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'TMCVP Protobuf Server'
+project = 'CVP Protobuf Server'
 copyright = '2024, Muhammed Abdullah Shaikh'
 author = 'Muhammed Abdullah Shaikh'
 release = __version__

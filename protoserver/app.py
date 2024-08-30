@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###
-# Description: Flask application for handling MQTT Protobuf messages related to TMCVP commands and telemetry.
+# Description: Flask application for handling MQTT Protobuf messages related to CVP commands and telemetry.
 # Author: Muhammed Abdullah Shaikh
 # Date Created: Feb 14, 2024
 # Last Modified: Apr 18, 2024

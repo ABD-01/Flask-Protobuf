@@ -1,7 +1,7 @@
 protoserver
 ==========================
 
-Code documentation for  the TMCVP protobuf server.
+Code documentation for  the CVP protobuf server.
 
 .. toctree::
    :maxdepth: 1
