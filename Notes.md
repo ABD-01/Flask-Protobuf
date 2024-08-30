@@ -1,6 +1,6 @@
 # Notes on Flask, WTForms, Protocol Buffers and more...
 
-These notes are a part of Flask based Web Server I build for TMCVP Protobuf Encoded Communication Testing Server.
+These notes are a part of Flask based Web Server I build for CVP Protobuf Encoded Communication Testing Server.
 
 ## Protocol Buffers
 

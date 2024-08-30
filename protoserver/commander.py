@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###
-# Description: This script implements an MQTT client for sending and receiving command messages for TMCVP. 
+# Description: This script implements an MQTT client for sending and receiving command messages for CVP. 
 # It utilizes the Paho MQTT library and Protocol Buffers for message serialization.
 
 # Author: Muhammed Abdullah Shaikh

@@ -1,4 +1,4 @@
-.. TMCVP Protobuf Server documentation master file, created by
+.. CVP Protobuf Server documentation master file, created by
    sphinx-quickstart on Thu Feb 22 18:26:27 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -9,7 +9,7 @@
     :doc:`Notes on Flask, WTForms, Protocol Buffers and more <Notes>`
 
 
-Welcome to TMCVP Protobuf Server's documentation!
+Welcome to CVP Protobuf Server's documentation!
 =================================================
 
 .. toctree::
