@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Notes on Flask, WTForms, Protocol Buffers and more…" href="Notes.html" />
 
     <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>TMCVP Protobuf Server 1.1.0 documentation</title>
+        <title>CVP Protobuf Server 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
@@ -35,10 +35,7 @@
       }
     }
   }
-</style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7178928117233862"
-crossorigin="anonymous"></script>
-</head>
+</style></head>
   <body>
     
     <script>
@@ -127,7 +124,7 @@ crossorigin="anonymous"></script>
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">TMCVP Protobuf Server 1.1.0 documentation</div></a>
+      <a href="#"><div class="brand">CVP Protobuf Server 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -150,7 +147,7 @@ crossorigin="anonymous"></script>
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">TMCVP Protobuf Server 1.1.0 documentation</span>
+  <span class="sidebar-brand-text">CVP Protobuf Server 1.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -208,16 +205,16 @@ crossorigin="anonymous"></script>
 <p class="admonition-title">Must See</p>
 <p><a class="reference internal" href="Notes.html"><span class="doc">Notes on Flask, WTForms, Protocol Buffers and more</span></a></p>
 </div>
-<section id="welcome-to-tmcvp-protobuf-server-s-documentation">
-<h1>Welcome to TMCVP Protobuf Server’s documentation!<a class="headerlink" href="#welcome-to-tmcvp-protobuf-server-s-documentation" title="Link to this heading">#</a></h1>
+<section id="welcome-to-cvp-protobuf-server-s-documentation">
+<h1>Welcome to CVP Protobuf Server’s documentation!<a class="headerlink" href="#welcome-to-cvp-protobuf-server-s-documentation" title="Link to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
 </div>
-<p>The TMCVP Proto Server is a versatile tool designed for seamless communication using Protocol Buffers (protobuf) for TMCVP messages. This server provides a Command-Response Commander via a Command Line Interface (CLI) and a Flask application for handling MQTT communication with TMCVP messages.</p>
+<p>The CVP Proto Server is a versatile tool designed for seamless communication using Protocol Buffers (protobuf) for CVP messages. This server provides a Command-Response Commander via a Command Line Interface (CLI) and a Flask application for handling MQTT communication with CVP messages.</p>
 <img alt="_images/sequence-diagram-dark.svg" class="only-dark align-center" src="_images/sequence-diagram-dark.svg" /><img alt="_images/sequence-diagram-light.svg" class="only-light align-center" src="_images/sequence-diagram-light.svg" /><section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
-<p>To install the TMCVP Protobuf Server, download the <code class="docutils literal notranslate"><span class="pre">protoserver-1.0.0-py3-none-any.whl</span></code> file and run the following command:</p>
+<p>To install the CVP Protobuf Server, download the <code class="docutils literal notranslate"><span class="pre">protoserver-1.0.0-py3-none-any.whl</span></code> file and run the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>protoserver-1.0.0-py3-none-any.whl
 </pre></div>
 </div>
@@ -233,17 +230,17 @@ crossorigin="anonymous"></script>
 </div>
 <p><img alt="commander" src="_images/commander.gif" /></p>
 <ul class="simple">
-<li><p><strong>Flask Application for MQTT Communication:</strong> The Flask application is designed to offer users a user-friendly web interface, incorporating Bootstrap for an enhanced visual experience and dynamic form generation. This allows users to easily handle MQTT communication with TMCVP messages. The integration of Socket.IO ensures real-time updates, providing immediate feedback. This combination of technologies creates a seamless and interactive environment, simplifying the process of generating, sending and receiving messages.
+<li><p><strong>Flask Application for MQTT Communication:</strong> The Flask application is designed to offer users a user-friendly web interface, incorporating Bootstrap for an enhanced visual experience and dynamic form generation. This allows users to easily handle MQTT communication with CVP messages. The integration of Socket.IO ensures real-time updates, providing immediate feedback. This combination of technologies creates a seamless and interactive environment, simplifying the process of generating, sending and receiving messages.
 Usage:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tmcvp-server-flask
 </pre></div>
 </div>
-<p><strong>The static depiction of Flask Application can be seen <a class="reference external" href="demo-protoserver.html">here</a></strong></p>
+<p><strong>The static depiction of Flask Application can be seen <a class="reference external" href="https://abd-01.github.io/Flask-Protobuf/demo-protoserver.html">here</a></strong></p>
 </section>
 <section id="scaling-for-future-usage">
 <h2>Scaling for Future Usage<a class="headerlink" href="#scaling-for-future-usage" title="Link to this heading">#</a></h2>
-<p>The server is designed with scalability in mind, anticipating future changes and updates to the TMCVP protocol. It is independent of specific command subtype payloads, providing flexibility for integration with new message types or additional fields introduced in future versions.</p>
+<p>The server is designed with scalability in mind, anticipating future changes and updates to the CVP protocol. It is independent of specific command subtype payloads, providing flexibility for integration with new message types or additional fields introduced in future versions.</p>
 <p>While the server code is designed to be independent of specific payload details, it is not agnostic to changes in message header if any occurs. I have assumed that the fields such as  <code class="docutils literal notranslate"><span class="pre">message_id</span></code>, <code class="docutils literal notranslate"><span class="pre">message_type</span></code>, <code class="docutils literal notranslate"><span class="pre">priority</span></code>, <code class="docutils literal notranslate"><span class="pre">packet_status</span></code>, etc, are present in future protocol versions.</p>
 </section>
 </section>
@@ -308,7 +305,7 @@ Usage:</p></li>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Welcome to TMCVP Protobuf Server’s documentation!</a><ul>
+<li><a class="reference internal" href="#">Welcome to CVP Protobuf Server’s documentation!</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#scaling-for-future-usage">Scaling for Future Usage</a></li>
